@@ -1,0 +1,3 @@
+#Luokka ryhmälle
+
+# class Ryhmä():

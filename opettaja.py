@@ -1,0 +1,3 @@
+#Luokka opettajalle
+
+# class Opettaja():

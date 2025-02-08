@@ -1,4 +1,4 @@
 #Pelaajaluokka
 #Tallentaa pelaajan nimen ja pisteet
 
-# class Player():
+# class Oppilas():
