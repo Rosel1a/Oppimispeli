@@ -1,0 +1,1 @@
+# Asetukset esim. aikarajat ja pistemäärät
