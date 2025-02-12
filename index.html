@@ -1,40 +1,51 @@
 <!DOCTYPE html>
-<html lang="eng">
+<!-- Kieli on suomi -->
+<html lang="fi">
   <head>
     <meta charset="UTF-8" />
+    <!-- Viewportin avulla sivu skaalautuu laitteelle sopivaksi -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Oppimispeli</title>
     <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
-    <section class="math-section">
-      <header class="math-header">
-        <div class="math-header-content">
-          <div class="math-header-column">
-            <h2 class="math-title">Matematiikka</h2>
-          </div>
-          <div class="coming-soon-column">
-            <div class="coming-soon">Tulossa</div>
-          </div>
-        </div>
-      </header>
-      <section class="games-section">
-        <div class="games-container">
-          <div class="games-content">
-            <div class="math-header-column">
-              <button
-                class="game-button"
-                tabindex="0"
-                onclick="window.location.href='peli1.html';"
-              >
-                Peli 1
-              </button>
-            </div>
-            <div class="game-column">
-              <button class="game-button" tabindex="0">Peli 2</button>
+    <!-- Headerin sisältö (eka osio sivusta) -->
+    <header class="header-section">
+      <div class="header-top">
+        <h1 class="site-title">OPPIMISPELI</h1>
+        <div class="avatar-placeholder"></div>
+      </div>
+      <div class="header-bottom">
+        <div class="nav-buttons">
+          <!-- Matematiikka-nappi ja alasvetovalikko -->
+          <div class="dropdown">
+            <button class="dropbtn">Matematiikka</button>
+            <div class="dropdown-content">
+              <a href="#">3. luokka</a>
+              <a href="#">4. luokka</a>
+              <a href="#">5. luokka</a>
+              <a href="#">6. luokka</a>
             </div>
           </div>
+          <!-- Tulossa-nappi -->
+          <button class="coming-soon-btn">Tulossa</button>
         </div>
-      </section>
+      </div>
+    </header>
+    <!-- Pelivalikko (toka osio sivulla)-->
+    <section class="games-section">
+      <div class="games-container">
+        <button
+          class="game-button"
+          tabindex="0"
+          onclick="window.location.href='peli1.html';"
+        >Peli 1</button>
+        <button class="game-button" tabindex="0">Peli 2</button>
+        <button class="game-button" tabindex="0">Peli 3</button>
+        <button class="game-button" tabindex="0">Peli 4</button>
+        <button class="game-button" tabindex="0">Peli 5</button>
+        <button class="game-button" tabindex="0">Peli 6</button>
+      </div>
     </section>
   </body>
 </html>
