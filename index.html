@@ -5,14 +5,14 @@
     <meta charset="UTF-8" />
     <!-- Viewportin avulla sivu skaalautuu laitteelle sopivaksi -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Oppimispeli</title>
+    <title>Opikku</title>
     <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
     <!-- Headerin sisältö (eka osio sivusta) -->
     <header class="header-section">
       <div class="header-top">
-        <h1 class="site-title">OPPIMISPELI</h1>
+        <h1 class="site-title">OPIKKU</h1>
         <div class="avatar-placeholder"></div>
       </div>
       <div class="header-bottom">
@@ -35,16 +35,38 @@
     <!-- Pelivalikko (toka osio sivulla)-->
     <section class="games-section">
       <div class="games-container">
-        <button
+        <!-- button
           class="game-button"
           tabindex="0"
           onclick="window.location.href='peli1.html';"
-        >Peli 1</button>
-        <button class="game-button" tabindex="0">Peli 2</button>
-        <button class="game-button" tabindex="0">Peli 3</button>
-        <button class="game-button" tabindex="0">Peli 4</button>
-        <button class="game-button" tabindex="0">Peli 5</button>
-        <button class="game-button" tabindex="0">Peli 6</button>
+        >Peli 1</button> -->
+        <div class="dropdown">
+          <button class="game-button dropbtn">Kertolaskut</button>
+          <div class="dropdown-content">
+            <a href="peli1.html">1 kertotaulu</a>
+            <a href="#">2 kertotaulu</a>
+            <a href="#">3 kertotaulu</a>
+            <a href="#">4 kertotaulu</a>
+            <a href="#">5 kertotaulu</a>
+            <a href="#">6 kertotaulu</a>
+            <a href="#">7 kertotaulu</a>
+            <a href="#">8 kertotaulu</a>
+            <a href="#">9 kertotaulu</a>
+            <a href="#">10 kertotaulu</a>
+          </div>
+        </div>
+        <div class="dropdown">
+          <button class="game-button dropbtn">Peruslaskutoimitukset</button>
+          <div class="dropdown-content">
+            <a href="#">Yhteenlaskut</a>
+            <a href="#">Miinuslaskut</a>
+            <a href="#">Laskutoimituksia</a>
+          </div>
+        </div>
+        <button class="game-button" tabindex="0">Mittayksiköt</button>
+        <button class="game-button" tabindex="0">Murtoluvut</button>
+        <button class="game-button" tabindex="0">Desimaaliluvut</button>
+        <button class="game-button" tabindex="0">Kello</button>
       </div>
     </section>
   </body>
