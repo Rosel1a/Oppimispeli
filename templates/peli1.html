@@ -1,9 +1,13 @@
+<!-- TÄÄ TIEDOSTO TOIMII PELKÄSTÄÄN FLASK YHTEYDEN KAUTTA -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <title>Peli 1</title>
-    <link rel="stylesheet" href="peli1.css">
+    <!--
+    <link rel="stylesheet" href="peli1.css"> -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='peli1.css') }}"> 
+
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
 <body>
@@ -29,7 +33,13 @@
                 alt=""
               />
             </button>
-            <div class="main-display" role="img" aria-label="Main content display"></div>
+            <div class="main-display" role="img" aria-label="Main content display">
+              <!-- Pelin rakenne -->
+              <div class="question-box" id="question-box">1 × 1</div>
+              <span>=</span>
+              <input type="number" id="answer-box" placeholder="Syötä vastaus">
+              <button onclick="checkAnswer()">Vastaa</button>
+            </div>
             <aside class="sidebar-column">
               <div class="sidebar-content">
                 <div class="sidebar-inner" role="complementary" aria-label="Sidebar content"></div>
@@ -38,5 +48,30 @@
           </section>
         </main>
       </div>
+
+      <script>
+        async function fetchQuestion() {
+          const response = await fetch("http://127.0.0.1:5000/new_question");
+          const data = await response.json();
+          document.getElementById("question-box").innerText = data.question;
+          document.getElementById("question-box").dataset.answer = data.answer;
+        }
+
+        async function checkAnswer() {
+          const userAnswer = document.getElementById("answer-box").value;
+          const correctAnswer = document.getElementById("question-box").dataset.answer;
+          
+          if (userAnswer === correctAnswer) {
+            alert('Oikein!');
+          } else {
+            alert('Väärin, yritä uudelleen.');
+          }
+
+          fetchQuestion(); // Hakee seuraavan tehtävän
+        }
+
+        document.addEventListener("DOMContentLoaded", fetchQuestion); // Hakee tehtävän heti sivun latautuessa
+      </script>
+      
 </body>
 </html>

@@ -1,48 +1,57 @@
-#Tänne luultavasti sit se SQL-tietokantayhteys
-#Tässä saagan epic sql testaus JA SE TOIMII?
+#SQL-tietokantayhteys
+#
 
 import mysql.connector
 
 # Yhdistä MySQL-tietokantaan
-db_connection = mysql.connector.connect(
-    host="localhost",  # MySQL-palvelimen isäntä (usein 'localhost')
-    user="root",       # Käyttäjänimi (muuta tarpeen mukaan)
-    password="Salasana1",  # MySQL:n salasana
-    database="oppimispeli"   # Tietokannan nimi
-)
+def get_db_connection():
+    db_connection = mysql.connector.connect(
+        host="localhost",  # MySQL-palvelimen isäntä (usein 'localhost')
+        user="root",       # Käyttäjänimi (muuta tarpeen mukaan)
+        password="Salasana1",  # MySQL:n salasana
+        database="oppimispeli"   # Tietokannan nimi
+    )
+    return db_connection
 
 # Luo kursori, jolla voidaan suorittaa SQL-kyselyt
-cursor = db_connection.cursor()
+#cursor = db_connection.cursor()
 
 # Esimerkki: Suoritetaan SQL-kysely ja haetaan tietoa
-cursor.execute("SHOW TABLES")
+#cursor.execute("SHOW TABLES")
 
 # Tulostetaan taulujen nimet
-print("Taulut tietokannassa:")
-for table in cursor.fetchall():
-    print(table[0])  # Tulostetaan taulun nimi
+##for table in cursor.fetchall():
+    #print(table[0])  # Tulostetaan taulun nimi
 
-'''
-add_user_query = """
-    INSERT INTO User (nimi, kayttajanimi, sahkoposti, salasana, syntymapaiva, rooli)
-    VALUES (%s, %s, %s, %s, %s, %s)
-"""
-user_data = ("Testi Käyttäjä", "testikayttaja", "testi@example.com", "salasana123", "2000-01-01", "oppilas")
+# Tarkistetaan, että tehtävät on lisätty
+#cursor.execute("SELECT * FROM tehtava")
+#print("Lisätty testi tehtävät:")
+#for row in cursor.fetchall():
+    #print(row)
 
-# Suoritetaan lisäys
-cursor.execute(add_user_query, user_data)
+# Funktio, joka palauttaa satunnaisen kysymyksen tietokannasta
+#1-kertotaulu peli kysymykset arpoo tietokannasta
+def get_random_question():
+    connection = get_db_connection()
+    cursor = connection.cursor(dictionary=True)
 
-# Varmistetaan muutokset
-db_connection.commit()
+    query = "SELECT * FROM tehtava ORDER BY RAND() LIMIT 1"  # Hakee satunnaisen kysymyksen
+    cursor.execute(query)
+    question = cursor.fetchone()
+    
+    cursor.close()
+    connection.close()
 
-'''
+    if question:
+        return {
+            'question': question['kysymys'],
+            'answer': question['oikea_vastaus'],
+            'answer_type': 'number' if question['oikea_vastaus'].isdigit() else 'text'
+        }
+    else:
+        return {'question': 'No questions found', 'answer': '', 'answer_type': 'text'}
 
-# Tarkistetaan, että käyttäjä on lisätty
-cursor.execute("SELECT * FROM User WHERE kayttajanimi = 'testikayttaja'")
-print("Lisätty käyttäjä:")
-for row in cursor.fetchall():
-    print(row)
 
 # Sulje yhteys ja kursori
-cursor.close()
-db_connection.close()
+#cursor.close()
+#db_connection.close()

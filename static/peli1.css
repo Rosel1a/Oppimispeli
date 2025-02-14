@@ -84,7 +84,45 @@ html, body {
   max-width: 65vw;
   height: 600px;
   min-height: 300px;
+} 
+
+/* Question Box */
+.question-box {
+  background-color: white;
+  border: 2px solid black;
+  padding: 10px;
+  font-size: 24px;
+  display: inline-block;
+  min-width: 100px;
+  text-align: center;
+  border-radius: 8px;
 }
+
+/* Input Box */
+#answer-box {
+  padding: 10px;
+  font-size: 18px;
+  width: 150px;
+  border-radius: 8px;
+  border: 2px solid black;
+}
+
+/* Button */
+button {
+  padding: 10px;
+  font-size: 16px;
+  cursor: pointer;
+  border-radius: 8px;
+  background-color: rgba(65, 152, 196, 1);
+  color: white;
+  border: none;
+}
+
+button:hover {
+  background-color: rgba(44, 44, 44, 1);
+}
+
+
 
 /* Sidebar - Positioned next to Main Display */
 .sidebar-column {
