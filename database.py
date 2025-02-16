@@ -3,36 +3,37 @@
 
 import mysql.connector
 
+# LUE!! tästä jokainen muokkaa ainoastaan user ja password kohtaa !
+host = "85.23.94.251"      # Esim. "123.45.67.89" 
+user = "saaga"    # MySQL-käyttäjänimi
+password = "salasana2"    # MySQL-salasana
+database = "oppimispeli"  # Tietokannan nimi
+
 # Yhdistä MySQL-tietokantaan
-def get_db_connection():
-    db_connection = mysql.connector.connect(
-        host="localhost",  # MySQL-palvelimen isäntä (usein 'localhost')
-        user="root",       # Käyttäjänimi (muuta tarpeen mukaan)
-        password="Salasana1",  # MySQL:n salasana
-        database="oppimispeli"   # Tietokannan nimi
-    )
-    return db_connection
+def get_db_connection(host, user, password, database):
+    try:
+        db_connection = mysql.connector.connect(
+            host=host,         # MySQL-palvelimen isäntä
+            user=user,         # Käyttäjänimi
+            password=password, # MySdQL:n salasana
+            database=database  # Tietokannan nimi
+        )
+        if db_connection.is_connected():
+            print("✅ Yhteys onnistui!")
+            
+        return db_connection
+    
+    except mysql.connector.Error as err:
+        # Virheiden käsittely
+        print(f"Yhteys epäonnistui: {err}")
+        return None
 
-# Luo kursori, jolla voidaan suorittaa SQL-kyselyt
-#cursor = db_connection.cursor()
 
-# Esimerkki: Suoritetaan SQL-kysely ja haetaan tietoa
-#cursor.execute("SHOW TABLES")
-
-# Tulostetaan taulujen nimet
-##for table in cursor.fetchall():
-    #print(table[0])  # Tulostetaan taulun nimi
-
-# Tarkistetaan, että tehtävät on lisätty
-#cursor.execute("SELECT * FROM tehtava")
-#print("Lisätty testi tehtävät:")
-#for row in cursor.fetchall():
-    #print(row)
 
 # Funktio, joka palauttaa satunnaisen kysymyksen tietokannasta
 #1-kertotaulu peli kysymykset arpoo tietokannasta
 def get_random_question():
-    connection = get_db_connection()
+    connection = get_db_connection(host, user, password, database)
     cursor = connection.cursor(dictionary=True)
 
     query = "SELECT * FROM tehtava ORDER BY RAND() LIMIT 1"  # Hakee satunnaisen kysymyksen
@@ -51,7 +52,3 @@ def get_random_question():
     else:
         return {'question': 'No questions found', 'answer': '', 'answer_type': 'text'}
 
-
-# Sulje yhteys ja kursori
-#cursor.close()
-#db_connection.close()
