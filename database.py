@@ -1,5 +1,5 @@
 #SQL-tietokantayhteys
-#
+# 
 
 import mysql.connector
 
@@ -20,6 +20,12 @@ def get_db_connection(host, user, password, database):
         )
         if db_connection.is_connected():
             print("✅ Yhteys onnistui!")
+            
+            cursor = db_connection.cursor()
+            cursor.execute("SHOW TABLES;")
+
+            for table in cursor.fetchall():
+                print(table)
             
         return db_connection
     
@@ -52,3 +58,4 @@ def get_random_question():
     else:
         return {'question': 'No questions found', 'answer': '', 'answer_type': 'text'}
 
+get_db_connection(host, user, password, database)
