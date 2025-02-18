@@ -1,5 +1,5 @@
-#pelien toiminnallisuutta varten palvelin
-#tän kautta pystyy nyt pelaamaan sitä alkukantasta kertotaulu peliä
+#Pelien toiminnallisuutta varten palvelin
+#Tämän kautta pystyy nyt pelaamaan sitä alkukantasta kertotaulu peliä
 from flask import Flask, render_template, jsonify
 from database import get_random_question
 

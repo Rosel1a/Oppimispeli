@@ -1,3 +1,4 @@
+/*Yleisasetukset*/
 html, body {
     margin: 0;
     padding: 0;
@@ -6,15 +7,15 @@ html, body {
     overflow-x: hidden;
 }
 
-/* Main container */
+/* Päänäkymän säiliö */
 .mathematics-section {
   display: flex;
   flex-direction: column;
   width: 100%;
-  height: 100%; /* Ensure the section takes full height */
+  height: 100%;
 }
 
-/* Header */
+/* Ylätunniste (header) */
 .header {
   background-color: rgba(65, 152, 196, 1);
   display: flex;
@@ -23,9 +24,10 @@ html, body {
   flex-wrap: wrap;
   width: 100%;
   padding: 5vh 5vw;
+  position: relative;
 }
 
-/* Title */
+/* Otsikko */
 .subject-title {
   border-radius: 16px;
   background-color: rgba(239, 125, 125, 1);
@@ -34,19 +36,20 @@ html, body {
   letter-spacing: 2px;
   padding: 10px 5vw;
   font-size: clamp(24px, 4vw, 40px);
-  max-width: 80%;
+  max-width: 60%;
 }
 
-/* Icon Button */
+/* Avatar-painike */
 .icon-button {
   border-radius: 50%;
   background-color: rgba(44, 44, 44, 1);
-  width: 80px;
-  height: 80px;
+  width: 65px;
+  height: 65px;
   display: flex;
   align-items: center;
   justify-content: center;
   border: none;
+  margin-right: 100px; /* Lisää tilaa oikealle avatarin ympärille */
 }
 
 .icon-image {
@@ -54,29 +57,29 @@ html, body {
   height: 40px;
 }
 
-/* Content Area: Main Display + Sidebar */
+/* Pääalue */
 .content-area {
   background-color: rgba(169, 226, 255, 1);
   width: 100%;
   padding: 5vh 5vw;
   display: flex;
-  justify-content: center;
+  justify-content:  flex-start; /* Siirtää koko alueen vasemmalle */
   gap: 20px;
   flex-wrap: nowrap;
-  flex-grow: 1; /* Ensure the content area grows to fill the remaining space */
+  flex-grow: 1; /* Varmistaa, että kasvaa jäljelle jäävään tilaan */
 }
 
-/* Main Content Section (Main Display + Sidebar) */
+/* Pääsisältö (kysymysalue + sivupalkki) */
 .main-content {
   display: flex;
   gap: 20px;
-  justify-content: center;
+  justify-content: flex-start; /* Siirtää sisällön vasemmalle */
   align-items: flex-start;
   width: 100%;
-  max-width: 1200px; /* Keeps layout centered on large screens */
+  max-width: 1200px; /* Pitää asettelun keskitettynä isommilla näytöillä */
 }
 
-/* Main display */
+/* Kysymysalue */
 .main-display {
   border-radius: 28px;
   background-color: rgba(239, 125, 125, 1);
@@ -84,9 +87,13 @@ html, body {
   max-width: 65vw;
   height: 600px;
   min-height: 300px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
 } 
 
-/* Question Box */
+/* Kysymyslaatikko*/
 .question-box {
   background-color: white;
   border: 2px solid black;
@@ -98,7 +105,7 @@ html, body {
   border-radius: 8px;
 }
 
-/* Input Box */
+/* Vastauskenttä*/
 #answer-box {
   padding: 10px;
   font-size: 18px;
@@ -107,7 +114,7 @@ html, body {
   border: 2px solid black;
 }
 
-/* Button */
+/* Vastauspainike */
 button {
   padding: 10px;
   font-size: 16px;
@@ -122,9 +129,7 @@ button:hover {
   background-color: rgba(44, 44, 44, 1);
 }
 
-
-
-/* Sidebar - Positioned next to Main Display */
+/* Sivupalkki */
 .sidebar-column {
   display: flex;
   flex-direction: column;
