@@ -26,8 +26,10 @@ header, body {
 .header-top {
   display: flex;
   justify-content: space-between;
-  align-items: center; /* Asettaa elementit pystysuunnassa keskelle */
+  align-items: left; /* Asettaa elementit pystysuunnassa keskelle */
+  
 }
+
 
 /* Sivuston otsikko */
 .site-title {
