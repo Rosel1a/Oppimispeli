@@ -10,16 +10,17 @@ app = Flask(__name__)
 def index():
     return render_template('index.html')  # Tämä viittaa HTML-tiedostoon
 
-@app.route('/peli1')
-def peli1():
-    # Tämä reitti palvelee peli1.html-sivua
-    return render_template('peli1.html')
+@app.route('/peli/<int:pelin_id>')  # Pelin ID voidaan välittää URL:ssä
+def peli(pelin_id):
+    # Tässä pelin_id voidaan käyttää hakemaan pelin tiedot tietokannasta
+    return render_template('peli1.html', pelin_id=pelin_id)
 
-# Reitti tehtävien hakemiseen tietokannasta
-@app.route('/new_question', methods=['GET'])
-def new_question():
-    question_data = get_random_question()
+# Reitti tehtävien hakemiseen tietokannasta, pelin ID mukaan
+@app.route('/new_question/<int:pelin_id>', methods=['GET'])
+def new_question(pelin_id):
+    question_data = get_random_question(pelin_id)  # Muokataan funktio hakemaan pelin mukaan
     return jsonify(question_data)
+
 
 # Vastauksen tarkistus
 @app.route('/check_answer', methods=['POST'])

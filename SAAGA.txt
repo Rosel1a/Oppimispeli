@@ -118,3 +118,5 @@ HTML:ssä voidaan hallita useita pelejä yhdellä sivulla. Voimme tehdä sen nii
 
 Flask-puolella: Voit käsitellä useita pelejä yhdellä reitillä (/peli/<pelin_id>), jolloin pelin tunnisteen perusteella haetaan oikeat kysymykset ja pelilogiikka.
 HTML/JavaScript-puolella: Yksi HTML-sivu voi hallita useita pelejä. JavaScript hakee kysymyksen ja tarkistaa vastauksen dynaamisesti pelin ID:n mukaan.
+
+

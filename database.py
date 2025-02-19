@@ -4,8 +4,8 @@ import mysql.connector
 
 # LUE!! tästä jokainen muokkaa ainoastaan user ja password kohtaa !
 host = "85.23.94.251"      # Esim. "123.45.67.89" 
-user = "henkka"    # MySQL-käyttäjänimi
-password = "salasana1"    # MySQL-salasana
+user = "saaga"    # MySQL-käyttäjänimi
+password = "salasana2"    # MySQL-salasana
 database = "oppimispeli"  # Tietokannan nimi
 
 # Yhdistä MySQL-tietokantaan
@@ -35,12 +35,14 @@ def get_db_connection(host, user, password, database):
 
 # Funktio, joka palauttaa satunnaisen kysymyksen tietokannasta
 # 1-kertotaulu peli kysymykset arpoo tietokannasta
-def get_random_question():
+
+def get_random_question(pelin_id):
     connection = get_db_connection(host, user, password, database)
     cursor = connection.cursor(dictionary=True)
 
-    query = "SELECT * FROM tehtava WHERE Pelit_peliID = 1 ORDER BY RAND() LIMIT 1"  # Hakee satunnaisen kysymyksen
-    cursor.execute(query)
+    # Käytetään pelin ID:tä kyselyssä
+    query = "SELECT * FROM tehtava WHERE Pelit_peliID = %s ORDER BY RAND() LIMIT 1"
+    cursor.execute(query, (pelin_id,))  # pelin_id lisätään parametrina kyselyyn
     question = cursor.fetchone()
     
     cursor.close()
