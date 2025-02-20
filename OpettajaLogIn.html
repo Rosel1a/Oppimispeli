@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="fi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Opettaja Kirjautuminen</title>
+    <link rel="stylesheet" href="static/LogInStyles.css" /> 
+</head>
+<body>
+    <div class="container" id="container">
+        <div class="toggle-panel register-panel" id="registerPanel" onclick="toggleForm()">Kirjaudu sisään</div>
+        <div class="toggle-panel login-panel" id="loginPanel" onclick="toggleForm()">Rekisteröidy</div>
+        
+        <div class="form-container login-form" id="loginForm" style="left: 0;">
+            <form class="form">
+                <h2>Kirjaudu sisään</h2>
+                <input type="email" placeholder="Sähköposti" required>
+                <input type="password" placeholder="Salasana" required>
+                <button type="submit">Kirjaudu</button>
+            </form>
+        </div>
+        
+        <div class="form-container register-form" id="registerForm" style="right: 0;">
+            <form class="form">
+                <h2>Rekisteröidy</h2>
+                <input type="text" placeholder="Etunimi" required>
+                <input type="text" placeholder="Sukunimi" required>
+                <input type="email" placeholder="Sähköpostiosoite" required>
+                <input type="password" id="password" name="password" placeholder="Salasana" required>
+                <input type="password" id="confirmPassword" name="confirmPassword" placeholder="Salasana uudelleen" required>
+                <span id="passwordError" style="color: red; display: none;">Salasanat eivät täsmää!</span>
+                <button type="submit" onclick="return checkPassword()">Rekisteröidy</button>
+            </form>
+        </div>
+    </div>
+    
+    <script>
+        function toggleForm() {
+            const container = document.getElementById('container');
+            container.classList.toggle('active');
+        }
+
+        function checkPassword() {
+        let password = document.getElementById("password").value;
+        let confirmPassword = document.getElementById("confirmPassword").value;
+        let errorText = document.getElementById("passwordError");
+
+        if (password !== confirmPassword) {
+            errorText.style.display = "block";
+            return false; // Prevent form submission
+        } else {
+            errorText.style.display = "none";
+            return true; // Allow form submission
+        }
+    }
+    </script>
+</body>
+</html>
