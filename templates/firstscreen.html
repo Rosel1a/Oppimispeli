@@ -44,8 +44,8 @@ button + button {
 </style>
 <body>
     <div class="container">
-        <button onclick="location.href='teacherLogIn.html'">Opettaja</button>
-        <button onclick="location.href='studentLogIn.html'">Oppilas</button>
+        <button onclick="location.href='{{ url_for('teacher_login') }}'">Opettaja</button>
+        <button onclick="location.href='{{ url_for('student_login') }}'">Oppilas</button>
     </div>
 </body>
 </html>
