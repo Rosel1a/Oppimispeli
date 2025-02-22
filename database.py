@@ -52,50 +52,7 @@ def get_db_connection(host, user, password, database):
         return None
 
 
-# **Rekisteröi uusi käyttäjä tietokantaan**
-def register_user(nimi, kayttajanimi, sahkoposti, salasana, syntymapaiva):
-    connection = get_db_connection()
-    if not connection:
-        return False, "Tietokantayhteys epäonnistui"
 
-    try:
-        cursor = connection.cursor()
-        hashed_password = bcrypt.generate_password_hash(salasana).decode("utf-8")
-
-        query = """
-        INSERT INTO user (nimi, kayttajanimi, sahkoposti, salasana, syntymapaiva, rooli)
-        VALUES (%s, %s, %s, %s, %s, 'oppilas')
-        """
-        cursor.execute(query, (nimi, kayttajanimi, sahkoposti, hashed_password, syntymapaiva))
-        connection.commit()
-
-        cursor.close()
-        connection.close()
-        return True, "Rekisteröinti onnistui!"
-    
-    except mysql.connector.IntegrityError:
-        return False, "Käyttäjätunnus on jo käytössä."
-    
-    except Exception as e:
-        return False, f"Virhe rekisteröinnissä: {e}"
-
-# **Tarkista kirjautumistiedot**
-def check_login(kayttajanimi, salasana):
-    connection = get_db_connection()
-    if not connection:
-        return None, "Tietokantayhteys epäonnistui"
-
-    cursor = connection.cursor(dictionary=True)
-    cursor.execute("SELECT userID, salasana FROM user WHERE kayttajanimi = %s", (kayttajanimi,))
-    user = cursor.fetchone()
-
-    cursor.close()
-    connection.close()
-
-    if user and bcrypt.check_password_hash(user["salasana"], salasana):
-        return user["userID"], "Kirjautuminen onnistui!"
-    else:
-        return None, "Väärä käyttäjätunnus tai salasana."
 
 # Funktio, joka palauttaa satunnaisen kysymyksen tietokannasta
 # Arpoo kysymykset tietokannasta
