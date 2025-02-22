@@ -10,6 +10,20 @@ app = Flask(__name__)
 def index():
     return render_template('mathMenu3rdGrade.html')  # Tämä viittaa HTML-tiedostoon
 
+# Matematiikan valikko
+@app.route('/math_menu/<int:grade>')
+def math_menu(grade):
+    if grade == 3:
+        return render_template('mathMenu3rdGrade.html')
+    elif grade == 4:
+        return render_template('mathMenu4rdGrade.html')
+    elif grade == 5:
+        return render_template('mathMenu5rdGrade.html')
+    elif grade == 6:
+        return render_template('mathMenu6rdGrade.html')
+    else:
+        return redirect(url_for('index'))  # Redirects to a default page or 404 if grade is invalid
+
 @app.route('/peli/<int:pelin_id>')  # Pelin ID voidaan välittää URL:ssä
 def peli(pelin_id):
     # Tässä pelin_id voidaan käyttää hakemaan pelin tiedot tietokannasta
