@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="fi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Opettaja vai Oppilas</title>
+</head>
+<style>
+/* Painikkeiden tyylit */
+button {
+    transition: all .5s ease;
+    color: blue;
+    border: 3px solid black;
+    font-family:'Montserrat', sans-serif;
+    text-transform: uppercase;
+    text-align: center;
+    line-height: 1;
+    font-size: 19px;
+    background-color : transparent;
+    padding: 20px;
+    outline: none;
+    border-radius: 10px;
+    position: center;
+}
+
+/* Painikkeen hover-tila */
+button:hover {
+    color: #001F3F;
+    background-color: lightblue;
+}
+
+/* Kontainerin tyylit */
+.container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+/* Painikkeiden välinen marginaali */
+button + button {
+    margin-left: 20px;
+}
+</style>
+<body>
+    <div class="container">
+        <button onclick="location.href='OpettajaLogIn.html'">Opettaja</button>
+        <button onclick="location.href='OppilasLogIn.html'">Oppilas</button>
+    </div>
+</body>
+</html>
