@@ -18,7 +18,7 @@ import mysql.connector
 # # Salasanan tarkistus
 # is_valid = bcrypt.check_password_hash(hashed_password, 'salasana')
 
-from flask_bcrypt import Bcrypt
+###from flask_bcrypt import Bcrypt
 
 # LUE!! tästä jokainen muokkaa ainoastaan user ja password kohtaa !
 host = "85.23.94.251"      # Esim. "123.45.67.89" 
@@ -50,9 +50,6 @@ def get_db_connection(host, user, password, database):
         # Virheiden käsittely
         print(f"Yhteys epäonnistui: {err}")
         return None
-
-
-
 
 # Funktio, joka palauttaa satunnaisen kysymyksen tietokannasta
 # Arpoo kysymykset tietokannasta

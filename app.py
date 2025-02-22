@@ -1,12 +1,9 @@
 #Pelien toiminnallisuutta varten palvelin
 #Tämän kautta pystyy nyt pelaamaan sitä alkukantasta kertotaulu peliä
-from flask import Flask, render_template, jsonify, request, redirect, url_for, session, flash
-from flask_bcrypt import Bcrypt
-from database import register_user, check_login, get_random_question
+from flask import Flask, render_template, jsonify
+from database import get_random_question
 
 app = Flask(__name__)
-
-
 
 # Pääsivun reitti
 @app.route('/')
