@@ -21,17 +21,24 @@
         </div>
         
         <div class="form-container register-form" id="registerForm" style="right: 0;">
-            <form class="form" action="{{ url_for('register') }}" method="post" onsubmit="return checkPassword()">
+            <form class="form">
                 <h2>Rekisteröidy</h2>
-                <input type="text" name="nimi" placeholder="Nimi" required>
-                <input type="text" name="kayttajanimi" placeholder="Käyttäjätunnus" required>
-                <input type="email" name="sahkoposti" placeholder="Sähköposti (valinnainen)">
-                <input type="date" name="syntymapaiva" required>
+                <input type="text" placeholder="Etunimi" required>
+                <input type="text" placeholder="Sukunimi" required>
+                <input type="date" placeholder="Syntymäpäivä" required>
+                    <select id="class" name="class" required>
+                        <option value="" disabled selected>Valitse luokkasi</option>
+                        <option value="3">3. luokka</option>
+                        <option value="4">4. luokka</option>
+                        <option value="5">5. luokka</option>
+                        <option value="6">6. luokka</option>
+                    </select>
+                <input type="text" placeholder="Käyttäjätunnus" required>
                 <input type="password" id="password" name="password" placeholder="Salasana" required>
                 <input type="password" id="confirmPassword" name="confirmPassword" placeholder="Salasana uudelleen" required>
                 <span id="passwordError" style="color: red; display: none;">Salasanat eivät täsmää!</span>
-                <button type="submit">Rekisteröidy</button>
-            </form>            
+                <button type="submit" onclick="return checkPassword()">Rekisteröidy</button>
+            </form>
         </div>
     </div>
     
