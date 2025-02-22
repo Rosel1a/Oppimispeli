@@ -14,9 +14,12 @@
         <div class="form-container login-form" id="loginForm" style="left: 0;">
             <form class="form">
                 <h2>Kirjaudu sisään</h2>
-                <input type="text" placeholder="Käyttäjätunnus" required>
-                <input type="password" placeholder="Salasana" required>
+                <input type="text" placeholder="Käyttäjätunnus"> #required
+                <input type="password" placeholder="Salasana"> #required
                 <button type="submit">Kirjaudu</button>
+                <a href="{{ url_for('etusivu') }}">
+                    <button class="game-button">Etusivu</button>
+                </a>
             </form>
         </div>
         
@@ -38,9 +41,6 @@
                 <input type="password" id="confirmPassword" name="confirmPassword" placeholder="Salasana uudelleen" required>
                 <span id="passwordError" style="color: red; display: none;">Salasanat eivät täsmää!</span>
                 <button type="submit" onclick="return checkPassword()">Rekisteröidy</button>
-                <a href="{{ url_for('etusivu') }}">
-                    <button class="game-button">Etusivu</button>
-                </a>
             </form>
         </div>
     </div>
