@@ -8,12 +8,12 @@ app = Flask(__name__)
 # Pääsivun reitti
 @app.route('/')
 def index():
-    return render_template('index.html')  # Tämä viittaa HTML-tiedostoon
+    return render_template('mathMenu3rdGrade.html')  # Tämä viittaa HTML-tiedostoon
 
 @app.route('/peli/<int:pelin_id>')  # Pelin ID voidaan välittää URL:ssä
 def peli(pelin_id):
     # Tässä pelin_id voidaan käyttää hakemaan pelin tiedot tietokannasta
-    return render_template('peli1.html', pelin_id=pelin_id)
+    return render_template('gameScreen1.html', pelin_id=pelin_id)
 
 # Reitti tehtävien hakemiseen tietokannasta, pelin ID mukaan
 @app.route('/new_question/<int:pelin_id>', methods=['GET'])
