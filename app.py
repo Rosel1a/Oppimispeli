@@ -19,7 +19,7 @@ def student_login():
     return render_template('studentLogIn.html')
 
 @app.route('/etusivu')
-def student_login():
+def etusivu():
     return render_template('frontPage.html')
 
 # Matematiikan valikko
