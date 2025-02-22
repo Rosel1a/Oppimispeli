@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Oppilas Kirjautuminen</title>
-    <link rel="stylesheet" href="static/LogInStyles.css" /> 
+    <title>Opettaja Kirjautuminen</title>
+    <link rel="stylesheet" href="static/logInStyles.css" /> 
 </head>
 <body>
     <div class="container" id="container">
@@ -14,7 +14,7 @@
         <div class="form-container login-form" id="loginForm" style="left: 0;">
             <form class="form">
                 <h2>Kirjaudu sisään</h2>
-                <input type="text" placeholder="Käyttäjätunnus" required>
+                <input type="email" placeholder="Sähköposti" required>
                 <input type="password" placeholder="Salasana" required>
                 <button type="submit">Kirjaudu</button>
             </form>
@@ -25,15 +25,7 @@
                 <h2>Rekisteröidy</h2>
                 <input type="text" placeholder="Etunimi" required>
                 <input type="text" placeholder="Sukunimi" required>
-                <input type="date" placeholder="Syntymäpäivä" required>
-                    <select id="class" name="class" required>
-                        <option value="" disabled selected>Valitse luokkasi</option>
-                        <option value="3">3. luokka</option>
-                        <option value="4">4. luokka</option>
-                        <option value="5">5. luokka</option>
-                        <option value="6">6. luokka</option>
-                    </select>
-                <input type="text" placeholder="Käyttäjätunnus" required>
+                <input type="email" placeholder="Sähköpostiosoite" required>
                 <input type="password" id="password" name="password" placeholder="Salasana" required>
                 <input type="password" id="confirmPassword" name="confirmPassword" placeholder="Salasana uudelleen" required>
                 <span id="passwordError" style="color: red; display: none;">Salasanat eivät täsmää!</span>

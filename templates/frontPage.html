@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<!-- Kieli on suomi -->
+<html lang="fi">
+  <head>
+    <meta charset="UTF-8" />
+    <!-- Viewportin avulla sivu skaalautuu laitteelle sopivaksi -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Opikku</title>
+    <!-- <link rel="stylesheet" href="styles.css" /> -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='menu.css') }}">
+  </head>
+  <body>
+    <!-- Headerin sisältö (eka osio sivusta) -->
+    <header class="header-section" >
+      <div class="header-top">
+        
+        <h1 class="site-title" >OPIKKU</h1>
+        <div class="avatar-placeholder"></div>
+      </div>
+      <div class="header-bottom">
+        <div class="nav-buttons">
+          <!-- Matematiikka-nappi ja alasvetovalikko -->
+          <div class="dropdown">
+            <button class="dropbtn">Matematiikka</button>
+            <div class="dropdown-content">
+              <a href="{{ url_for('math_menu', grade=3) }}">3. luokka</a>
+              <a href="{{ url_for('math_menu', grade=4) }}">4. luokka</a>
+              <a href="{{ url_for('math_menu', grade=5) }}">5. luokka</a>
+              <a href="{{ url_for('math_menu', grade=6) }}">6. luokka</a>
+            </div>
+          </div>
+          <!-- Tulossa-nappi -->
+          <button class="coming-soon-btn">Tulossa</button>
+        </div>
+      </div>
+    </header>
+    <!-- Pelivalikko (toka osio sivulla)-->
+    <section class="games-section">
+      <h1>ETUSIVU</h1>
+    </section>
+  </body>
+</html>
