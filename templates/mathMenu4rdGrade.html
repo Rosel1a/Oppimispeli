@@ -24,10 +24,10 @@
           <div class="dropdown">
             <button class="dropbtn">Matematiikka</button>
             <div class="dropdown-content">
-              <a href="#">3. luokka</a>
-              <a href="#">4. luokka</a>
-              <a href="#">5. luokka</a>
-              <a href="#">6. luokka</a>
+              <a href="{{ url_for('math_menu', grade=3) }}">3. luokka</a>
+              <a href="{{ url_for('math_menu', grade=4) }}">4. luokka</a>
+              <a href="{{ url_for('math_menu', grade=5) }}">5. luokka</a>
+              <a href="{{ url_for('math_menu', grade=6) }}">6. luokka</a>
             </div>
           </div>
           <!-- Tulossa-nappi -->
@@ -44,32 +44,8 @@
           onclick="window.location.href='peli1.html';"
         >Peli 1</button> -->
         <div class="dropdown">
-          <button class="game-button dropbtn">Kertolaskut</button>
-          <div class="dropdown-content">
-            <a href="{{ url_for('peli', pelin_id=1) }}">1 kertotaulu</a>
-            <a href="{{ url_for('peli', pelin_id=2) }}">2 kertotaulu</a>
-            <a href="{{ url_for('peli', pelin_id=3) }}">3 kertotaulu</a>
-            <a href="{{ url_for('peli', pelin_id=4) }}">4 kertotaulu</a>
-            <a href="{{ url_for('peli', pelin_id=5) }}">5 kertotaulu</a>
-            <a href="{{ url_for('peli', pelin_id=6) }}">6 kertotaulu</a>
-            <a href="{{ url_for('peli', pelin_id=7) }}">7 kertotaulu</a>
-            <a href="{{ url_for('peli', pelin_id=8) }}">8 kertotaulu</a>
-            <a href="{{ url_for('peli', pelin_id=9) }}">9 kertotaulu</a>
-            <a href="{{ url_for('peli', pelin_id=10) }}">10 kertotaulu</a>
+          <button class="game-button">4 luokka peli 1</button>
           </div>
-        </div>
-        <div class="dropdown">
-          <button class="game-button dropbtn">Peruslaskutoimitukset</button>
-          <div class="dropdown-content">
-            <a href="#">Yhteenlaskut</a>
-            <a href="#">Miinuslaskut</a>
-            <a href="#">Laskutoimituksia</a>
-          </div>
-        </div>
-        <button class="game-button" tabindex="0">Mittayksiköt</button>
-        <button class="game-button" tabindex="0">Murtoluvut</button>
-        <button class="game-button" tabindex="0">Desimaaliluvut</button>
-        <button class="game-button" tabindex="0">Kello</button>
       </div>
     </section>
   </body>
