@@ -8,7 +8,7 @@ app = Flask(__name__)
 # Pääsivun reitti
 @app.route('/')
 def index():
-    return render_template('firstScreen.html')  # Tämä viittaa HTML-tiedostoon
+    return render_template('frontPage.html')  # Tämä viittaa HTML-tiedostoon
 
 @app.route('/teacher_login')
 def teacher_login():
@@ -17,10 +17,6 @@ def teacher_login():
 @app.route('/student_login')
 def student_login():
     return render_template('studentLogIn.html')
-
-@app.route('/etusivu')
-def etusivu():
-    return render_template('frontPage.html')
 
 # Matematiikan valikko
 @app.route('/math_menu/<int:grade>')
