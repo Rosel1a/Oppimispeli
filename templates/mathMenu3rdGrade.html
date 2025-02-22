@@ -60,12 +60,14 @@
         <div class="dropdown">
           <button class="game-button dropbtn">Peruslaskutoimitukset</button>
           <div class="dropdown-content">
-            <a href="#">Yhteenlaskut</a>
-            <a href="#">Miinuslaskut</a>
-            <a href="#">Laskutoimituksia</a>
+            <a href="{{ url_for('peli', pelin_id=11) }}">Yhteenlaskut</a>
+            <a href="{{ url_for('peli', pelin_id=12) }}">Miinuslaskut</a>
+            <a href="{{ url_for('peli', pelin_id=13) }}">Laskutoimituksia</a>
           </div>
         </div>
-        <button class="game-button" tabindex="0">Mittayksiköt</button>
+        <a href="{{ url_for('peli', pelin_id=14) }}">
+          <button class="game-button" tabindex="0">Mittayksiköt</button>
+        </a>
         <button class="game-button" tabindex="0">Murtoluvut</button>
         <button class="game-button" tabindex="0">Desimaaliluvut</button>
         <button class="game-button" tabindex="0">Kello</button>
