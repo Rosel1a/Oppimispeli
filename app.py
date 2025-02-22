@@ -21,7 +21,6 @@ def new_question(pelin_id):
     question_data = get_random_question(pelin_id)  # Muokataan funktio hakemaan pelin mukaan
     return jsonify(question_data)
 
-
 # Vastauksen tarkistus
 @app.route('/check_answer', methods=['POST'])
 def check_answer():
