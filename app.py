@@ -1,14 +1,63 @@
 #Pelien toiminnallisuutta varten palvelin
 #Tämän kautta pystyy nyt pelaamaan sitä alkukantasta kertotaulu peliä
-from flask import Flask, render_template, jsonify
-from database import get_random_question
+from flask import Flask, render_template, jsonify, request, redirect, url_for, session, flash
+from flask_bcrypt import Bcrypt
+from database import register_user, check_login, get_random_question
 
 app = Flask(__name__)
+
+#KAKSI UUTTA ALLA OLEVAA RIVIÄ
+app.secret_key = "salainen_avain"  # Vaihda tuotantoon sopivaksi
+bcrypt = Bcrypt(app)
 
 # Pääsivun reitti
 @app.route('/')
 def index():
-    return render_template('frontPage.html')  # Tämä viittaa HTML-tiedostoon
+    return render_template('firstScreen.html')  # Tämä viittaa HTML-tiedostoon
+
+# **Rekisteröityminen**
+@app.route("/register", methods=["POST"])
+def register():
+    nimi = request.form["nimi"]
+    kayttajanimi = request.form["kayttajanimi"]
+    sahkoposti = request.form.get("sahkoposti", "")
+    salasana = request.form["password"]
+    syntymapaiva = request.form["syntymapaiva"]
+
+    success, message = register_user(nimi, kayttajanimi, sahkoposti, salasana, syntymapaiva)
+
+    flash(message, "success" if success else "danger")
+    return redirect(url_for("index"))
+
+# **Kirjautuminen**
+@app.route("/login", methods=["POST"])
+def login():
+    kayttajanimi = request.form["kayttajanimi"]
+    salasana = request.form["password"]
+
+    user_id, message = check_login(kayttajanimi, salasana)
+
+    if user_id:
+        session["user_id"] = user_id
+        return redirect(url_for("front_page"))
+    else:
+        flash(message, "danger")
+        return redirect(url_for("index"))
+
+# **Etusivu kirjautuneille käyttäjille**
+@app.route("/front_page")
+def front_page():
+    if "user_id" in session:
+        return render_template("frontPage.html")
+    else:
+        return redirect(url_for("index"))
+
+# **Uloskirjautuminen**
+@app.route("/logout")
+def logout():
+    session.pop("user_id", None)
+    flash("Olet kirjautunut ulos.", "info")
+    return redirect(url_for("index"))
 
 # Matematiikan valikko
 @app.route('/math_menu/<int:grade>')

@@ -66,11 +66,17 @@
           </div>
         </div>
         <a href="{{ url_for('peli', pelin_id=14) }}">
-          <button class="game-button" tabindex="0">Mittayksiköt</button>
+          <button class="game-button">Mittayksiköt</button>
         </a>
-        <button class="game-button" tabindex="0">Murtoluvut</button>
-        <button class="game-button" tabindex="0">Desimaaliluvut</button>
-        <button class="game-button" tabindex="0">Kello</button>
+        <a href="{{ url_for('peli', pelin_id=15) }}">
+          <button class="game-button">Murtoluvut</button>
+        </a>
+        <a href="{{ url_for('peli', pelin_id=16) }}">
+          <button class="game-button">Desimaaliluvut</button>
+        </a>
+        <a href="{{ url_for('peli', pelin_id=17) }}">
+          <button class="game-button">Kello</button>
+        </a>
       </div>
     </section>
   </body>
