@@ -17,7 +17,11 @@ def teacher_login():
 @app.route('/student_login')
 def student_login():
     return render_template('studentLogIn.html')
-    
+
+@app.route('/etusivu')
+def student_login():
+    return render_template('frontPage.html')
+
 # Matematiikan valikko
 @app.route('/math_menu/<int:grade>')
 def math_menu(grade):
