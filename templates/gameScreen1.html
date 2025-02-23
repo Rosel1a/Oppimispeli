@@ -21,12 +21,10 @@
         </header>
         <main class="content-area">
             <section class="main-content">
-              <a href="{{ url_for('index') }}">
-                <button class="small-icon-button" aria-label="Action">
+                <button class="small-icon-button" aria-label="Action" onclick="goBack()">
                     <img loading="lazy" src="https://cdn.builder.io/api/v1/image/assets/TEMP/ac24ec8f1f19b53f03cb818be4b1973dda8fad9cfa23067bf47b00d7fa6658ab?placeholderIfAbsent=true&apiKey=d4a6829ab0a243af995c418502f3ed93"
                         class="icon-image" alt="Takaisin" />
                 </button>
-              </a>
                 <div class="main-display" role="img" aria-label="Main content display">
                     <h1>Peli ID: {{ pelin_id }}</h1>
                     <div class="question-box" id="question-box">Ladataan kysymys...</div>
@@ -43,7 +41,20 @@
         </main>
     </div> 
       <script>
-        
+        // Funktio, joka ohjaa käyttäjän takaisin oikealle sivulle
+        function goBack() {
+          const pelinId = parseInt("{{ pelin_id }}");  // Haetaan pelin_id Jinjalla Flaskista
+          let backUrl = "{{ url_for('index') }}";  // Oletuksena takaisin etusivulle
+
+          if (pelinId >= 1 && pelinId <= 18) {
+            backUrl = "{{ url_for('math_menu', grade=3) }}";
+          } else if (pelinId >= 19 && pelinId <= 30) {
+            backUrl = "{{ url_for('math_menu', grade=4) }}";
+          }
+        window.location.href = backUrl;
+        }
+
+        // Haetaan pelin ID URL:stä
         const pelinId = window.location.pathname.split('/')[2]; // Haetaan URL:stä pelin ID
 
         // Hakee uuden kysymyksen palvelimelta ja päivittää sen sivulle

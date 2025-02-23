@@ -10,17 +10,21 @@ app = Flask(__name__)
 def index():
     return render_template('frontPage.html')  # Tämä viittaa HTML-tiedostoon
 
+# Opettajan kirjautuminen
 @app.route('/teacher_login')
 def teacher_login():
     return render_template('teacherLogIn.html')
 
+# Opiskelijan kirjautuminen
 @app.route('/student_login')
 def student_login():
     return render_template('studentLogIn.html')
 
+# Kuva reitti
 @app.route('/Kuvat/<path:filename>')
 def serve_images(filename):
     return send_from_directory('static/Kuvat', filename)
+
 # Matematiikan valikko
 @app.route('/math_menu/<int:grade>')
 def math_menu(grade):

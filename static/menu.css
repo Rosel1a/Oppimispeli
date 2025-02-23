@@ -5,7 +5,6 @@ html {
   overflow-x: hidden; /* Estää sivun leviämisen sivusuunnassa */
   min-height: 100vh; /* Asettaa sivun korkeudeksi vähintään 100% näytön korkeudesta */
 }
-
 header, body {
   margin: 0; /* Poistaa oletusmarginaalit */
   padding: 0; /* Poistaa oletuspaddingin */
@@ -22,21 +21,17 @@ header, body {
   padding: 0 20px; /* Lisätään välistys vasemmalle ja oikealle */
   box-sizing: border-box; /* Sisältää paddingin elementin kokonaiskokoon */
 }
-
+/*  Headerin yläosa (avatar ja otsikko) */
 .header-top {
   display: flex;
   justify-content: space-between;
   align-items: left; /* Asettaa elementit pystysuunnassa keskelle */
   height: 70vh
 }
-
-
-/* Sivuston otsikko */
+/* Logo */
 .site-title {
   padding-top: 10px;
   height: 10vh;
-  
-
 }
 
 /* Avatarin tyylit */
@@ -60,10 +55,9 @@ header, body {
 .nav-buttons {
   display: flex;
   gap: 2px; /* Lisää tilaa painikkeiden väliin */
-  
 }
 
-/* Matematiikka-nappi ja alasvetovalikko */
+/* Napit ja alasvetovalikko */
 .dropdown {
   position: relative; /* Tämä mahdollistaa alasvetovalikon asemoinnin */
 }
@@ -82,24 +76,25 @@ header, body {
   display: none; /* Piilotetaan oletuksena */
   position: absolute; /* Asettaa valikon kellumaan muiden elementtien päällä */
   top: 100%; /* Asettaa valikon suoraan painikkeen alapuolelle */
-  left: 0;
-  background-color: white;
+  left: 0; /* Asettaa valikon vasempaan reunaan */
+  background-color: rgb(241, 157, 153);
   min-width: 120px;
-  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
   border-radius: 8px;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2); /* Lisää varjo valikon ympärille */
   z-index: 10; /* Nostaa valikon muiden elementtien päälle */
+  align-items: center;
 }
 
 .dropdown-content a {
-  color: black;
+  color: white;
   padding: 10px;
   text-decoration: none;
-  display: block;
+  display: block;  
   border-radius: 8px;
 }
 
 .dropdown-content a:hover {
-  background-color: rgba(239, 125, 125, 0.2);
+  background-color: rgba(239, 125, 125, 1);
 }
 
 .dropdown:hover .dropdown-content {
@@ -153,7 +148,7 @@ header, body {
 }
 
 .game-button:hover {
-  background-color: rgba(239, 100, 100, 1);
+  background-color: rgba(239, 125, 125, 1);
 }
 
 /* Responsiivisuus (pienille näytöille) */

@@ -74,9 +74,13 @@
         <a href="{{ url_for('peli', pelin_id=16) }}">
           <button class="game-button">Desimaaliluvut</button>
         </a>
-        <a href="{{ url_for('peli', pelin_id=17) }}">
-          <button class="game-button">Kello</button>
-        </a>
+        <div class="dropdown">
+          <button class="game-button dropbtn">Kello</button>
+          <div class="dropdown-content">
+            <a href="{{ url_for('peli', pelin_id=17) }}">Paljon kello on?</a>
+            <a href="{{ url_for('peli', pelin_id=18) }}">Kuinka paljon aikaa on kulunut?</a>
+          </div>
+        </div>
       </div>
     </section>
   </body>
