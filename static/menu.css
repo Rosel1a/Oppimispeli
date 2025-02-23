@@ -27,15 +27,16 @@ header, body {
   display: flex;
   justify-content: space-between;
   align-items: left; /* Asettaa elementit pystysuunnassa keskelle */
-  
+  height: 70vh
 }
 
 
 /* Sivuston otsikko */
 .site-title {
-  color: white;
-  font-weight: bold;
-  text-transform: uppercase; /* Muuttaa tekstin isoiksi kirjaimiksi */
+  padding-top: 10px;
+  height: 10vh;
+  
+
 }
 
 /* Avatarin tyylit */
@@ -53,11 +54,13 @@ header, body {
   display: flex;
   justify-content: flex-start; /* Painikkeet vasemmalle */
   align-items: center;
+  height: 30vh
 }
 
 .nav-buttons {
   display: flex;
   gap: 2px; /* Lisää tilaa painikkeiden väliin */
+  
 }
 
 /* Matematiikka-nappi ja alasvetovalikko */

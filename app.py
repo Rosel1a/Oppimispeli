@@ -18,6 +18,9 @@ def teacher_login():
 def student_login():
     return render_template('studentLogIn.html')
 
+@app.route('/Kuvat/<path:filename>')
+def serve_images(filename):
+    return send_from_directory('static/Kuvat', filename)
 # Matematiikan valikko
 @app.route('/math_menu/<int:grade>')
 def math_menu(grade):
