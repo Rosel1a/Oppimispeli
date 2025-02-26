@@ -43,6 +43,13 @@ button + button {
 }
 </style>
 <body>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="alert alert-{{ category }}">{{ message }}</div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
     <div class="container">
         <a href="{{ url_for('teacher_login') }}">
             <button class="game-button">Opettaja</button>
@@ -52,4 +59,5 @@ button + button {
         </a>
     </div>
 </body>
+
 </html>

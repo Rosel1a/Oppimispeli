@@ -21,13 +21,14 @@
         </div>
         
         <div class="form-container register-form" id="registerForm" style="right: 0;">
-            <form class="form">
+            <form class="form" action="/register" method="POST" onsubmit="return checkPassword()">
                 <h2>Rekisteröidy</h2>
-                <input type="text" placeholder="Etunimi" required>
-                <input type="text" placeholder="Sukunimi" required>
-                <input type="email" placeholder="Sähköpostiosoite" required>
-                <input type="password" id="password" name="password" placeholder="Salasana" required>
+                <input type="text" name="etunimi" placeholder="Etunimi" required>
+                <input type="text" name="sukunimi" placeholder="Sukunimi" required>
+                <input type="email" name="kirjautumistunnus" placeholder="Sähköpostiosoite" required>
+                <input type="password" id="salasana" name="salasana" placeholder="Salasana" required>
                 <input type="password" id="confirmPassword" name="confirmPassword" placeholder="Salasana uudelleen" required>
+                <input type="hidden" name="rooli" value="opettaja"> <!-- Tämä kertoo, että rooli on oppilas -->
                 <span id="passwordError" style="color: red; display: none;">Salasanat eivät täsmää!</span>
                 <button type="submit" onclick="return checkPassword()">Rekisteröidy</button>
             </form>

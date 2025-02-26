@@ -1,14 +1,23 @@
 #Pelien toiminnallisuutta varten palvelin
 #Tämän kautta pystyy nyt pelaamaan sitä alkukantasta kertotaulu peliä
-from flask import Flask, render_template, jsonify
-from database import get_random_question
+from flask import Flask, render_template, jsonify, request, redirect, url_for, flash
+from database import get_random_question, register_user
 
 app = Flask(__name__)
+app.secret_key = "supersecretkey"
 
 # Pääsivun reitti
 @app.route('/')
 def index():
     return render_template('frontPage.html')  # Tämä viittaa HTML-tiedostoon
+
+@app.route('/firstscreen')
+def firstscreen():
+    return render_template('firstscreen.html')
+
+@app.route('/frontPage')
+def frontPage():
+    return render_template('frontPage.html')
 
 # Opettajan kirjautuminen
 @app.route('/teacher_login')
@@ -19,6 +28,29 @@ def teacher_login():
 @app.route('/student_login')
 def student_login():
     return render_template('studentLogIn.html')
+
+#rekisteröitymis funktio
+@app.route('/register', methods=['POST'])
+def register():
+    etunimi = request.form['etunimi']
+    sukunimi = request.form['sukunimi']
+    kirjautumistunnus = request.form['kirjautumistunnus']
+    salasana = request.form['salasana']
+    rooli = request.form['rooli']  # Tämä tulee piilotettuna inputina lomakkeessa
+
+    #oppilaille myös:
+    syntymapaiva = request.form.get('syntymapaiva')
+    luokka = request.form.get('luokka')
+
+    if register_user(etunimi, sukunimi, kirjautumistunnus, salasana, rooli, syntymapaiva, luokka):
+        flash("Rekisteröinti onnistui!", "success")
+        return redirect(url_for('frontPage'))
+    else:
+        flash("Rekisteröinti epäonnistui!", "danger")
+        return redirect(url_for('firstscreen'))
+
+#if __name__ == '__main__':
+    #app.run(debug=True)
 
 # Kuva reitti
 @app.route('/Kuvat/<path:filename>')

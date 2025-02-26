@@ -21,21 +21,22 @@
         </div>
         
         <div class="form-container register-form" id="registerForm" style="right: 0;">
-            <form class="form">
+            <form class="form" action="/register" method="POST" onsubmit="return checkPassword()">
                 <h2>Rekisteröidy</h2>
-                <input type="text" placeholder="Etunimi" required>
-                <input type="text" placeholder="Sukunimi" required>
-                <input type="date" placeholder="Syntymäpäivä" required>
-                    <select id="class" name="class" required>
+                <input type="text" name="etunimi" placeholder="Etunimi" required>
+                <input type="text" name="sukunimi" placeholder="Sukunimi" required>
+                <input type="date" name="syntymapaiva" placeholder="Syntymäpäivä" required>
+                    <select id="luokka" name="luokka" required>
                         <option value="" disabled selected>Valitse luokkasi</option>
                         <option value="3">3. luokka</option>
                         <option value="4">4. luokka</option>
                         <option value="5">5. luokka</option>
                         <option value="6">6. luokka</option>
                     </select>
-                <input type="text" placeholder="Käyttäjätunnus" required>
-                <input type="password" id="password" name="password" placeholder="Salasana" required>
+                <input type="text" name="kirjautumistunnus" placeholder="Käyttäjätunnus" required>
+                <input type="password" id="salasana" name="salasana" placeholder="Salasana" required>
                 <input type="password" id="confirmPassword" name="confirmPassword" placeholder="Salasana uudelleen" required>
+                <input type="hidden" name="rooli" value="oppilas">  <!-- Asetetaan rooli -->
                 <span id="passwordError" style="color: red; display: none;">Salasanat eivät täsmää!</span>
                 <button type="submit" onclick="return checkPassword()">Rekisteröidy</button>
             </form>

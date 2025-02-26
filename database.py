@@ -73,5 +73,40 @@ def get_random_question(pelin_id):
         }
     else:
         return {'question': 'No questions found', 'answer': '', 'answer_type': 'text'}
+    
+#funktio open rekisteröitymiselle
+def register_user(etunimi, sukunimi, kirjautumistunnus, salasana, rooli, syntymapaiva=None, luokka=None):
+    conn = get_db_connection(host, user, password, database)
+    cursor = conn.cursor()
+
+    try:
+        # 🔹 1. Lisää käyttäjä user-tauluun
+        sql = "INSERT INTO user (etunimi, sukunimi, kirjautumistunnus, salasana, rooli, created_at) VALUES (%s, %s, %s, %s, %s, NOW())"
+        values = (etunimi, sukunimi, kirjautumistunnus, salasana, rooli)
+        cursor.execute(sql, values)
+        conn.commit()
+
+        # 🔹 2. Hae userID
+        user_id = cursor.lastrowid
+
+        # 🔹 3. Lisää käyttäjä opettaja- tai oppilastauluun
+        if rooli == "opettaja":
+            sql_opettaja = "INSERT INTO opettaja (User_userID) VALUES (%s)"
+            cursor.execute(sql_opettaja, (user_id,))
+        elif rooli == "oppilas":
+            if syntymapaiva is None or luokka is None:
+                raise ValueError("Syntymäpäivä ja luokka ovat pakollisia oppilaille!")
+
+            sql_oppilas = "INSERT INTO oppilas (User_userID, syntymapaiva, luokka) VALUES (%s, %s, %s)"
+            cursor.execute(sql_oppilas, (user_id, syntymapaiva, luokka))
+
+        conn.commit()
+        return True  # Onnistui
+    except mysql.connector.Error as err:
+        print(f"Virhe: {err}")
+        return False  # Epäonnistui
+    finally:
+        cursor.close()
+        conn.close()
 
 get_db_connection(host, user, password, database)
