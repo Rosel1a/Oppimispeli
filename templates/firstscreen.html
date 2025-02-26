@@ -4,45 +4,46 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Opettaja vai Oppilas</title>
+    <style>
+        /* Painikkeiden tyylit */
+        button {
+            transition: all .5s ease;
+            color: blue;
+            border: 3px solid black;
+            font-family: 'Montserrat', sans-serif;
+            text-transform: uppercase;
+            text-align: center;
+            line-height: 1;
+            font-size: 19px;
+            background-color: transparent;
+            padding: 20px;
+            outline: none;
+            border-radius: 10px;
+            position: center;
+        }
+
+        /* Painikkeen hover-tila */
+        button:hover {
+            color: #001F3F;
+            background-color: lightblue;
+        }
+
+        /* Kontainerin tyylit */
+        .container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        /* Painikkeiden välinen marginaali */
+        button + button {
+            margin-left: 20px;
+        }
+    </style>
 </head>
-<style>
-/* Painikkeiden tyylit */
-button {
-    transition: all .5s ease;
-    color: blue;
-    border: 3px solid black;
-    font-family:'Montserrat', sans-serif;
-    text-transform: uppercase;
-    text-align: center;
-    line-height: 1;
-    font-size: 19px;
-    background-color : transparent;
-    padding: 20px;
-    outline: none;
-    border-radius: 10px;
-    position: center;
-}
-
-/* Painikkeen hover-tila */
-button:hover {
-    color: #001F3F;
-    background-color: lightblue;
-}
-
-/* Kontainerin tyylit */
-.container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-}
-
-/* Painikkeiden välinen marginaali */
-button + button {
-    margin-left: 20px;
-}
-</style>
 <body>
+    <!-- Näytetään mahdolliset viestit -->
     {% with messages = get_flashed_messages(with_categories=true) %}
         {% if messages %}
             {% for category, message in messages %}
@@ -50,6 +51,8 @@ button + button {
             {% endfor %}
         {% endif %}
     {% endwith %}
+
+    <!-- Painikkeet opettajan ja oppilaan kirjautumiseen -->
     <div class="container">
         <a href="{{ url_for('teacher_login') }}">
             <button class="game-button">Opettaja</button>
@@ -59,5 +62,4 @@ button + button {
         </a>
     </div>
 </body>
-
 </html>

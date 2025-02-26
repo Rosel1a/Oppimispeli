@@ -147,7 +147,7 @@ button:hover {
   flex-grow: 1;
 }
 
-/* Mobile View */
+/* Responsiivisuus */
 @media (max-width: 1024px) {
   .content-area {
     flex-direction: column;
