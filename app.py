@@ -1,7 +1,7 @@
 #Pelien toiminnallisuutta varten palvelin
 #Tämän kautta pystyy nyt pelaamaan sitä alkukantasta kertotaulu peliä
-from flask import Flask, render_template, jsonify, request, redirect, url_for, flash
-from database import get_random_question, register_user
+from flask import Flask, render_template, jsonify, request, redirect, url_for, flash, session
+from database import get_random_question, register_user, get_game_instructions, check_user_credentials
 
 app = Flask(__name__)
 app.secret_key = "supersecretkey"
@@ -9,7 +9,7 @@ app.secret_key = "supersecretkey"
 # Pääsivun reitti
 @app.route('/')
 def index():
-    return render_template('frontPage.html')  # Tämä viittaa HTML-tiedostoon
+    return render_template('firstscreen.html')  # Tämä viittaa HTML-tiedostoon
 
 @app.route('/firstscreen')
 def firstscreen():
@@ -29,7 +29,7 @@ def teacher_login():
 def student_login():
     return render_template('studentLogIn.html')
 
-#rekisteröitymis funktio
+#rekisteröitymisfunktio
 @app.route('/register', methods=['POST'])
 def register():
     etunimi = request.form['etunimi']
@@ -49,8 +49,59 @@ def register():
         flash("Rekisteröinti epäonnistui!", "danger")
         return redirect(url_for('firstscreen'))
 
-#if __name__ == '__main__':
-    #app.run(debug=True)
+#oppilaan kirjautumisfunktio
+@app.route('/student_login', methods=['GET', 'POST'])
+def student_login_view():
+    logged_in_user = None
+
+    if request.method == 'POST':
+        kirjautumistunnus = request.form.get('kirjautumistunnus')
+        salasana = request.form.get('salasana')
+
+        # Tarkistetaan käyttäjätiedot tietokannasta
+        logged_in_user = check_user_credentials(kirjautumistunnus, salasana, "oppilas")
+
+        if logged_in_user:
+            session['userID'] = logged_in_user['userID']  # Tallennetaan käyttäjä sessioniin
+            session['rooli'] = 'oppilas'  
+            return redirect(url_for('frontPage'))  # Ohjataan etusivulle
+        else:
+            return render_template('studentLogin.html', virhe="Virheellinen käyttäjätunnus tai salasana!")
+
+    return render_template('studentLogin.html')
+
+#opettajan kirjautumisfunktio
+@app.route('/teacher_login', methods=['GET', 'POST'])
+def teacher_login_view():
+    logged_in_user = None
+
+    if request.method == 'POST':
+        kirjautumistunnus = request.form.get('kirjautumistunnus')
+        salasana = request.form.get('salasana')
+
+        # Tarkistetaan käyttäjätiedot tietokannasta, roolina "opettaja"
+        logged_in_user = check_user_credentials(kirjautumistunnus, salasana, "opettaja")
+
+        if logged_in_user:
+            session['userID'] = logged_in_user['userID']  # Tallennetaan käyttäjä sessioniin
+            session['rooli'] = 'opettaja'  
+            return redirect(url_for('frontPage'))  # Ohjataan opettajan etusivulle
+        else:
+            return render_template('teacherLogin.html', virhe="Virheellinen käyttäjätunnus tai salasana!")
+
+    return render_template('teacherLogin.html')
+
+
+#kirjaudu ulos
+@app.route('/logout')
+def logout():
+    rooli = session.get('rooli')  # Haetaan käyttäjän rooli
+    session.clear()  # Tyhjennetään session-tiedot
+    
+    if rooli == "opettaja":
+        return redirect(url_for('teacher_login_view'))
+    else:
+        return redirect(url_for('student_login_view'))
 
 # Kuva reitti
 @app.route('/Kuvat/<path:filename>')
@@ -93,6 +144,19 @@ def check_answer():
     is_correct = str(user_answer) == str(correct_answer)
     
     return jsonify({"correct": is_correct})
+
+# ohjeiden hakufunktio peleille
+@app.route('/get_instructions/<int:peli_id>')
+def get_instructions(peli_id):
+    instructions = get_game_instructions(peli_id)
+    if instructions:
+        return jsonify({"instructions": instructions})
+    else:
+        return jsonify({"instructions": "Ohjeita ei löytynyt"}), 404
+
+@app.route('/gameScreen1/<int:game_id>')
+def game_screen(game_id):
+    return render_template("gameScreen1.html", game_id=game_id)
 
 if __name__ == '__main__':
     app.run(debug=True)

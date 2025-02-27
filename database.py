@@ -74,7 +74,27 @@ def get_random_question(pelin_id):
     else:
         return {'question': 'No questions found', 'answer': '', 'answer_type': 'text'}
     
-#funktio open rekisteröitymiselle
+#hakee pelien ohjeet tietokannasta
+def get_game_instructions(peli_id):
+    """ Hakee ohjeet tietokannasta pelin ID:n perusteella """
+    conn = get_db_connection(host, user, password, database)
+    if conn is None:
+        return None  # Jos yhteys epäonnistui, palauta None
+
+    cursor = conn.cursor(dictionary=True)
+    try:
+        sql = "SELECT ohje FROM pelit WHERE peliID = %s"
+        cursor.execute(sql, (peli_id,))
+        result = cursor.fetchone()
+        return result["ohje"] if result else None
+    except Error as e:
+        print(f"Virhe ohjeiden hakemisessa: {e}")
+        return None
+    finally:
+        cursor.close()
+        conn.close()
+    
+#funktio käyttäjän rekisteröitymiselle
 def register_user(etunimi, sukunimi, kirjautumistunnus, salasana, rooli, syntymapaiva=None, luokka=None):
     conn = get_db_connection(host, user, password, database)
     cursor = conn.cursor()
@@ -108,5 +128,32 @@ def register_user(etunimi, sukunimi, kirjautumistunnus, salasana, rooli, syntyma
     finally:
         cursor.close()
         conn.close()
+
+#kirjautumista varten
+def check_user_credentials(kirjautumistunnus, salasana, rooli):
+    """ Tarkistaa käyttäjän tunnukset ja palauttaa käyttäjätiedot roolin perusteella """
+    conn = get_db_connection(host, user, password, database)
+    if conn is None:
+        return None
+
+    cursor = conn.cursor(dictionary=True)
+    login_user = None  # Alustetaan muuttuja ennen try-lohkoa
+
+    try:
+        sql = "SELECT userID, salasana, rooli FROM user WHERE kirjautumistunnus = %s AND rooli = %s"
+        cursor.execute(sql, (kirjautumistunnus, rooli))
+        login_user = cursor.fetchone()
+
+        #if user and check_password_hash(user["salasana"], salasana):
+        if login_user and login_user["salasana"] == salasana:
+            return login_user  # Palautetaan käyttäjän tiedot (ID ja rooli)
+        else:
+            return None  # Väärä käyttäjätunnus, salasana tai rooli
+    except Error as e:
+        print(f"Virhe kirjautumisessa: {e}")
+        return None
+    finally:
+        cursor.close()
+        conn.close()   
 
 get_db_connection(host, user, password, database)

@@ -12,10 +12,11 @@
         <div class="toggle-panel login-panel" id="loginPanel" onclick="toggleForm()">Rekisteröidy</div>
         
         <div class="form-container login-form" id="loginForm" style="left: 0;">
-            <form class="form">
+            <form class="form" action="/teacher_login" method="POST">
                 <h2>Kirjaudu sisään</h2>
-                <input type="email" placeholder="Sähköposti" required>
-                <input type="password" placeholder="Salasana" required>
+                <input type="email" name="kirjautumistunnus" placeholder="Sähköposti" required>
+                <input type="password" name="salasana" placeholder="Salasana" required>
+                <input type="hidden" name="rooli" value="opettaja">  <!-- Rooli määritetään -->
                 <button type="submit">Kirjaudu</button>
             </form>
         </div>

@@ -33,7 +33,7 @@
             <div class="sidebar-content">
               <div class="sidebar-inner" role="complementary" aria-label="Sidebar content">
                 <h2 class="sidebar-title">Ohjeet</h2>
-                <p id="instructions">Ladataan ohjeet...</p>
+                <p id="instructions" data-game-id="{{ pelin_id }}">Ladataan ohjeet...</p>
               </div>
             </div>
           </aside>
@@ -79,6 +79,28 @@
       }
 
       document.addEventListener("DOMContentLoaded", fetchQuestion); // Hakee tehtävän heti sivun latautuessa 
+      document.addEventListener("DOMContentLoaded", function () { // päivittää pelin ohjeet
+        let gameId = document.getElementById("instructions").getAttribute("data-game-id");
+    
+        if (gameId) {
+          fetch(`/get_instructions/${gameId}`)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error("Ohjeita ei löytynyt");
+                }
+                return response.json();
+            })
+            .then(data => {
+                document.getElementById("instructions").innerText = data.instructions;
+            })
+            .catch(error => {
+                console.error("Virhe ohjeiden lataamisessa:", error);
+                document.getElementById("instructions").innerText = "Ohjeita ei voitu ladata.";
+            });
+        } else {
+          console.error("Pelin ID ei löytynyt HTML-elementistä!");
+        }
+      });
       </script>
   </body>
 </html>
