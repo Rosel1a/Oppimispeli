@@ -1,0 +1,170 @@
+/* Yleiset asetukset */
+html {
+    margin: 0; /* Poistaa oletusmarginaalit */
+    padding: 0; /* Poistaa oletuspaddingin */
+    overflow-x: hidden; /* Estää sivun leviämisen sivusuunnassa */
+    min-height: 100vh; /* Asettaa sivun korkeudeksi vähintään 100% näytön korkeudesta */
+  }
+  header, body {
+    margin: 0; /* Poistaa oletusmarginaalit */
+    padding: 0; /* Poistaa oletuspaddingin */
+  }
+  
+  /* Header (yläosa) */
+  .header-section {
+    display: flex; /* Mahdollistaa flexboxin käytön */
+    flex-direction: column; /* Asettaa sisällön pystysuuntaisesti */
+    width: 100%; /* Varmistaa, että header täyttää koko leveyden */
+    height: 20vh; /* Asettaa headerin korkeudeksi 20% näkymän korkeudesta */
+    background-color: rgba(65, 152, 196, 1);
+    justify-content: space-between; /* Jakaa ylä- ja alaosan tasaisesti */
+    padding: 0 20px; /* Lisätään välistys vasemmalle ja oikealle */
+    box-sizing: border-box; /* Sisältää paddingin elementin kokonaiskokoon */
+  }
+  /*  Headerin yläosa (avatar ja otsikko) */
+  .header-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: left; /* Asettaa elementit pystysuunnassa keskelle */
+    height: 70vh
+  }
+  /* Logo */
+  .site-title {
+    padding-top: 10px;
+    height: 10vh;
+  }
+  
+  /* Avatarin tyylit */
+  .avatar-placeholder {
+    width: 65px;
+    height: 65px;
+    background-color: white;
+    border-radius: 50%; /* Tekee avatariin pyöreän muodon */
+    border: 2px solid rgba(239, 125, 125, 1);
+    margin-top: 5px;
+  }
+  
+  /* Headerin alaosa (navigointipainikkeet) */
+  .header-bottom {
+    display: flex;
+    justify-content: flex-start; /* Painikkeet vasemmalle */
+    align-items: center;
+    height: 30vh
+  }
+  
+  .nav-buttons {
+    display: flex;
+    gap: 2px; /* Lisää tilaa painikkeiden väliin */
+  }
+  
+  /* Napit ja alasvetovalikko */
+  .dropdown {
+    position: relative; /* Tämä mahdollistaa alasvetovalikon asemoinnin */
+  }
+  
+  .dropbtn {
+    background-color: rgba(239, 125, 125, 1);
+    color: white;
+    padding: 10px 20px;
+    font-size: 16px;
+    border: none;
+    cursor: pointer;
+    border-radius: 8px;
+  }
+  
+  .dropdown-content {
+    display: none; /* Piilotetaan oletuksena */
+    position: absolute; /* Asettaa valikon kellumaan muiden elementtien päällä */
+    top: 100%; /* Asettaa valikon suoraan painikkeen alapuolelle */
+    left: 0; /* Asettaa valikon vasempaan reunaan */
+    background-color: rgb(241, 157, 153);
+    min-width: 120px;
+    border-radius: 8px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2); /* Lisää varjo valikon ympärille */
+    z-index: 10; /* Nostaa valikon muiden elementtien päälle */
+    align-items: center;
+  }
+  
+  .dropdown-content a {
+    color: white;
+    padding: 10px;
+    text-decoration: none;
+    display: block;  
+    border-radius: 8px;
+  }
+  
+  .dropdown-content a:hover {
+    background-color: rgba(239, 125, 125, 1);
+  }
+  
+  .dropdown:hover .dropdown-content {
+    display: block;
+  }
+  
+  /* Tulossa-nappi */
+  .coming-soon-btn {
+    background-color: rgba(108, 175, 252, 1);
+    color: white;
+    padding: 10px 20px;
+    font-size: 16px;
+    border: none;
+    cursor: pointer;
+    border-radius: 8px;
+  }
+  
+  /* Pelivalikko */
+  .games-section {
+    background-color: rgba(169, 226, 255, 1);
+    width: 100%;
+    height: 80vh; /* Vie loput 80% */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 5vh 5vw;
+    box-sizing: border-box; /* Varmistetaan, että padding ei vaikuta kokoon */
+  }
+  
+  .games-container {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr); /* 3 saraketta */
+    grid-template-rows: repeat(2, 1fr); /* 2 riviä */
+    gap: 20px;
+    width: 100%;
+    justify-content: center; /* Keskittää pelit näytöillä */
+    max-width: 80vh; /* Rajoittaa pelien leveyden */
+  }
+  
+  /* Pelinapit */
+  .game-button {
+    border-radius: 50px;
+    background-color: rgba(239, 125, 125, 1);
+    color: white;
+    text-align: center;
+    padding: 20px;
+    font-size: 18px;
+    border: none;
+    cursor: pointer;
+    width: 100%;
+  }
+  
+  .game-button:hover {
+    background-color: rgba(239, 125, 125, 1);
+  }
+  
+  /* Responsiivisuus (pienille näytöille) */
+  @media (max-width: 768px) {
+    .games-container {
+      grid-template-columns: repeat(2, 1fr); /* Muutetaan kahteen sarakkeeseen */
+      justify-content: center; /* Keskittää napit */
+    }
+    .header-section {
+      height: auto; /* Muutetaan korkeutta dynaamiseksi */
+    }
+  }
+  
+  @media (max-width: 480px) {
+    .games-container {
+      grid-template-columns: repeat(1, 1fr); /* Yksi sarake */
+      text-align: center;
+    }
+  }

@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<!-- Kieli on suomi -->
+<html lang="fi">
+  <head>
+    <meta charset="UTF-8" />
+    <!-- Viewportin avulla sivu skaalautuu laitteelle sopivaksi -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Opikku</title>
+    <!-- <link rel="stylesheet" href="styles.css" /> -->
+    <link rel="stylesheet" href="tempTeacher.css" />
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #cfe8ff;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .container {
+            display: flex;
+            flex-direction: column;
+            width: 80%;
+            gap: 20px;
+            margin-top: 20px;
+        }
+        .sidebar {
+            background-color: #2d6a9f;
+            width: 100%;
+            padding: 20px;
+            border-radius: 10px;
+            position: relative;
+        }
+        .name-box {
+            background-color: #b0cde1;
+            padding: 10px;
+            border-radius: 5px;
+            text-align: center;
+            font-weight: bold;
+        }
+        .content-box {
+            background-color: white;
+            flex-grow: 1;
+            padding: 40px;
+            border-radius: 10px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 18px;
+            font-weight: bold;
+        }
+    </style>
+  </head>
+  <body>
+    <!-- Headerin sisältö (eka osio sivusta) -->
+    <header class="header-section" >
+      <div class="header-top">
+        <img class="site-title" src="{{ url_for('static', filename='kuvat/logoWhite.png') }}" alt="Logo valkoinen">
+        <div class="avatar-placeholder"></div>
+      </div>
+      <div class="header-bottom">
+        <div class="nav-buttons">
+          <a href="{{ url_for('frontPage') }}">
+            <button class="coming-soon-btn">Oppilaat</button>
+          </a>
+        </div>
+      </div>
+    </header>
+    <!-- Uusi UI (toka osio sivulla)-->
+    <div class="container" style="flex-direction: row;">
+        <div class="sidebar" style="width: 30%;">
+            <div class="name-box">Nimi sukunimi</div>
+        </div>
+        <div class="content-box" style="width: 70%;">
+            Oppilaan tiedot ja tulokset peleistä
+        </div>
+    </div>
+  </body>
+</html>
