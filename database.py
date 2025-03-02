@@ -20,7 +20,6 @@ import mysql.connector
 
 ###from flask_bcrypt import Bcrypt
 
-# LUE!! tästä jokainen muokkaa ainoastaan user ja password kohtaa !
 host = "85.23.94.251"      # Esim. "123.45.67.89" 
 user = "saaga"    # MySQL-käyttäjänimi
 password = "salasana2"    # MySQL-salasana
@@ -52,7 +51,6 @@ def get_db_connection(host, user, password, database):
         return None
 
 # Funktio, joka palauttaa satunnaisen kysymyksen tietokannasta
-# Arpoo kysymykset tietokannasta
 def get_random_question(pelin_id):
     connection = get_db_connection(host, user, password, database)
     cursor = connection.cursor(dictionary=True)
@@ -74,9 +72,8 @@ def get_random_question(pelin_id):
     else:
         return {'question': 'No questions found', 'answer': '', 'answer_type': 'text'}
     
-#hakee pelien ohjeet tietokannasta
+# Funktio pelin ohjeiden hakemiseen
 def get_game_instructions(peli_id):
-    """ Hakee ohjeet tietokannasta pelin ID:n perusteella """
     conn = get_db_connection(host, user, password, database)
     if conn is None:
         return None  # Jos yhteys epäonnistui, palauta None

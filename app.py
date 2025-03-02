@@ -125,12 +125,20 @@ def math_menu(grade):
 @app.route('/peli/<int:pelin_id>')  # Pelin ID voidaan välittää URL:ssä
 def peli(pelin_id):
     # Tässä pelin_id voidaan käyttää hakemaan pelin tiedot tietokannasta
+    session['question_count'] = 0  # Alustetaan kysymysten laskuri
     return render_template('gameScreen1.html', pelin_id=pelin_id)
 
 # Reitti tehtävien hakemiseen tietokannasta, pelin ID mukaan
 @app.route('/new_question/<int:pelin_id>', methods=['GET'])
 def new_question(pelin_id):
+    if 'question_count' not in session:
+        session['question_count'] = 0
+
+    if session['question_count'] >= 10:
+        return jsonify({'game_over': True, 'message': 'Peli on ohi!'}), 200
+
     question_data = get_random_question(pelin_id)  # Muokataan funktio hakemaan pelin mukaan
+    session['question_count'] += 1
     return jsonify(question_data)
 
 # Vastauksen tarkistus

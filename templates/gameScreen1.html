@@ -61,8 +61,15 @@
       async function fetchQuestion() {
         const response = await fetch(`/new_question/${pelinId}`);
         const data = await response.json();
-        document.getElementById("question-box").innerText = data.question;
-        document.getElementById("question-box").dataset.answer = data.answer;
+        if (data.game_over) {
+          alert(data.message);
+          document.getElementById("question-box").innerText = data.message;
+          document.getElementById("answer-box").disabled = true;
+          document.querySelector("button[onclick='checkAnswer()']").disabled = true;
+        } else {
+          document.getElementById("question-box").innerText = data.question;
+          document.getElementById("question-box").dataset.answer = data.answer;
+        }
       }
 
       // Tarkistaa käyttäjän vastauksen ja näyttää oikean/väärän ilmoituksen
