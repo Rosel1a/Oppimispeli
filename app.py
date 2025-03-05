@@ -13,7 +13,7 @@ app.secret_key = "supersecretkey"
 # Pääsivun reitti
 @app.route('/')
 def index():
-    return render_template('firstscreen.html')  # Tämä viittaa HTML-tiedostoon
+    return render_template('frontPage.html')  # Tämä viittaa HTML-tiedostoon
 
 @app.route('/firstscreen')
 def firstscreen():
