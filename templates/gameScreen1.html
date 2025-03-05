@@ -56,19 +56,26 @@
 
       // Haetaan pelin ID URL:stä
       const pelinId = window.location.pathname.split('/')[2]; // Haetaan URL:stä pelin ID
+      let questionCount = 0; // Seuraa kysymysten määrää
 
       // Hakee uuden kysymyksen palvelimelta ja päivittää sen sivulle
       async function fetchQuestion() {
         const response = await fetch(`/new_question/${pelinId}`);
         const data = await response.json();
+        console.log(data); 
+        
         if (data.game_over) {
           alert(data.message);
           document.getElementById("question-box").innerText = data.message;
           document.getElementById("answer-box").disabled = true;
           document.querySelector("button[onclick='checkAnswer()']").disabled = true;
+
+          endGame(); // Peli päättyy, tallennetaan tulos
         } else {
           document.getElementById("question-box").innerText = data.question;
           document.getElementById("question-box").dataset.answer = data.answer;
+          document.getElementById("question-box").dataset.tehtavaId = data.tehtava_id;
+          questionCount++; // Lisätään kysymysmäärää
         }
       }
 
@@ -76,14 +83,52 @@
       async function checkAnswer() {
         const userAnswer = document.getElementById("answer-box").value;
         const correctAnswer = document.getElementById("question-box").dataset.answer;
-      
+        const tehtavaId = document.getElementById("question-box").dataset.tehtavaId; // Haetaan tehtava_id
+        
+        const response = await fetch('/check_answer', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            user_answer: userAnswer,
+            correct_answer: correctAnswer,
+            peli_id: pelinId,
+            tehtava_id: tehtavaId // Lähetetään tehtava_id
+          })
+        });
+
+    const data = await response.json();
         if (userAnswer === correctAnswer) {
           alert('Oikein!');
         } else {
           alert('Väärin, yritä uudelleen.');
         }
-        fetchQuestion(); // Hakee seuraavan tehtävän
+        if (questionCount >= 10) {
+        endGame(); // Jos 10 kysymystä on vastattu, lopetetaan peli
+        } else {
+        fetchQuestion(); // Hakee seuraavan kysymyksen
+        }
       }
+
+      async function endGame() {
+        console.log("Lopetetaan peli ja lähetetään lopputulos palvelimelle...");  // ✅ Debug-tulostus
+
+        const response = await fetch('/end_game', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ peli_id: pelinId })
+        });
+
+        const data = await response.json();
+        alert(data.message + " Lopulliset pisteet: " + data.final_score);
+        console.log("Lopetetaan peli ja lähetetään lopputulos palvelimelle...");  // ✅ Debug-tulostus
+
+        window.location.href = "/frontPage"; // Siirrytään etusivulle pelin päätyttyä
+}
+
 
       document.addEventListener("DOMContentLoaded", fetchQuestion); // Hakee tehtävän heti sivun latautuessa 
       document.addEventListener("DOMContentLoaded", function () { // päivittää pelin ohjeet

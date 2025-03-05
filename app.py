@@ -1,7 +1,11 @@
 #Pelien toiminnallisuutta varten palvelin
 #Tämän kautta pystyy nyt pelaamaan sitä alkukantasta kertotaulu peliä
 from flask import Flask, render_template, jsonify, request, redirect, url_for, flash, session
-from database import get_random_question, register_user, get_game_instructions, check_user_credentials
+import sys
+from database import get_random_question, register_user, get_game_instructions, check_user_credentials, save_player_answer, save_game_result, create_game_result
+import logging
+logging.basicConfig(stream=sys.stdout, level=logging.DEBUG)
+sys.stderr = sys.stdout
 
 app = Flask(__name__)
 app.secret_key = "supersecretkey"
@@ -9,7 +13,7 @@ app.secret_key = "supersecretkey"
 # Pääsivun reitti
 @app.route('/')
 def index():
-    return render_template('frontPage.html')  # Tämä viittaa HTML-tiedostoon
+    return render_template('firstscreen.html')  # Tämä viittaa HTML-tiedostoon
 
 @app.route('/firstscreen')
 def firstscreen():
@@ -64,6 +68,16 @@ def student_login_view():
         if logged_in_user:
             session['userID'] = logged_in_user['userID']  # Tallennetaan käyttäjä sessioniin
             session['rooli'] = 'oppilas'  
+
+            if logged_in_user['oppilasID']:
+                session['oppilasID'] = logged_in_user['oppilasID']  # Tallennetaan oppilaan ID
+                print("Session userID:", session.get('userID'))
+                print("Session oppilasID:", session.get('oppilasID'))
+
+                if 'userID' in session:
+                    print("Käyttäjä on kirjautunut sisään:", session['userID'])
+                else:
+                    print("Ei aktiivista sessionia")
             return redirect(url_for('frontPage'))  # Ohjataan etusivulle
         else:
             return render_template('studentLogin.html', virhe="Virheellinen käyttäjätunnus tai salasana!")
@@ -85,6 +99,7 @@ def teacher_login_view():
         if logged_in_user:
             session['userID'] = logged_in_user['userID']  # Tallennetaan käyttäjä sessioniin
             session['rooli'] = 'opettaja'  
+            print("Session userID:", session.get('userID'))
             return redirect(url_for('frontPage'))  # Ohjataan opettajan etusivulle
         else:
             return render_template('teacherLogin.html', virhe="Virheellinen käyttäjätunnus tai salasana!")
@@ -126,6 +141,12 @@ def math_menu(grade):
 def peli(pelin_id):
     # Tässä pelin_id voidaan käyttää hakemaan pelin tiedot tietokannasta
     session['question_count'] = 0  # Alustetaan kysymysten laskuri
+    session['score'] = 0
+
+    # Luodaan pelitulos ID peliä varten
+    pelitulos_id = create_game_result(session.get('oppilasID'), pelin_id)
+    session['pelitulos_id'] = pelitulos_id
+
     return render_template('gameScreen1.html', pelin_id=pelin_id)
 
 # Reitti tehtävien hakemiseen tietokannasta, pelin ID mukaan
@@ -142,16 +163,73 @@ def new_question(pelin_id):
     return jsonify(question_data)
 
 # Vastauksen tarkistus
+#@app.route('/check_answer', methods=['POST'])
+#def check_answer():
+#    data = request.get_json()
+#    user_answer = data['user_answer']
+#    correct_answer = data['correct_answer']
+    
+    # Tarkistetaan vastaus (olettaen että vastaus on oikein jos se täsmää)
+#    is_correct = str(user_answer) == str(correct_answer)
+    
+#    return jsonify({"correct": is_correct})
+
 @app.route('/check_answer', methods=['POST'])
 def check_answer():
     data = request.get_json()
-    user_answer = data['user_answer']
-    correct_answer = data['correct_answer']
-    
-    # Tarkistetaan vastaus (olettaen että vastaus on oikein jos se täsmää)
-    is_correct = str(user_answer) == str(correct_answer)
-    
-    return jsonify({"correct": is_correct})
+    user_answer = data.get('user_answer')
+    correct_answer = data.get('correct_answer')
+    peli_id = data.get('peli_id')
+    tehtava_id = data.get('tehtava_id')  # Lisätään tehtava_id
+
+
+    if 'score' not in session:
+        session['score'] = 0  # Alustetaan pisteet
+
+    if 'correct_answers' not in session:
+        session['correct_answers'] = 0  # Alustetaan oikeat vastaukset
+
+    is_correct = str(user_answer).strip().lower() == str(correct_answer).strip().lower()
+
+    if is_correct:
+        session['score'] += 1
+        session['correct_answers'] += 1  # Lisätään oikea vastaus
+
+    # Tallennetaan vastaus tietokantaan
+    pelitulos_id = session.get('pelitulos_id')  # Pitää olla luotu ennen kuin vastauksia tallennetaan
+    save_player_answer(pelitulos_id, tehtava_id, user_answer, is_correct)
+
+    return jsonify({"correct": is_correct, "score": session['score']})
+
+@app.route('/end_game', methods=['POST'])
+def end_game():
+    print("Session sisältö ennen tarkistusta:", session)  # 🔍 Tulostetaan session sisält
+    if 'userID' not in session:
+        print("⚠️ Virhe: Käyttäjä ei ole kirjautunut!")
+        return jsonify({'error': 'Ei käyttäjää kirjautuneena'}), 403
+
+    pelitulos_id = session.get('pelitulos_id')  # ✅ Oikea pelitulos_id, joka on luotu aiemmin
+    if not pelitulos_id:
+        sys.stderr.write("Virhe: pelitulos_id ei löydy sessionista!\n")  # 🛠 Näkyy virhelokissa
+        return jsonify({'error': 'Pelitulos ID puuttuu!'}), 400  # Varmistetaan, että pelitulos_id on olemassa
+
+    final_score = session.get('score', 0)
+    correct_answers = session.get('correct_answers', 0)
+    question_count = session.get('question_count', 0)
+
+    sys.stderr.write(f"Tallennetaan tulos: pelitulos_id={pelitulos_id}, pisteet={final_score}, kysymykset={question_count}, oikein={correct_answers}")
+
+    success = save_game_result(pelitulos_id, final_score, question_count, correct_answers)  # ✅ Käytä oikeaa pelitulos_id:tä
+
+    if not success:
+        return jsonify({'error': 'Tietokantavirhe tallennettaessa pelitulosta'}), 500
+
+    # Tyhjennetään sessionin pisteet ja kysymysten määrä
+    session.pop('score', None)
+    session.pop('question_count', None)
+    session.pop('correct_answers', None)
+
+    return jsonify({'message': 'Peli päättyi, pisteet tallennettu!', 'final_score': final_score})
 
 # ohjeiden hakufunktio peleille
 @app.route('/get_instructions/<int:peli_id>')

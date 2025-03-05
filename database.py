@@ -1,6 +1,8 @@
 #SQL-tietokantayhteys
 # Tämä tiedosto sisältää funktiot, jotka liittyvät tietokantaan ja sen käsittelyyn.
 import mysql.connector
+import sys
+from flask import session
 
 # Tämä on vain esimerkki, joka ei ole turvallinen tuotantokäytössä!
 # Käytä salasanojen turvalliseen käsittelyyn esim. Flask-Bcrypt -kirjastoa
@@ -67,10 +69,11 @@ def get_random_question(pelin_id):
         return {
             'question': question['kysymys'],
             'answer': question['oikea_vastaus'],
-            'answer_type': 'number' if question['oikea_vastaus'].isdigit() else 'text'
+            'answer_type': 'number' if question['oikea_vastaus'].isdigit() else 'text',
+            'tehtava_id': question['tehtavaID']  # Lisää tehtava_id tähän
         }
     else:
-        return {'question': 'No questions found', 'answer': '', 'answer_type': 'text'}
+        return {'question': 'No questions found', 'answer': '', 'answer_type': 'text', 'tehtava_id': None}
     
 # Funktio pelin ohjeiden hakemiseen
 def get_game_instructions(peli_id):
@@ -143,7 +146,19 @@ def check_user_credentials(kirjautumistunnus, salasana, rooli):
 
         #if user and check_password_hash(user["salasana"], salasana):
         if login_user and login_user["salasana"] == salasana:
-            return login_user  # Palautetaan käyttäjän tiedot (ID ja rooli)
+            # Jos käyttäjä on oppilas, haetaan myös oppilasID
+            if rooli == "oppilas":
+                cursor.execute("SELECT oppilasID FROM oppilas WHERE User_userID = %s", (login_user["userID"],))
+                oppilas_data = cursor.fetchone()
+                
+                if oppilas_data:
+                    login_user["oppilasID"] = oppilas_data["oppilasID"]
+                else:
+                    login_user["oppilasID"] = None  # Jos oppilasta ei löydy, asetetaan None
+            else:
+                login_user["oppilasID"] = None  # Opettajilla ei ole oppilasID:tä
+
+            return login_user  # Palautetaan käyttäjän tiedot
         else:
             return None  # Väärä käyttäjätunnus, salasana tai rooli
     except Error as e:
@@ -152,5 +167,76 @@ def check_user_credentials(kirjautumistunnus, salasana, rooli):
     finally:
         cursor.close()
         conn.close()   
+        
+# Tallennetaan pelaajan vastaus tietokantaan
+def save_player_answer(pelitulos_id, tehtava_id, pelaajan_vastaus, oikein):
+    """
+    Tallentaa pelaajan vastauksen tietokantaan.
+    """
+    connection = get_db_connection(host, user, password, database)
+    if not connection:
+        return False
+    
+    cursor = connection.cursor()
+    query = """
+        INSERT INTO pelaajan_vastaus (Pelitulos_pelitulosID, Tehtava_tehtavaID, pelaajan_vastaus, onko_oikein, aikaleima)
+        VALUES (%s, %s, %s, %s, NOW())
+    """
+    cursor.execute(query, (pelitulos_id, tehtava_id, pelaajan_vastaus, oikein))
+    connection.commit()
+    
+    cursor.close()
+    connection.close()
+    return True
+
+def create_game_result(oppilas_id, peli_id):
+    """
+    Luo uuden pelituloksen tietokantaan ja palauttaa sen ID:n.
+    """
+    connection = get_db_connection(host, user, password, database)
+    if not connection:
+        return None
+    
+    cursor = connection.cursor()
+    query = """
+        INSERT INTO pelitulos (Oppilas_oppilasID, Pelit_peliID, pisteet, kysymys_maara, oikeat_vastaukset, peliaika, pvm)
+        VALUES (%s, %s, 0, 0, 0, 0, NOW())
+    """
+    cursor.execute(query, (oppilas_id, peli_id))
+    connection.commit()
+    
+    pelitulos_id = cursor.lastrowid  # Haetaan juuri lisätyn pelituloksen ID
+    cursor.close()
+    connection.close()
+    
+    session['correct_answers'] = 0  
+
+    return pelitulos_id
+
+# Tallennetaan pelin lopputulos
+def save_game_result(pelitulos_id, pisteet, kysymys_maara, oikeat_vastaukset):
+    """
+    Tallentaa pelituloksen tietokantaan.
+    """
+    connection = get_db_connection(host, user, password, database)
+    if not connection:
+        sys.stderr.write("Virhe: ei tietokantayhteyttä\n")  # 🔍 Debug
+        return False
+    
+    cursor = connection.cursor()
+    sys.stderr.write(f"UPDATE pelitulos SET pisteet={pisteet}, kysymys_maara={kysymys_maara}, oikeat_vastaukset={oikeat_vastaukset} WHERE pelitulosID={pelitulos_id}")
+    
+    query = """
+        UPDATE pelitulos
+        SET pisteet = %s, kysymys_maara = %s, oikeat_vastaukset = %s, peliaika = 0, pvm = NOW()
+        WHERE pelitulosID = %s
+    """
+    cursor.execute(query, (pisteet, kysymys_maara, oikeat_vastaukset, pelitulos_id))
+    connection.commit()
+    
+    cursor.close()
+    connection.close()
+    return True
+
 
 get_db_connection(host, user, password, database)
