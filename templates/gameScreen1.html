@@ -1,158 +1,285 @@
 <!DOCTYPE html>
 <html lang="fi">
-  <head>
+<head>
     <meta charset="UTF-8">
     <title>Pelisivu</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='gameScreen1.css') }}"> 
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  </head>
-  <body>
+</head>
+<body>
     <div class="mathematics-section">
-      <header class="header">
-        <h1 class="subject-title">Matematiikka</h1>
-        <button class="icon-button" aria-label="Menu">
-          <img loading="lazy" src="https://cdn.builder.io/api/v1/image/assets/TEMP/4fe30ddc3b898acf88f46ad779a7295745ba4d35ef0a4a6ccabf35735c61a035?placeholderIfAbsent=true&apiKey=d4a6829ab0a243af995c418502f3ed93"
-          class="icon-image" alt="Avatar" />
-        </button>
-      </header>
-      <main class="content-area">
-        <section class="main-content">
-          <button class="small-icon-button" aria-label="Action" onclick="goBack()">
-            <img loading="lazy" src="https://cdn.builder.io/api/v1/image/assets/TEMP/ac24ec8f1f19b53f03cb818be4b1973dda8fad9cfa23067bf47b00d7fa6658ab?placeholderIfAbsent=true&apiKey=d4a6829ab0a243af995c418502f3ed93"
-            class="icon-image" alt="Takaisin" />
-          </button>
-          <div class="main-display" role="img" aria-label="Main content display">
-            <h1>Peli ID: {{ pelin_id }}</h1>
-            <div class="question-box" id="question-box">Ladataan kysymys...</div>
-            <span>=</span>
-            <input type="number" id="answer-box" placeholder="Syötä vastaus">
-            <button onclick="checkAnswer()">Vastaa</button>
-          </div>
-          <!-- Sivupalkki, joka sisältää lisäsisältöä -->
-          <aside class="sidebar-column">
-            <div class="sidebar-content">
-              <div class="sidebar-inner" role="complementary" aria-label="Sidebar content">
-                <h2 class="sidebar-title">Ohjeet</h2>
-                <p id="instructions" data-game-id="{{ pelin_id }}">Ladataan ohjeet...</p>
-              </div>
-            </div>
-          </aside>
-        </section>
-      </main>
-      </div> 
-      <script>
-      // Funktio, joka ohjaa käyttäjän takaisin oikealle sivulle
-      function goBack() {
-        const pelinId = parseInt("{{ pelin_id }}");  // Haetaan pelin_id Jinjalla Flaskista
-        let backUrl = "{{ url_for('index') }}";  // Oletuksena takaisin etusivulle
+        <header class="header">
+            <h1 class="subject-title">Matematiikka</h1>
+            <button class="icon-button" aria-label="Menu">
+                <img loading="lazy" src="https://cdn.builder.io/api/v1/image/assets/TEMP/4fe30ddc3b898acf88f46ad779a7295745ba4d35ef0a4a6ccabf35735c61a035?placeholderIfAbsent=true&apiKey=d4a6829ab0a243af995c418502f3ed93"
+                    class="icon-image" alt="Avatar" />
+            </button>
+        </header>
+        <main class="content-area">
+            <section class="main-content">
+                <button class="small-icon-button" aria-label="Action" onclick="goBack()">
+                    <img loading="lazy" src="https://cdn.builder.io/api/v1/image/assets/TEMP/ac24ec8f1f19b53f03cb818be4b1973dda8fad9cfa23067bf47b00d7fa6658ab?placeholderIfAbsent=true&apiKey=d4a6829ab0a243af995c418502f3ed93"
+                        class="icon-image" alt="Takaisin" />
+                </button>
+                <div class="main-display" role="img" aria-label="Main content display">
+                    <div id="difficulty-overlay" class="overlay">
+                        <div class="difficulty-buttons-container">
+                            <button class="difficulty-button" onclick="selectDifficulty('Helppo', 'KISSA', 0, 10)">Helppo</button>
+                            <button class="difficulty-button" onclick="selectDifficulty('Keskivaikea', 'KOIRA', 120, 15)">Keskivaikea</button>
+                            <button class="difficulty-button" onclick="selectDifficulty('Vaikea', 'HEPPA', 60, 20)">Vaikea</button>
+                        </div>
+                        <button class="start-button" onclick="startGame()" disabled>Aloita</button>
+                    </div>
+                    <h1 id="question-number">Kysymys 1</h1>
+                    <div class="question-box" id="question-box">Ladataan kysymys...</div>
+                    <span>=</span>
+                    <input type="number" id="answer-box" placeholder="Syötä vastaus">
+                    <button onclick="checkAnswer()">Vastaa</button>
+                    <div id="game-over-overlay" class="overlay hidden">PELI OHI</div> <!-- Peli ohi -viesti -->
+                </div>
+                <!-- Sivupalkki, joka sisältää lisäsisältöä -->
+                <aside class="sidebar-column">
+                    <div class="sidebar-content">
+                        <div class="sidebar-inner" role="complementary" aria-label="Sidebar content">
+                            <h2 class="sidebar-title">Ohjeet</h2>
+                            <p id="instructions" data-game-id="{{ pelin_id }}" class="hidden">Ladataan ohjeet...</p>
+                            <div id="messages" class="hidden"></div> <!-- Viestit näytetään tässä -->
+                            <div id="score" class="hidden">Pisteet: 0</div> <!-- Pistelaskuri -->
+                            <div id="timer" class="hidden">Aika: 1:00</div> <!-- Ajastin -->
+                        </div>
+                    </div>
+                </aside>
+            </section>
+        </main>
+    </div> 
+    <script>
+        // Funktio, joka ohjaa käyttäjän takaisin oikealle sivulle
+        function goBack() {
+            const pelinId = parseInt("{{ pelin_id }}");  // Haetaan pelin_id Jinjalla Flaskista
+            let backUrl = "{{ url_for('index') }}";  // Oletuksena takaisin etusivulle
 
-        if (pelinId >= 1 && pelinId <= 18) {
-          backUrl = "{{ url_for('math_menu', grade=3) }}";
-        } else if (pelinId >= 19 && pelinId <= 30) {
-          backUrl = "{{ url_for('math_menu', grade=4) }}";
+            if (pelinId >= 1 && pelinId <= 18) {
+                backUrl = "{{ url_for('math_menu', grade=3) }}";
+            } else if (pelinId >= 19 && pelinId <= 30) {
+                backUrl = "{{ url_for('math_menu', grade=4) }}";
+            }
+            window.location.href = backUrl;
         }
-        window.location.href = backUrl;
-      }
 
-      // Haetaan pelin ID URL:stä
-      const pelinId = window.location.pathname.split('/')[2]; // Haetaan URL:stä pelin ID
-      let questionCount = 0; // Seuraa kysymysten määrää
+        // Haetaan pelin ID URL:stä
+        const pelinId = window.location.pathname.split('/')[2]; // Haetaan URL:stä pelin ID
+        let questionCount = 0; // Seuraa kysymysten määrää
+        let score = 0; // Seuraa pisteitä
+        let timerInterval; // Ajastimen intervalli
+        let gameDuration = 0; // Pelin kesto sekunneissa
+        let pointsPerCorrectAnswer = 0; // Pisteet per oikea vastaus
+        let remainingTime = 0; // Jäljellä oleva aika sekunneissa
 
-      // Hakee uuden kysymyksen palvelimelta ja päivittää sen sivulle
-      async function fetchQuestion() {
-        const response = await fetch(`/new_question/${pelinId}`);
-        const data = await response.json();
-        console.log(data); 
-        
-        if (data.game_over) {
-          alert(data.message);
-          document.getElementById("question-box").innerText = data.message;
-          document.getElementById("answer-box").disabled = true;
-          document.querySelector("button[onclick='checkAnswer()']").disabled = true;
+        // Hakee uuden kysymyksen palvelimelta ja päivittää sen sivulle
+        async function fetchQuestion() {
+            const response = await fetch(`/new_question/${pelinId}`);
+            const data = await response.json();
+            console.log(data); 
+            
+            if (data.game_over) {
+                showMessage(data.message + " Lopulliset pisteet: " + data.final_score);
+                document.getElementById("question-box").innerText = data.message;
+                document.getElementById("answer-box").disabled = true;
+                document.querySelector("button[onclick='checkAnswer()']").disabled = true;
 
-          endGame(); // Peli päättyy, tallennetaan tulos
-        } else {
-          document.getElementById("question-box").innerText = data.question;
-          document.getElementById("question-box").dataset.answer = data.answer;
-          document.getElementById("question-box").dataset.tehtavaId = data.tehtava_id;
-          questionCount++; // Lisätään kysymysmäärää
+                endGame(); // Peli päättyy, tallennetaan tulos
+            } else {
+                questionCount++; // Lisätään kysymysmäärää
+                document.getElementById("question-number").innerText = `Kysymys ${questionCount}`;
+                document.getElementById("question-box").innerText = data.question;
+                document.getElementById("question-box").dataset.answer = data.answer;
+                document.getElementById("question-box").dataset.tehtavaId = data.tehtava_id;
+            }
         }
-      }
 
-      // Tarkistaa käyttäjän vastauksen ja näyttää oikean/väärän ilmoituksen
-      async function checkAnswer() {
-        const userAnswer = document.getElementById("answer-box").value;
-        const correctAnswer = document.getElementById("question-box").dataset.answer;
-        const tehtavaId = document.getElementById("question-box").dataset.tehtavaId; // Haetaan tehtava_id
-        
-        const response = await fetch('/check_answer', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({
-            user_answer: userAnswer,
-            correct_answer: correctAnswer,
-            peli_id: pelinId,
-            tehtava_id: tehtavaId // Lähetetään tehtava_id
-          })
-        });
-
-    const data = await response.json();
-        if (userAnswer === correctAnswer) {
-          alert('Oikein!');
-        } else {
-          alert('Väärin, yritä uudelleen.');
-        }
-        if (questionCount >= 10) {
-        endGame(); // Jos 10 kysymystä on vastattu, lopetetaan peli
-        } else {
-        fetchQuestion(); // Hakee seuraavan kysymyksen
-        }
-      }
-
-      async function endGame() {
-        console.log("Lopetetaan peli ja lähetetään lopputulos palvelimelle...");  // ✅ Debug-tulostus
-
-        const response = await fetch('/end_game', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({ peli_id: pelinId })
-        });
-
-        const data = await response.json();
-        alert(data.message + " Lopulliset pisteet: " + data.final_score);
-        console.log("Lopetetaan peli ja lähetetään lopputulos palvelimelle...");  // ✅ Debug-tulostus
-
-        window.location.href = "/frontPage"; // Siirrytään etusivulle pelin päätyttyä
-}
-
-
-      document.addEventListener("DOMContentLoaded", fetchQuestion); // Hakee tehtävän heti sivun latautuessa 
-      document.addEventListener("DOMContentLoaded", function () { // päivittää pelin ohjeet
-        let gameId = document.getElementById("instructions").getAttribute("data-game-id");
-    
-        if (gameId) {
-          fetch(`/get_instructions/${gameId}`)
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error("Ohjeita ei löytynyt");
-                }
-                return response.json();
-            })
-            .then(data => {
-                document.getElementById("instructions").innerText = data.instructions;
-            })
-            .catch(error => {
-                console.error("Virhe ohjeiden lataamisessa:", error);
-                document.getElementById("instructions").innerText = "Ohjeita ei voitu ladata.";
+        // Tarkistaa käyttäjän vastauksen ja näyttää oikean/väärän ilmoituksen
+        async function checkAnswer() {
+            const userAnswer = document.getElementById("answer-box").value;
+            const correctAnswer = document.getElementById("question-box").dataset.answer;
+            const tehtavaId = document.getElementById("question-box").dataset.tehtavaId; // Haetaan tehtavaId
+            
+            const response = await fetch('/check_answer', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    user_answer: userAnswer,
+                    correct_answer: correctAnswer,
+                    peli_id: pelinId,
+                    tehtava_id: tehtavaId // Lähetetään tehtavaId
+                })
             });
-        } else {
-          console.error("Pelin ID ei löytynyt HTML-elementistä!");
+
+            const data = await response.json();
+            if (userAnswer === correctAnswer) {
+                showMessage('Oikein!');
+                score += pointsPerCorrectAnswer; // Lisätään pisteitä valitun vaikeustason mukaan
+            } else {
+                showMessage('Väärin, yritä uudelleen.');
+            }
+            document.getElementById("score").innerText = `Pisteet: ${score}`; // Päivitetään pistelaskuri
+            if (questionCount >= 10) {
+                endGame(); // Jos 10 kysymystä on vastattu, lopetetaan peli
+            } else {
+                fetchQuestion(); // Hakee seuraavan kysymyksen
+            }
         }
-      });
-      </script>
-  </body>
+
+        async function endGame() {
+            console.log("Lopetetaan peli ja lähetetään lopputulos palvelimelle...");  // ✅ Debug-tulostus
+
+            // Lasketaan jäljellä oleva aika
+            const timerText = document.getElementById("timer").innerText;
+            const timeParts = timerText.split(":");
+            remainingTime = parseInt(timeParts[0]) * 60 + parseInt(timeParts[1]);
+
+            // Lisätään lisäpisteet jäljellä olevan ajan perusteella
+            if (gameDuration > 0) {
+                if (gameDuration === 120) { // Keskivaikea
+                    if (remainingTime > 60) {
+                        score += 100;
+                    } else if (remainingTime > 30) {
+                        score += 50;
+                    } else {
+                        score += 25;
+                    }
+                } else if (gameDuration === 60) { // Vaikea
+                    if (remainingTime > 30) {
+                        score += 200;
+                    } else {
+                        score += 150;
+                    }
+                }
+            }
+
+            // Päivitetään pistelaskuri
+            document.getElementById("score").innerText = `Pisteet: ${score}`;
+
+            // Tallennetaan lopullinen pistemäärä sessioon
+            sessionStorage.setItem('final_score', score);
+            const correctAnswers = sessionStorage.getItem('correct_answers') || 0;
+
+            const response = await fetch('/end_game', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ peli_id: pelinId, final_score: score, correct_answers: correctAnswers })
+            });
+
+            const data = await response.json();
+            showMessage(data.message);
+            console.log("Lopetetaan peli ja lähetetään lopputulos palvelimelle...");  // ✅ Debug-tulostus
+
+            // Näytetään "PELI OHI" -viesti ja piilotetaan nappulat
+            document.getElementById("game-over-overlay").style.display = "flex";
+            document.getElementById("answer-box").disabled = true;
+            document.querySelector("button[onclick='checkAnswer()']").disabled = true;
+            document.getElementById("instructions").classList.remove("hidden");
+            document.getElementById("messages").classList.remove("hidden");
+            document.getElementById("score").classList.remove("hidden");
+            document.getElementById("timer").classList.add("hidden");
+
+            // Pysäytetään ajastin
+            clearInterval(timerInterval);
+        }
+
+        function showMessage(message) {
+            const messagesDiv = document.getElementById("messages");
+            messagesDiv.innerHTML = ""; // Tyhjennetään aiemmat viestit
+            const messageElement = document.createElement("p");
+            messageElement.innerText = message;
+            messagesDiv.appendChild(messageElement);
+        }
+
+        function selectDifficulty(level, instructions, duration, points) {
+            document.getElementById("instructions").innerText = instructions;
+            document.getElementById("instructions").classList.remove("hidden");
+            document.querySelector(".start-button").disabled = false;
+
+            // Asetetaan pelin kesto ja pisteet per oikea vastaus valitun vaikeustason mukaan
+            gameDuration = duration;
+            pointsPerCorrectAnswer = points;
+
+            // Poistetaan valinta muista nappuloista
+            const buttons = document.querySelectorAll(".difficulty-button");
+            buttons.forEach(button => {
+                button.classList.remove("selected");
+            });
+
+            // Lisätään valinta painettuun nappulaan
+            event.target.classList.add("selected");
+        }
+
+        function startGame() {
+            document.getElementById("difficulty-overlay").style.display = "none";
+            document.getElementById("instructions").classList.remove("hidden");
+            document.getElementById("messages").classList.remove("hidden");
+            document.getElementById("score").classList.remove("hidden");
+
+            // Haetaan peliohjeet tietokannasta
+            const gameId = document.getElementById("instructions").getAttribute("data-game-id");
+            if (gameId) {
+                fetch(`/get_instructions/${gameId}`)
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error("Ohjeita ei löytynyt");
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        document.getElementById("instructions").innerText = data.instructions;
+                    })
+                    .catch(error => {
+                        console.error("Virhe ohjeiden lataamisessa:", error);
+                        document.getElementById("instructions").innerText = "Ohjeita ei voitu ladata.";
+                    });
+            } else {
+                console.error("Pelin ID ei löytynyt HTML-elementistä!");
+            }
+
+            // Käynnistetään ajastin, jos pelin kesto on asetettu
+            if (gameDuration > 0) {
+                document.getElementById("timer").classList.remove("hidden");
+                startTimer(gameDuration);
+            }
+
+            fetchQuestion(); // Hakee ensimmäisen kysymyksen
+        }
+
+        function startTimer(duration) {
+            let timer = duration, minutes, seconds;
+            timerInterval = setInterval(function () {
+                minutes = parseInt(timer / 60, 10);
+                seconds = parseInt(timer % 60, 10);
+
+                minutes = minutes < 10 ? "0" + minutes : minutes;
+                seconds = seconds < 10 ? "0" + seconds : seconds;
+
+                document.getElementById("timer").innerText = `Aika: ${minutes}:${seconds}`;
+
+                if (--timer < 0) {
+                    endGame(); // Lopetetaan peli, kun aika menee umpeen
+                }
+            }, 1000);
+        }
+
+        document.addEventListener("DOMContentLoaded", function () {
+            document.getElementById("difficulty-overlay").style.display = "flex";
+        });
+
+        // Lisää tapahtumankuuntelija Enter-näppäimen painallukselle
+        document.getElementById("answer-box").addEventListener("keypress", function(event) {
+            if (event.key === "Enter") {
+                checkAnswer();
+            }
+        });
+    </script>
+</body>
 </html>

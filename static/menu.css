@@ -15,7 +15,6 @@ header, body {
   display: flex; /* Mahdollistaa flexboxin käytön */
   flex-direction: column; /* Asettaa sisällön pystysuuntaisesti */
   width: 100%; /* Varmistaa, että header täyttää koko leveyden */
-  height: 20vh; /* Asettaa headerin korkeudeksi 20% näkymän korkeudesta */
   background-color: rgba(65, 152, 196, 1);
   justify-content: space-between; /* Jakaa ylä- ja alaosan tasaisesti */
   padding: 0 20px; /* Lisätään välistys vasemmalle ja oikealle */
@@ -25,12 +24,11 @@ header, body {
 .header-top {
   display: flex;
   justify-content: space-between;
-  align-items: left; /* Asettaa elementit pystysuunnassa keskelle */
-  height: 70vh
+  align-items: center; /* Asettaa elementit pystysuunnassa keskelle */
+  padding: 10px 0; /* Lisää tilaa ylä- ja alapuolelle */
 }
 /* Logo */
 .site-title {
-  padding-top: 10px;
   height: 10vh;
 }
 
@@ -41,7 +39,42 @@ header, body {
   background-color: white;
   border-radius: 50%; /* Tekee avatariin pyöreän muodon */
   border: 2px solid rgba(239, 125, 125, 1);
-  margin-top: 5px;
+  cursor: pointer; /* Muuttaa kursorin osoittimeksi */
+}
+
+/* Avatarin alasvetovalikko */
+.avatar-dropdown {
+  position: relative;
+  display: inline-block;
+}
+
+.avatar-dropdown .dropdown-content {
+  display: none;
+  position: absolute;
+  right: 0;
+  top: 100%; /* Asettaa valikon suoraan avatarin alapuolelle */
+  background-color: rgb(241, 157, 153);
+  min-width: 160px;
+  box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2);
+  z-index: 1;
+  border-radius: 8px;
+  overflow: hidden; /* Estää valikon ylivuodon */
+}
+
+.avatar-dropdown .dropdown-content a {
+  color: white;
+  padding: 12px 16px;
+  text-decoration: none;
+  display: block;
+  border-radius: 8px;
+}
+
+.avatar-dropdown .dropdown-content a:hover {
+  background-color: rgba(239, 125, 125, 1);
+}
+
+.avatar-dropdown:hover .dropdown-content {
+  display: block;
 }
 
 /* Headerin alaosa (navigointipainikkeet) */
@@ -49,7 +82,8 @@ header, body {
   display: flex;
   justify-content: flex-start; /* Painikkeet vasemmalle */
   align-items: center;
-  height: 30vh
+  padding: 0; /* Poistetaan ylimääräinen tila */
+  margin-top: auto; /* Työntää napit alareunaan */
 }
 
 .nav-buttons {
@@ -159,6 +193,15 @@ header, body {
   }
   .header-section {
     height: auto; /* Muutetaan korkeutta dynaamiseksi */
+  }
+  .header-top, .header-bottom {
+    flex-direction: column;
+    align-items: center;
+  }
+  .avatar-dropdown .dropdown-content {
+    left: auto;
+    right: 0;
+    min-width: 160px; /* Varmistaa, että valikko on riittävän leveä pienillä näytöillä */
   }
 }
 

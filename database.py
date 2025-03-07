@@ -19,7 +19,6 @@ from flask import session
 #
 # # Salasanan tarkistus
 # is_valid = bcrypt.check_password_hash(hashed_password, 'salasana')
-
 ###from flask_bcrypt import Bcrypt
 
 host = "85.23.94.251"      # Esim. "123.45.67.89" 
@@ -94,7 +93,7 @@ def get_game_instructions(peli_id):
         cursor.close()
         conn.close()
     
-#funktio käyttäjän rekisteröitymiselle
+# Funktio käyttäjän rekisteröitymiselle
 def register_user(etunimi, sukunimi, kirjautumistunnus, salasana, rooli, syntymapaiva=None, luokka=None):
     conn = get_db_connection(host, user, password, database)
     cursor = conn.cursor()
@@ -129,7 +128,7 @@ def register_user(etunimi, sukunimi, kirjautumistunnus, salasana, rooli, syntyma
         cursor.close()
         conn.close()
 
-#kirjautumista varten
+# Kirjautumista varten
 def check_user_credentials(kirjautumistunnus, salasana, rooli):
     """ Tarkistaa käyttäjän tunnukset ja palauttaa käyttäjätiedot roolin perusteella """
     conn = get_db_connection(host, user, password, database)
@@ -170,9 +169,7 @@ def check_user_credentials(kirjautumistunnus, salasana, rooli):
         
 # Tallennetaan pelaajan vastaus tietokantaan
 def save_player_answer(pelitulos_id, tehtava_id, pelaajan_vastaus, oikein):
-    """
-    Tallentaa pelaajan vastauksen tietokantaan.
-    """
+    """ Tallentaa pelaajan vastauksen tietokantaan. """
     connection = get_db_connection(host, user, password, database)
     if not connection:
         return False
@@ -190,9 +187,7 @@ def save_player_answer(pelitulos_id, tehtava_id, pelaajan_vastaus, oikein):
     return True
 
 def create_game_result(oppilas_id, peli_id):
-    """
-    Luo uuden pelituloksen tietokantaan ja palauttaa sen ID:n.
-    """
+    """ Luo uuden pelituloksen tietokantaan ja palauttaa sen ID:n. """
     connection = get_db_connection(host, user, password, database)
     if not connection:
         return None
@@ -215,9 +210,7 @@ def create_game_result(oppilas_id, peli_id):
 
 # Tallennetaan pelin lopputulos
 def save_game_result(pelitulos_id, pisteet, kysymys_maara, oikeat_vastaukset):
-    """
-    Tallentaa pelituloksen tietokantaan.
-    """
+    """ Tallentaa pelituloksen tietokantaan. """
     connection = get_db_connection(host, user, password, database)
     if not connection:
         sys.stderr.write("Virhe: ei tietokantayhteyttä\n")  # 🔍 Debug
@@ -237,6 +230,5 @@ def save_game_result(pelitulos_id, pisteet, kysymys_maara, oikeat_vastaukset):
     cursor.close()
     connection.close()
     return True
-
 
 get_db_connection(host, user, password, database)

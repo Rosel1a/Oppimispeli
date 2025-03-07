@@ -1,12 +1,12 @@
-#Pelien toiminnallisuutta varten palvelin
-#Tämän kautta pystyy nyt pelaamaan sitä alkukantasta kertotaulu peliä
+# Kuvaus: Tämä tiedosto sisältää pelisovelluksen pääsovelluslogiikan. 
+# Sovellus on toteutettu Flask-kehyspohjaisena web-sovelluksena, joka käyttää tietokantaa kysymysten ja vastausten tallentamiseen. 
+
 from flask import Flask, render_template, jsonify, request, redirect, url_for, flash, session
 import sys
 from database import get_random_question, register_user, get_game_instructions, check_user_credentials, save_player_answer, save_game_result, create_game_result
 import logging
 logging.basicConfig(stream=sys.stdout, level=logging.DEBUG)
 sys.stderr = sys.stdout
-
 app = Flask(__name__)
 app.secret_key = "supersecretkey"
 
@@ -15,10 +15,12 @@ app.secret_key = "supersecretkey"
 def index():
     return render_template('frontPage.html')  # Tämä viittaa HTML-tiedostoon
 
+# Reitti kirjautumissivulle
 @app.route('/firstscreen')
 def firstscreen():
     return render_template('firstscreen.html')
 
+# Reitti etusivulle
 @app.route('/frontPage')
 def frontPage():
     return render_template('frontPage.html')
@@ -33,7 +35,7 @@ def teacher_login():
 def student_login():
     return render_template('studentLogIn.html')
 
-#rekisteröitymisfunktio
+# Rekisteröitymisfunktio
 @app.route('/register', methods=['POST'])
 def register():
     etunimi = request.form['etunimi']
@@ -53,7 +55,7 @@ def register():
         flash("Rekisteröinti epäonnistui!", "danger")
         return redirect(url_for('firstscreen'))
 
-#oppilaan kirjautumisfunktio
+# Oppilaan kirjautumisfunktio
 @app.route('/student_login', methods=['GET', 'POST'])
 def student_login_view():
     logged_in_user = None
@@ -84,7 +86,7 @@ def student_login_view():
 
     return render_template('studentLogin.html')
 
-#opettajan kirjautumisfunktio
+# Opettajan kirjautumisfunktio
 @app.route('/teacher_login', methods=['GET', 'POST'])
 def teacher_login_view():
     logged_in_user = None
@@ -106,8 +108,7 @@ def teacher_login_view():
 
     return render_template('teacherLogin.html')
 
-
-#kirjaudu ulos
+# Kirjaudu ulos
 @app.route('/logout')
 def logout():
     rooli = session.get('rooli')  # Haetaan käyttäjän rooli
@@ -119,9 +120,9 @@ def logout():
         return redirect(url_for('student_login_view'))
 
 # Kuva reitti
-@app.route('/Kuvat/<path:filename>')
+@app.route('/kuvat/<path:filename>')
 def serve_images(filename):
-    return send_from_directory('static/Kuvat', filename)
+    return send_from_directory('static/kuvat', filename)
 
 # Matematiikan valikko
 @app.route('/math_menu/<int:grade>')
@@ -135,8 +136,14 @@ def math_menu(grade):
     elif grade == 6:
         return render_template('mathMenu6rdGrade.html')
     else:
-        return redirect(url_for('index'))  # Redirects to a default page or 404 if grade is invalid
+        return redirect(url_for('index'))  # Ohjataan pääsivulle
 
+# Pelinäkymän reitti
+@app.route('/gameScreen1/<int:game_id>')
+def game_screen(game_id):
+    return render_template("gameScreen1.html", game_id=game_id)
+
+# Pelin aloitusreitti
 @app.route('/peli/<int:pelin_id>')  # Pelin ID voidaan välittää URL:ssä
 def peli(pelin_id):
     # Tässä pelin_id voidaan käyttää hakemaan pelin tiedot tietokannasta
@@ -148,6 +155,15 @@ def peli(pelin_id):
     session['pelitulos_id'] = pelitulos_id
 
     return render_template('gameScreen1.html', pelin_id=pelin_id)
+
+# Ohjeiden hakufunktio peleille
+@app.route('/get_instructions/<int:peli_id>')
+def get_instructions(peli_id):
+    instructions = get_game_instructions(peli_id)
+    if instructions:
+        return jsonify({"instructions": instructions})
+    else:
+        return jsonify({"instructions": "Ohjeita ei löytynyt"}), 404
 
 # Reitti tehtävien hakemiseen tietokannasta, pelin ID mukaan
 @app.route('/new_question/<int:pelin_id>', methods=['GET'])
@@ -162,18 +178,7 @@ def new_question(pelin_id):
     session['question_count'] += 1
     return jsonify(question_data)
 
-# Vastauksen tarkistus
-#@app.route('/check_answer', methods=['POST'])
-#def check_answer():
-#    data = request.get_json()
-#    user_answer = data['user_answer']
-#    correct_answer = data['correct_answer']
-    
-    # Tarkistetaan vastaus (olettaen että vastaus on oikein jos se täsmää)
-#    is_correct = str(user_answer) == str(correct_answer)
-    
-#    return jsonify({"correct": is_correct})
-
+# Vastauksen tarkistusreitti
 @app.route('/check_answer', methods=['POST'])
 def check_answer():
     data = request.get_json()
@@ -181,7 +186,6 @@ def check_answer():
     correct_answer = data.get('correct_answer')
     peli_id = data.get('peli_id')
     tehtava_id = data.get('tehtava_id')  # Lisätään tehtava_id
-
 
     if 'score' not in session:
         session['score'] = 0  # Alustetaan pisteet
@@ -199,27 +203,29 @@ def check_answer():
     pelitulos_id = session.get('pelitulos_id')  # Pitää olla luotu ennen kuin vastauksia tallennetaan
     save_player_answer(pelitulos_id, tehtava_id, user_answer, is_correct)
 
-    return jsonify({"correct": is_correct, "score": session['score']})
+    return jsonify({"correct": is_correct, "score": session['score'], "correct_answers": session['correct_answers']})
 
+# Pelin lopetusreitti
 @app.route('/end_game', methods=['POST'])
 def end_game():
-    print("Session sisältö ennen tarkistusta:", session)  # 🔍 Tulostetaan session sisält
+    print("Session sisältö ennen tarkistusta:", session)  # Tulostetaan session sisältö
     if 'userID' not in session:
         print("⚠️ Virhe: Käyttäjä ei ole kirjautunut!")
         return jsonify({'error': 'Ei käyttäjää kirjautuneena'}), 403
 
-    pelitulos_id = session.get('pelitulos_id')  # ✅ Oikea pelitulos_id, joka on luotu aiemmin
+    pelitulos_id = session.get('pelitulos_id')  # Oikea pelitulos_id, joka on luotu aiemmin
     if not pelitulos_id:
-        sys.stderr.write("Virhe: pelitulos_id ei löydy sessionista!\n")  # 🛠 Näkyy virhelokissa
+        sys.stderr.write("Virhe: pelitulos_id ei löydy sessionista!\n")  # Näkyy virhelokissa
         return jsonify({'error': 'Pelitulos ID puuttuu!'}), 400  # Varmistetaan, että pelitulos_id on olemassa
 
-    final_score = session.get('score', 0)
-    correct_answers = session.get('correct_answers', 0)
+    data = request.get_json()
+    final_score = data.get('final_score', 0)
+    correct_answers = data.get('correct_answers', 0)
     question_count = session.get('question_count', 0)
 
     sys.stderr.write(f"Tallennetaan tulos: pelitulos_id={pelitulos_id}, pisteet={final_score}, kysymykset={question_count}, oikein={correct_answers}")
 
-    success = save_game_result(pelitulos_id, final_score, question_count, correct_answers)  # ✅ Käytä oikeaa pelitulos_id:tä
+    success = save_game_result(pelitulos_id, final_score, question_count, correct_answers)  # Käytä oikeaa pelitulos_id:tä
 
     if not success:
         return jsonify({'error': 'Tietokantavirhe tallennettaessa pelitulosta'}), 500
@@ -229,20 +235,8 @@ def end_game():
     session.pop('question_count', None)
     session.pop('correct_answers', None)
 
-    return jsonify({'message': 'Peli päättyi, pisteet tallennettu!', 'final_score': final_score})
+    return jsonify({'message': f'Peli päättyi, pisteet tallennettu! Oikein meni {correct_answers}/10', 'final_score': final_score})
 
-# ohjeiden hakufunktio peleille
-@app.route('/get_instructions/<int:peli_id>')
-def get_instructions(peli_id):
-    instructions = get_game_instructions(peli_id)
-    if instructions:
-        return jsonify({"instructions": instructions})
-    else:
-        return jsonify({"instructions": "Ohjeita ei löytynyt"}), 404
-
-@app.route('/gameScreen1/<int:game_id>')
-def game_screen(game_id):
-    return render_template("gameScreen1.html", game_id=game_id)
-
+#  Virheiden käsittely
 if __name__ == '__main__':
     app.run(debug=True)
