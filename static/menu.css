@@ -1,13 +1,13 @@
 /* Yleiset asetukset */
-html {
+html, body {
   margin: 0; /* Poistaa oletusmarginaalit */
   padding: 0; /* Poistaa oletuspaddingin */
   overflow-x: hidden; /* Estää sivun leviämisen sivusuunnassa */
   min-height: 100vh; /* Asettaa sivun korkeudeksi vähintään 100% näytön korkeudesta */
-}
-header, body {
-  margin: 0; /* Poistaa oletusmarginaalit */
-  padding: 0; /* Poistaa oletuspaddingin */
+  background-color: rgba(65, 152, 196, 1); /* Asettaa taustavärin */
+  display: flex; /* Mahdollistaa flexboxin käytön */
+  flex-direction: column; /* Asettaa sisällön pystysuuntaisesti */
+  box-sizing: border-box; /* Sisältää paddingin elementin kokonaiskokoon */
 }
 
 /* Header (yläosa) */
@@ -32,14 +32,23 @@ header, body {
   height: 10vh;
 }
 
-/* Avatarin tyylit */
-.avatar-placeholder {
+/* Avatar-painike */
+.icon-button {
+  border-radius: 50%;
+  background-color: rgba(44, 44, 44, 1);
   width: 65px;
   height: 65px;
-  background-color: white;
-  border-radius: 50%; /* Tekee avatariin pyöreän muodon */
-  border: 2px solid rgba(239, 125, 125, 1);
-  cursor: pointer; /* Muuttaa kursorin osoittimeksi */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  margin-right: 15px; /* Lisää tilaa oikealle avatarin ympärille */
+margin-top: 10px; /* Lisää tilaa yläpuolelle */
+}
+
+.icon-image {
+  width: 40px;
+  height: 40px;
 }
 
 /* Avatarin alasvetovalikko */
@@ -52,20 +61,19 @@ header, body {
   display: none;
   position: absolute;
   right: 0;
-  top: 100%; /* Asettaa valikon suoraan avatarin alapuolelle */
-  background-color: rgb(241, 157, 153);
-  min-width: 160px;
-  box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2);
-  z-index: 1;
+  background-color: rgb(241, 157, 153); /* Sama väri kuin Matematiikka-valikossa */
+  min-width: 90px;
   border-radius: 8px;
-  overflow: hidden; /* Estää valikon ylivuodon */
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2); /* Lisää varjo valikon ympärille */
+  z-index: 10; /* Nostaa valikon muiden elementtien päälle */
+  align-items: center;
 }
 
 .avatar-dropdown .dropdown-content a {
   color: white;
-  padding: 12px 16px;
+  padding: 10px;
   text-decoration: none;
-  display: block;
+  display: block;  
   border-radius: 8px;
 }
 
@@ -111,8 +119,8 @@ header, body {
   position: absolute; /* Asettaa valikon kellumaan muiden elementtien päällä */
   top: 100%; /* Asettaa valikon suoraan painikkeen alapuolelle */
   left: 0; /* Asettaa valikon vasempaan reunaan */
-  background-color: rgb(241, 157, 153);
-  min-width: 120px;
+  background-color: rgb(241, 157, 153); /* Sama väri kuin avatar-valikossa */
+  min-width: 100px;
   border-radius: 8px;
   box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2); /* Lisää varjo valikon ympärille */
   z-index: 10; /* Nostaa valikon muiden elementtien päälle */
@@ -150,7 +158,7 @@ header, body {
 .games-section {
   background-color: rgba(169, 226, 255, 1);
   width: 100%;
-  height: 80vh; /* Vie loput 80% */
+  flex: 1; /* Vie jäljellä olevan tilan */
   display: flex;
   justify-content: center;
   align-items: center;
@@ -210,4 +218,11 @@ header, body {
     grid-template-columns: repeat(1, 1fr); /* Yksi sarake */
     text-align: center;
   }
+}
+
+/* Etusivun kuva */
+.site-illustration {
+  height: 50%;
+  max-width: 50%;
+  object-fit: contain;
 }
