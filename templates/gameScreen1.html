@@ -139,8 +139,8 @@
             const timeParts = timerText.split(":");
             remainingTime = parseInt(timeParts[0]) * 60 + parseInt(timeParts[1]);
 
-            // Lisätään lisäpisteet jäljellä olevan ajan perusteella
-            if (gameDuration > 0) {
+            // Lisätään lisäpisteet jäljellä olevan ajan perusteella, jos aikaa on jäljellä
+            if (remainingTime > 0 && gameDuration > 0) {
                 if (gameDuration === 120) { // Keskivaikea
                     if (remainingTime > 60) {
                         score += 100;

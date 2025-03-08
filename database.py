@@ -1,59 +1,37 @@
 #SQL-tietokantayhteys
 # Tämä tiedosto sisältää funktiot, jotka liittyvät tietokantaan ja sen käsittelyyn.
 import mysql.connector
+from mysql.connector import pooling
 import sys
 from flask import session
 
-# Tämä on vain esimerkki, joka ei ole turvallinen tuotantokäytössä!
-# Käytä salasanojen turvalliseen käsittelyyn esim. Flask-Bcrypt -kirjastoa
-# https://flask-bcrypt.readthedocs.io/en/latest/
-#
-# Esimerkki:       
-# from flask import Flask
-#
-# app = Flask(__name__)
-# bcrypt = Bcrypt(app)
-#
-# # Salasanan hashaus
-# hashed_password = bcrypt.generate_password_hash('salasana').decode('utf-8')
-#
-# # Salasanan tarkistus
-# is_valid = bcrypt.check_password_hash(hashed_password, 'salasana')
-###from flask_bcrypt import Bcrypt
+# Määritellään yhteyspooli
+dbconfig = {
+    "host": "localhost",
+    "user": "root",
+    "password": "kissa",
+    "database": "oppimispeli2"
+}
 
-host = "85.23.94.251"      # Esim. "123.45.67.89" 
-user = "saaga"    # MySQL-käyttäjänimi
-password = "salasana2"    # MySQL-salasana
-database = "oppimispeli"  # Tietokannan nimi
+connection_pool = mysql.connector.pooling.MySQLConnectionPool(
+    pool_name="mypool",
+    pool_size=5,
+    **dbconfig
+)
 
-# Yhdistä MySQL-tietokantaan
-def get_db_connection(host, user, password, database):
+def get_db_connection():
     try:
-        db_connection = mysql.connector.connect(
-            host=host,         # MySQL-palvelimen isäntä
-            user=user,         # Käyttäjänimi
-            password=password, # MySdQL:n salasana
-            database=database  # Tietokannan nimi
-        )
-        if db_connection.is_connected():
+        connection = connection_pool.get_connection()
+        if connection.is_connected():
             print("✅ Yhteys onnistui!")
-            
-            cursor = db_connection.cursor()
-            cursor.execute("SHOW TABLES;")
-
-            for table in cursor.fetchall():
-                print(table)
-            
-        return db_connection
-    
+        return connection
     except mysql.connector.Error as err:
-        # Virheiden käsittely
         print(f"Yhteys epäonnistui: {err}")
         return None
 
 # Funktio, joka palauttaa satunnaisen kysymyksen tietokannasta
 def get_random_question(pelin_id):
-    connection = get_db_connection(host, user, password, database)
+    connection = get_db_connection()
     cursor = connection.cursor(dictionary=True)
 
     # Käytetään pelin ID:tä kyselyssä
@@ -76,34 +54,34 @@ def get_random_question(pelin_id):
     
 # Funktio pelin ohjeiden hakemiseen
 def get_game_instructions(peli_id):
-    conn = get_db_connection(host, user, password, database)
-    if conn is None:
+    connection = get_db_connection()
+    if connection is None:
         return None  # Jos yhteys epäonnistui, palauta None
 
-    cursor = conn.cursor(dictionary=True)
+    cursor = connection.cursor(dictionary=True)
     try:
         sql = "SELECT ohje FROM pelit WHERE peliID = %s"
         cursor.execute(sql, (peli_id,))
         result = cursor.fetchone()
         return result["ohje"] if result else None
-    except Error as e:
+    except mysql.connector.Error as e:
         print(f"Virhe ohjeiden hakemisessa: {e}")
         return None
     finally:
         cursor.close()
-        conn.close()
+        connection.close()
     
 # Funktio käyttäjän rekisteröitymiselle
 def register_user(etunimi, sukunimi, kirjautumistunnus, salasana, rooli, syntymapaiva=None, luokka=None):
-    conn = get_db_connection(host, user, password, database)
-    cursor = conn.cursor()
+    connection = get_db_connection()
+    cursor = connection.cursor()
 
     try:
         # 🔹 1. Lisää käyttäjä user-tauluun
         sql = "INSERT INTO user (etunimi, sukunimi, kirjautumistunnus, salasana, rooli, created_at) VALUES (%s, %s, %s, %s, %s, NOW())"
         values = (etunimi, sukunimi, kirjautumistunnus, salasana, rooli)
         cursor.execute(sql, values)
-        conn.commit()
+        connection.commit()
 
         # 🔹 2. Hae userID
         user_id = cursor.lastrowid
@@ -119,23 +97,23 @@ def register_user(etunimi, sukunimi, kirjautumistunnus, salasana, rooli, syntyma
             sql_oppilas = "INSERT INTO oppilas (User_userID, syntymapaiva, luokka) VALUES (%s, %s, %s)"
             cursor.execute(sql_oppilas, (user_id, syntymapaiva, luokka))
 
-        conn.commit()
+        connection.commit()
         return True  # Onnistui
     except mysql.connector.Error as err:
         print(f"Virhe: {err}")
         return False  # Epäonnistui
     finally:
         cursor.close()
-        conn.close()
+        connection.close()
 
 # Kirjautumista varten
 def check_user_credentials(kirjautumistunnus, salasana, rooli):
     """ Tarkistaa käyttäjän tunnukset ja palauttaa käyttäjätiedot roolin perusteella """
-    conn = get_db_connection(host, user, password, database)
-    if conn is None:
+    connection = get_db_connection()
+    if connection is None:
         return None
 
-    cursor = conn.cursor(dictionary=True)
+    cursor = connection.cursor(dictionary=True)
     login_user = None  # Alustetaan muuttuja ennen try-lohkoa
 
     try:
@@ -160,17 +138,17 @@ def check_user_credentials(kirjautumistunnus, salasana, rooli):
             return login_user  # Palautetaan käyttäjän tiedot
         else:
             return None  # Väärä käyttäjätunnus, salasana tai rooli
-    except Error as e:
+    except mysql.connector.Error as e:
         print(f"Virhe kirjautumisessa: {e}")
         return None
     finally:
         cursor.close()
-        conn.close()   
+        connection.close()   
         
 # Tallennetaan pelaajan vastaus tietokantaan
 def save_player_answer(pelitulos_id, tehtava_id, pelaajan_vastaus, oikein):
     """ Tallentaa pelaajan vastauksen tietokantaan. """
-    connection = get_db_connection(host, user, password, database)
+    connection = get_db_connection()
     if not connection:
         return False
     
@@ -188,7 +166,7 @@ def save_player_answer(pelitulos_id, tehtava_id, pelaajan_vastaus, oikein):
 
 def create_game_result(oppilas_id, peli_id):
     """ Luo uuden pelituloksen tietokantaan ja palauttaa sen ID:n. """
-    connection = get_db_connection(host, user, password, database)
+    connection = get_db_connection()
     if not connection:
         return None
     
@@ -211,7 +189,7 @@ def create_game_result(oppilas_id, peli_id):
 # Tallennetaan pelin lopputulos
 def save_game_result(pelitulos_id, pisteet, kysymys_maara, oikeat_vastaukset):
     """ Tallentaa pelituloksen tietokantaan. """
-    connection = get_db_connection(host, user, password, database)
+    connection = get_db_connection()
     if not connection:
         sys.stderr.write("Virhe: ei tietokantayhteyttä\n")  # 🔍 Debug
         return False
@@ -231,4 +209,4 @@ def save_game_result(pelitulos_id, pisteet, kysymys_maara, oikeat_vastaukset):
     connection.close()
     return True
 
-get_db_connection(host, user, password, database)
+get_db_connection()
