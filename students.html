@@ -62,15 +62,20 @@
       <div class="header-bottom">
         <div class="nav-buttons">
           <a href="{{ url_for('frontPage') }}">
-            <button class="coming-soon-btn">Oppilaat</button>
+            <button class="coming-soon-btn">Etusivu</button>
           </a>
         </div>
       </div>
     </header>
     <!-- Uusi UI (toka osio sivulla)-->
-    <div class="container" style="flex-direction: row;">
+    <div class="container" style="flex-direction: row; height:75% ;">
         <div class="sidebar" style="width: 30%;">
-            <div class="name-box">Nimi sukunimi</div>
+          <div class="dropdown">
+            <button class="dropbtn" style="width: 100%;">Oppilaat</button>
+            <div class="dropdown-content" style="width: 100%;">
+              <a href="{{ url_for('math_menu', grade=3) }}">Miina Harja</a>
+            </div>
+          </div>
         </div>
         <div class="content-box" style="width: 70%;">
             Oppilaan tiedot ja tulokset peleistä
