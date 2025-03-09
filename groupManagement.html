@@ -58,7 +58,19 @@
     <header class="header-section" >
       <div class="header-top">
         <img class="site-title" src="{{ url_for('static', filename='kuvat/logoWhite.png') }}" alt="Logo valkoinen">
-        <div class="avatar-placeholder"></div>
+        <div class="avatar-dropdown">
+          <button class="icon-button" aria-label="Menu">
+            <div class="avatar-dropdown">
+            <img loading="lazy" src="https://cdn.builder.io/api/v1/image/assets/TEMP/4fe30ddc3b898acf88f46ad779a7295745ba4d35ef0a4a6ccabf35735c61a035?placeholderIfAbsent=true&apiKey=d4a6829ab0a243af995c418502f3ed93"
+                class="icon-image" alt="Avatar" />
+          </button>
+          <div class="dropdown-content">
+            <a class="opettajaNimi" href="#">Opettaja nimi</a>
+            <a href="{{ url_for('logout') }}">Kirjaudu ulos</a>
+          </div>
+        </div>
+      </div>
+      
       </div>
       <div class="header-bottom">
         <div class="nav-buttons">
