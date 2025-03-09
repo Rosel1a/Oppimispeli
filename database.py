@@ -1,16 +1,19 @@
 #SQL-tietokantayhteys
 # Tämä tiedosto sisältää funktiot, jotka liittyvät tietokantaan ja sen käsittelyyn.
+
+
 import mysql.connector
 from mysql.connector import pooling
 import sys
 from flask import session
 
-# Määritellään yhteyspooli
+# Määritellään yhteyspooli 
 dbconfig = {
-    "host": "localhost",
-    "user": "root",
-    "password": "kissa",
-    "database": "oppimispeli2"
+    
+    "host": "85.23.94.251",      # Esim. "123.45.67.89" 
+    "user" : "saaga",    # MySQL-käyttäjänimi
+    "password": "salasana2" ,   # MySQL-salasana
+    "database" : "oppimispeli"  # Tietokannan nimi
 }
 
 connection_pool = mysql.connector.pooling.MySQLConnectionPool(

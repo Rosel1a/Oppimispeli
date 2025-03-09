@@ -7,14 +7,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Opikku</title>
     <!-- <link rel="stylesheet" href="styles.css" /> -->
-    <link rel="stylesheet" href="tempTeacher.css" />
+    
+    <link rel="stylesheet" href="{{ url_for('static', filename='menu.css') }}">
     <style>
         body {
             font-family: Arial, sans-serif;
             background-color: #cfe8ff;
             display: flex;
             flex-direction: column;
-            
             align-items: center;
             height: 100vh;
             margin: 0;
@@ -58,9 +58,9 @@
     <header class="header-section" >
       <div class="header-top">
         <img class="site-title" src="{{ url_for('static', filename='kuvat/logoWhite.png') }}" alt="Logo valkoinen">
+        
         <div class="avatar-dropdown">
           <button class="icon-button" aria-label="Menu">
-            <div class="avatar-dropdown">
             <img loading="lazy" src="https://cdn.builder.io/api/v1/image/assets/TEMP/4fe30ddc3b898acf88f46ad779a7295745ba4d35ef0a4a6ccabf35735c61a035?placeholderIfAbsent=true&apiKey=d4a6829ab0a243af995c418502f3ed93"
                 class="icon-image" alt="Avatar" />
           </button>
@@ -70,28 +70,26 @@
           </div>
         </div>
       </div>
-      
-      </div>
       <div class="header-bottom">
         <div class="nav-buttons">
-          <a href="{{ url_for('frontPage') }}">
-            <button class="coming-soon-btn">Etusivu (ehkä)</button>
+          <a href="{{ url_for('teacher_menu') }}">
+            <button class="coming-soon-btn">Etusivu</button>
           </a>
         </div>
       </div>
     </header>
     <!-- Uusi UI (toka osio sivulla)-->
     <div class="container" style="flex-direction: row; height:75% ;">
-        <div class="sidebar" style="width: 30%";>
+        <div class="sidebar" style="width: 30%;">
           <div class="dropdown">
-            <button class="dropbtn" style="width: 100%;">Ryhmät</button>
+            <button class="dropbtn" style="width: 100%;">Oppilaat</button>
             <div class="dropdown-content" style="width: 100%;">
-              <a href="{{ url_for('math_menu', grade=3) }}">Ryhmä A</a>
+              <a href="{{ url_for('math_menu', grade=3) }}">Miina Harja</a>
             </div>
           </div>
         </div>
         <div class="content-box" style="width: 70%;">
-            Luodut ryhmät
+            Oppilaan tiedot ja tulokset peleistä
         </div>
     </div>
   </body>

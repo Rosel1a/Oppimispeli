@@ -1,4 +1,7 @@
 /* Yleiset asetukset */
+*{
+  font-family: Arial, sans-serif;
+}
 html {
     margin: 0; /* Poistaa oletusmarginaalit */
     padding: 0; /* Poistaa oletuspaddingin */
@@ -9,6 +12,7 @@ html {
     margin: 0; /* Poistaa oletusmarginaalit */
     padding: 0; /* Poistaa oletuspaddingin */
   }
+
   
   /* Header (yläosa) */
   .header-section {
@@ -28,21 +32,64 @@ html {
     align-items: left; /* Asettaa elementit pystysuunnassa keskelle */
     height: 70vh
   }
-  /* Logo */
-  .site-title {
-    padding-top: 10px;
-    height: 10vh;
-  }
-  
-  /* Avatarin tyylit */
-  .avatar-placeholder {
-    width: 65px;
-    height: 65px;
-    background-color: white;
-    border-radius: 50%; /* Tekee avatariin pyöreän muodon */
-    border: 2px solid rgba(239, 125, 125, 1);
-    margin-top: 5px;
-  }
+/* Logo */
+.site-title {
+  height: 10vh;
+}
+
+/* Avatar-painike */
+.icon-button {
+  border-radius: 50%;
+  background-color: rgba(44, 44, 44, 1);
+  width: 65px;
+  height: 65px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  margin-right: 15px; /* Lisää tilaa oikealle avatarin ympärille */
+margin-top: 10px; /* Lisää tilaa yläpuolelle */
+}
+
+.icon-image {
+  width: 40px;
+  height: 40px;
+}
+
+/* Avatarin alasvetovalikko */
+.avatar-dropdown {
+  position: relative;
+  display: inline-block;
+}
+
+.avatar-dropdown .dropdown-content {
+  display: none;
+  position: absolute;
+  right: 0;
+  background-color: rgb(241, 157, 153); /* Sama väri kuin Matematiikka-valikossa */
+  min-width: 90px;
+  border-radius: 8px;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2); /* Lisää varjo valikon ympärille */
+  z-index: 10; /* Nostaa valikon muiden elementtien päälle */
+  align-items: center;
+}
+
+.avatar-dropdown .dropdown-content a {
+  color: white;
+  padding: 10px;
+  text-decoration: none;
+  display: block;  
+  border-radius: 8px;
+}
+
+.avatar-dropdown .dropdown-content a:hover {
+  background-color: rgba(239, 125, 125, 1);
+}
+
+.avatar-dropdown:hover .dropdown-content {
+  display: block;
+}
+
   
   /* Headerin alaosa (navigointipainikkeet) */
   .header-bottom {

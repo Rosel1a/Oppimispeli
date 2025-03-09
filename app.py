@@ -13,7 +13,7 @@ app.secret_key = "supersecretkey"
 # Pääsivun reitti
 @app.route('/')
 def index():
-    return render_template('frontPage.html')  # Tämä viittaa HTML-tiedostoon
+    return render_template('teacherMenu.html')  # Tämä viittaa HTML-tiedostoon
 
 # Reitti kirjautumissivulle
 @app.route('/firstscreen')
@@ -34,6 +34,21 @@ def teacher_login():
 @app.route('/student_login')
 def student_login():
     return render_template('studentLogIn.html')
+
+#reitti oppilaiden hallintaan
+@app.route('/group_management')
+def group_management():
+    return render_template('groupManagement.html')
+
+#reitti oppilaisiin
+@app.route('/students_info')
+def students_info():
+    return render_template('students.html')
+
+#reitti oppilaisiin
+@app.route('/teacher_menu')
+def teacher_menu():
+    return render_template('teacherMenu.html')
 
 # Rekisteröitymisfunktio
 @app.route('/register', methods=['POST'])

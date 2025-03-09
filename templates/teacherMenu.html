@@ -6,8 +6,9 @@
     <!-- Viewportin avulla sivu skaalautuu laitteelle sopivaksi -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Opikku</title>
-    <!-- <link rel="stylesheet" href="styles.css" /> -->
-    <link rel="stylesheet" href="tempTeacher.css" />
+    <!-- <link rel="stylesheet" href="styles.css" /> <link rel="stylesheet" href="static/tempTeacher.css" />-->
+    <link rel="stylesheet" href="{{ url_for('static', filename='tempTeacher.css') }}">
+    
   </head>
   <body>
     <!-- Headerin sisältö (eka osio sivusta) -->
@@ -35,8 +36,8 @@
           <a href="{{ url_for('frontPage') }}">
             <button class="coming-soon-btn">Etusivu</button>
           </a>-->
-          <button class="coming-soon-btn" onclick="window.location.href='students.html';">Oppilaat</button>
-          <button class="coming-soon-btn" onclick="window.location.href='groupManagement.html';">Ryhmät</button>
+          <button class="coming-soon-btn"onclick=window.location.href="{{ url_for('students_info') }}">Oppilaat</button>
+          <button class="coming-soon-btn"onclick=window.location.href="{{ url_for('group_management') }}">Ryhmät</button>
           <!-- Matematiikka-nappi ja alasvetovalikko -->
         </div>
        

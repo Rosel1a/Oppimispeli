@@ -8,6 +8,7 @@ html, body {
   display: flex; /* Mahdollistaa flexboxin käytön */
   flex-direction: column; /* Asettaa sisällön pystysuuntaisesti */
   box-sizing: border-box; /* Sisältää paddingin elementin kokonaiskokoon */
+  
 }
 
 /* Header (yläosa) */
