@@ -31,27 +31,44 @@ def get_db_connection():
         return None
 
 # Funktio, joka palauttaa satunnaisen kysymyksen tietokannasta
-def get_random_question(pelin_id):
+def get_random_question(pelin_id, asked_question_ids):
     connection = get_db_connection()
-    cursor = connection.cursor(dictionary=True)
-
-    # Käytetään pelin ID:tä kyselyssä
-    query = "SELECT * FROM tehtava WHERE Pelit_peliID = %s ORDER BY RAND() LIMIT 1"
-    cursor.execute(query, (pelin_id,))  # pelin_id lisätään parametrina kyselyyn
-    question = cursor.fetchone()
-    
-    cursor.close()
-    connection.close()
-
-    if question:
-        return {
-            'question': question['kysymys'],
-            'answer': question['oikea_vastaus'],
-            'answer_type': 'number' if question['oikea_vastaus'].isdigit() else 'text',
-            'tehtava_id': question['tehtavaID']  # Lisää tehtava_id tähän
-        }
-    else:
+    if not connection:
+        print("Tietokantayhteys epäonnistui!")
         return {'question': 'No questions found', 'answer': '', 'answer_type': 'text', 'tehtava_id': None}
+    
+    try:
+        cursor = connection.cursor(dictionary=True)
+
+        # Suodatetaan jo kysytyt kysymykset
+        if asked_question_ids:
+            placeholders = ','.join(['%s'] * len(asked_question_ids))
+            query = f"""
+                SELECT * FROM tehtava
+                WHERE Pelit_peliID = %s AND tehtavaID NOT IN ({placeholders})
+                ORDER BY RAND() LIMIT 1
+            """
+            params = [pelin_id] + asked_question_ids
+        else:
+            query = "SELECT * FROM tehtava WHERE Pelit_peliID = %s ORDER BY RAND() LIMIT 1"
+            params = [pelin_id]
+
+        cursor.execute(query, params)
+        question = cursor.fetchone()
+
+        if question:
+            return {
+                'question': question['kysymys'],
+                'answer': question['oikea_vastaus'],
+                'answer_type': 'number' if question['oikea_vastaus'].isdigit() else 'text',
+                'tehtava_id': question['tehtavaID']
+            }
+        else:
+            return {'question': 'No questions found', 'answer': '', 'answer_type': 'text', 'tehtava_id': None}
+
+    finally:
+        cursor.close()
+        connection.close()
     
 # Funktio pelin ohjeiden hakemiseen
 def get_game_instructions(peli_id):
@@ -176,8 +193,8 @@ def create_game_result(oppilas_id, peli_id):
     
     cursor = connection.cursor()
     query = """
-        INSERT INTO pelitulos (Oppilas_oppilasID, Pelit_peliID, pisteet, kysymys_maara, oikeat_vastaukset, peliaika, pvm)
-        VALUES (%s, %s, 0, 0, 0, 0, NOW())
+        INSERT INTO pelitulos (Oppilas_oppilasID, Pelit_peliID, pisteet, kysymys_maara, oikeat_vastaukset, pvm)
+        VALUES (%s, %s, 0, 0, 0, NOW())
     """
     cursor.execute(query, (oppilas_id, peli_id))
     connection.commit()
@@ -203,7 +220,7 @@ def save_game_result(pelitulos_id, pisteet, kysymys_maara, oikeat_vastaukset):
     
     query = """
         UPDATE pelitulos
-        SET pisteet = %s, kysymys_maara = %s, oikeat_vastaukset = %s, peliaika = 0, pvm = NOW()
+        SET pisteet = %s, kysymys_maara = %s, oikeat_vastaukset = %s, pvm = NOW()
         WHERE pelitulosID = %s
     """
     cursor.execute(query, (pisteet, kysymys_maara, oikeat_vastaukset, pelitulos_id))

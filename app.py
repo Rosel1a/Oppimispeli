@@ -168,6 +168,7 @@ def peli(pelin_id):
     # Tässä pelin_id voidaan käyttää hakemaan pelin tiedot tietokannasta
     session['question_count'] = 0  # Alustetaan kysymysten laskuri
     session['score'] = 0
+    session['asked_questions'] = [] #tyhjä lista jo kysytyille tehtäville
 
     # Luodaan pelitulos ID peliä varten
     pelitulos_id = create_game_result(session.get('oppilasID'), pelin_id)
@@ -189,13 +190,21 @@ def get_instructions(peli_id):
 def new_question(pelin_id):
     if 'question_count' not in session:
         session['question_count'] = 0
+    if 'asked_questions' not in session:
+        session['asked_questions'] = []
 
     if session['question_count'] >= 10:
         return jsonify({'game_over': True, 'message': 'Peli on ohi!'}), 200
 
-    question_data = get_random_question(pelin_id)  # Muokataan funktio hakemaan pelin mukaan
-    session['question_count'] += 1
-    return jsonify(question_data)
+    question_data = get_random_question(pelin_id, session['asked_questions'])  # Muokataan funktio hakemaan pelin mukaan
+    
+    if question_data['tehtava_id']:
+        session['asked_questions'].append(question_data['tehtava_id'])
+        session['question_count'] += 1
+        return jsonify(question_data)
+    else:
+        # Ei enää kysymyksiä jäljellä
+        return jsonify({'game_over': True, 'message': 'Ei enää kysymyksiä!'}), 200
 
 # Vastauksen tarkistusreitti
 @app.route('/check_answer', methods=['POST'])
