@@ -24,7 +24,7 @@
             flex-direction: column;
             width: 80%;
             gap: 20px;
-            margin-top: 20px;
+            margin-top: 10px;
         }
         .sidebar {
             background-color: #2d6a9f;
@@ -80,16 +80,9 @@
     </header>
     <!-- Uusi UI (toka osio sivulla)-->
     <div class="container" style="flex-direction: row; height:75% ;">
-        <div class="sidebar" style="width: 30%";>
-          <div class="dropdown">
-            <button class="dropbtn" style="width: 100%;">Ryhmät</button>
-            <div class="dropdown-content" style="width: 100%;">
-              <a href="{{ url_for('math_menu', grade=3) }}">Ryhmä A</a>
-            </div>
-          </div>
-        </div>
+       
         <div class="content-box" style="width: 70%;">
-            Luodut ryhmät
+            ryhmän luontin
         </div>
     </div>
   </body>
