@@ -51,6 +51,11 @@
             font-size: 18px;
             font-weight: bold;
         }
+        .sidebar-incont{
+          display: flex;
+            flex-direction: column;
+            width: 50%;
+        }
     </style>
   </head>
   <body>
@@ -88,8 +93,25 @@
             </div>
           </div>
         </div>
-        <div class="content-box" style="width: 70%;">
-            Oppilaan tiedot ja tulokset peleistä
+        <div class="content-box" style="width: 70%; ">
+          <div class="sidebar-incont" role="complementary" aria-label="Sidebar content">
+            <h2 class="sidebar-title">Oppilas</h2>
+           
+           <!-- Oppilaan tiedot -->
+            <div id="etunimi" class="hidden">etunimi</div> <!-- Oppilaan etunimi -->
+            <div id="sukunimi" class="">sukunimi</div> <!-- Oppilaan sukunimi -->
+            <div id="syntymapaiva" class="hidden">syntymäpäivä</div> <!-- Oppilaan syntymäpäivä -->
+            <div id="luokka" class="hidden">luokka</div> <!-- Oppilaan luokka -->
+        </div>
+        <div class="sidebar-incont" role="complementary" aria-label="Sidebar content">
+          <h2 class="sidebar-title">Pelitulokset</h2>
+         
+         <!-- Oppilaan pelitulokset -->
+          <div id="etunimi" class="hidden">etunimi</div> <!-- Oppilaan etunimi -->
+          <div id="sukunimi" class="">sukunimi</div> <!-- Oppilaan sukunimi -->
+          <div id="syntymapaiva" class="hidden">syntymäpäivä</div> <!-- Oppilaan syntymäpäivä -->
+          <div id="luokka" class="hidden">luokka</div> <!-- Oppilaan luokka -->
+      </div>
         </div>
     </div>
   </body>
