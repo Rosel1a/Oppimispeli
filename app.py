@@ -35,10 +35,15 @@ def teacher_login():
 def student_login():
     return render_template('studentLogIn.html')
 
-#reitti oppilaiden hallintaan
+#reitti oppilaiden ryhmien hallintaan
 @app.route('/group_management')
 def group_management():
     return render_template('groupManagement.html')
+
+#reitti ryhmienluontiin
+@app.route('/group_selection')
+def group_selection():
+    return render_template('groupSelection.html')
 
 #reitti oppilaisiin
 @app.route('/students_info')

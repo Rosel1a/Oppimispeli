@@ -7,6 +7,10 @@ from flask import session
 from werkzeug.security import generate_password_hash, check_password_hash
 
 # Määritellään yhteyspooli 
+#"host": "localhost",
+#    "user": "root",
+#    "password": "kissa",
+#   "database": "oppimispeli2"
 dbconfig = {    
     "host": "85.23.94.251",      # Esim. "123.45.67.89" 
     "user" : "saaga",    # MySQL-käyttäjänimi

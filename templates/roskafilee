@@ -1,0 +1,13 @@
+<div class="header-bottom">
+                <div class="nav-buttons">
+                  <a href="{{ url_for('teacher_menu') }}">
+                    <button class="coming-soon-btn">Etusivu</button>
+                  </a>
+                  <button class="coming-soon-btn" style="">Luo ryhmä</button>
+                </div>
+                
+              </div>
+              <header class="header-section" >
+              
+              
+              </header>
