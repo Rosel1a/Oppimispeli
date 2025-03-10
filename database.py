@@ -4,6 +4,7 @@ import mysql.connector
 from mysql.connector import pooling
 import sys
 from flask import session
+from werkzeug.security import generate_password_hash, check_password_hash
 
 # Määritellään yhteyspooli 
 dbconfig = {    
@@ -77,9 +78,11 @@ def register_user(etunimi, sukunimi, kirjautumistunnus, salasana, rooli, syntyma
     cursor = connection.cursor()
 
     try:
+        #luodaan salattu salasana
+        hashed_salasana = generate_password_hash(salasana)
         # 🔹 1. Lisää käyttäjä user-tauluun
         sql = "INSERT INTO user (etunimi, sukunimi, kirjautumistunnus, salasana, rooli, created_at) VALUES (%s, %s, %s, %s, %s, NOW())"
-        values = (etunimi, sukunimi, kirjautumistunnus, salasana, rooli)
+        values = (etunimi, sukunimi, kirjautumistunnus, hashed_salasana, rooli)
         cursor.execute(sql, values)
         connection.commit()
 
@@ -121,8 +124,9 @@ def check_user_credentials(kirjautumistunnus, salasana, rooli):
         cursor.execute(sql, (kirjautumistunnus, rooli))
         login_user = cursor.fetchone()
 
-        #if user and check_password_hash(user["salasana"], salasana):
-        if login_user and login_user["salasana"] == salasana:
+        
+        #if login_user and login_user["salasana"] == salasana:
+        if login_user and check_password_hash(login_user["salasana"], salasana):
             # Jos käyttäjä on oppilas, haetaan myös oppilasID
             if rooli == "oppilas":
                 cursor.execute("SELECT oppilasID FROM oppilas WHERE User_userID = %s", (login_user["userID"],))

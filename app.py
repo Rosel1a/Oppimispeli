@@ -57,7 +57,7 @@ def register():
     sukunimi = request.form['sukunimi']
     kirjautumistunnus = request.form['kirjautumistunnus']
     salasana = request.form['salasana']
-    rooli = request.form['rooli']  # Tämä tulee piilotettuna inputina lomakkeessa
+    rooli = request.form.get('rooli', 'oppilas')  # Tämä tulee piilotettuna inputina lomakkeessa
 
     #oppilaille myös:
     syntymapaiva = request.form.get('syntymapaiva')
@@ -65,7 +65,11 @@ def register():
 
     if register_user(etunimi, sukunimi, kirjautumistunnus, salasana, rooli, syntymapaiva, luokka):
         flash("Rekisteröinti onnistui!", "success")
-        return redirect(url_for('frontPage'))
+        session['rooli'] = rooli
+        if rooli == 'opettaja': 
+            return redirect(url_for('teacher_menu'))
+        else:
+            return redirect(url_for('frontPage'))
     else:
         flash("Rekisteröinti epäonnistui!", "danger")
         return redirect(url_for('firstscreen'))
