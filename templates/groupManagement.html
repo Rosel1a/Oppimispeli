@@ -24,7 +24,8 @@
             flex-direction: column;
             width: 80%;
             gap: 20px;
-            margin-top: 20px;
+            margin-top: 10px;
+
         }
         .sidebar {
             background-color: #2d6a9f;
@@ -32,6 +33,7 @@
             padding: 20px;
             border-radius: 10px;
             position: relative;
+            
         }
         .name-box {
             background-color: #b0cde1;
@@ -51,6 +53,15 @@
             font-size: 18px;
             font-weight: bold;
         }
+        .sidebar-left{
+          
+            width: 100%;
+            padding: 0px;
+            border-radius: 0px;
+            position: relative;
+        }
+
+       
     </style>
   </head>
   <body>
@@ -82,8 +93,9 @@
     </header>
     <!-- Uusi UI (toka osio sivulla)-->
     <div class="container" style="flex-direction: row; height:75% ;">
-        <div class="sidebar" style="width: 30%";>
-          <button class="coming-soon-btn" style="">Luo ryhmä</button>
+
+        <div class="sidebar" style="width: 20%";>
+          
           <div class="dropdown">
             <button class="dropbtn" style="width: 100%;">Ryhmät</button>
             <div class="dropdown-content" style="width: 100%;">
@@ -93,10 +105,19 @@
         </div>
         
         <div class="content-box" style="width: 70%;">
-          <div class="container-fluid">
-           
+          <div >
             
           </div>
+          
+            
+          </div>
+          <div class="sidebar-left" style="width: 5%";>
+          
+            <div class="nav-buttons">
+              <a href="{{ url_for('group_selection') }}">
+                <button class="coming-soon-btn">Luo ryhmä</button>
+              </a>
+            </div>
            
         </div>
     </div>
