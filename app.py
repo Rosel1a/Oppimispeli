@@ -13,7 +13,7 @@ app.secret_key = "supersecretkey"
 # Pääsivun reitti
 @app.route('/')
 def index():
-    return render_template('teacherMenu.html')  # Tämä viittaa HTML-tiedostoon
+    return render_template('frontPage.html')  # Tämä viittaa HTML-tiedostoon
 
 # Reitti kirjautumissivulle
 @app.route('/firstscreen')
@@ -45,7 +45,7 @@ def group_management():
 def students_info():
     return render_template('students.html')
 
-#reitti oppilaisiin
+#reitti opettajiin
 @app.route('/teacher_menu')
 def teacher_menu():
     return render_template('teacherMenu.html')
@@ -117,7 +117,7 @@ def teacher_login_view():
             session['userID'] = logged_in_user['userID']  # Tallennetaan käyttäjä sessioniin
             session['rooli'] = 'opettaja'  
             print("Session userID:", session.get('userID'))
-            return redirect(url_for('frontPage'))  # Ohjataan opettajan etusivulle
+            return redirect(url_for('teacher_menu'))  # Ohjataan opettajan etusivulle
         else:
             return render_template('teacherLogin.html', virhe="Virheellinen käyttäjätunnus tai salasana!")
 
@@ -130,9 +130,9 @@ def logout():
     session.clear()  # Tyhjennetään session-tiedot
     
     if rooli == "opettaja":
-        return redirect(url_for('teacher_login_view'))
+        return redirect(url_for('firstscreen'))
     else:
-        return redirect(url_for('student_login_view'))
+        return redirect(url_for('firstscreen'))
 
 # Kuva reitti
 @app.route('/kuvat/<path:filename>')
@@ -235,7 +235,7 @@ def end_game():
 
     data = request.get_json()
     final_score = data.get('final_score', 0)
-    correct_answers = data.get('correct_answers', 0)
+    correct_answers = session.get('correct_answers', 0)
     question_count = session.get('question_count', 0)
 
     sys.stderr.write(f"Tallennetaan tulos: pelitulos_id={pelitulos_id}, pisteet={final_score}, kysymykset={question_count}, oikein={correct_answers}")
