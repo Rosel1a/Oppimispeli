@@ -55,10 +55,12 @@
     <!-- Painikkeet opettajan ja oppilaan kirjautumiseen -->
     <div class="container">
         <a href="{{ url_for('teacher_login') }}">
-            <button class="game-button">Opettaja</button>
+            <img src="{{ url_for('static', filename='kuvat/opettajaLogo.png') }}" alt="" style="width:42px;height:42px;">
+            
         </a>
         <a href="{{ url_for('student_login') }}">
-            <button class="game-button">Oppilas</button>
+            <img src="{{ url_for('static', filename='kuvat/oppilasLogo.png') }}" alt="" style="width:42px;height:42px;">
+           
         </a>
     </div>
 </body>
