@@ -234,4 +234,46 @@ def save_game_result(pelitulos_id, pisteet, kysymys_maara, oikeat_vastaukset):
     connection.close()
     return True
 
+#hakee kaikki oppilaat ja heidän luokat
+def get_all_students():
+    connection = get_db_connection()
+    cursor = connection.cursor(dictionary=True)
+
+    query = """
+        SELECT o.oppilasID, u.etunimi, u.sukunimi, o.luokka
+        FROM oppilas o
+        JOIN user u ON o.User_userID = u.userID
+    """
+    cursor.execute(query)
+    students = cursor.fetchall()
+
+    cursor.close()
+    connection.close()
+    return students
+
+#hakee kaikki käytössä olevat luokat
+def get_all_classes():
+    connection = get_db_connection()
+    cursor = connection.cursor(dictionary=True)
+
+    query = "SELECT DISTINCT luokka FROM oppilas WHERE luokka IS NOT NULL"
+    cursor.execute(query)
+    classes = [row['luokka'] for row in cursor.fetchall()]
+
+    cursor.close()
+    connection.close()
+    return classes
+
+#päivittää oppilaan ryhmän/luokan
+def update_student_class(oppilas_id, uusi_luokka):
+    connection = get_db_connection()
+    cursor = connection.cursor()
+
+    query = "UPDATE oppilas SET luokka = %s WHERE oppilasID = %s"
+    cursor.execute(query, (uusi_luokka, oppilas_id))
+
+    connection.commit()
+    cursor.close()
+    connection.close()
+    
 get_db_connection()

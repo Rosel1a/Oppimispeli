@@ -19,7 +19,7 @@
             height: 100vh;
             margin: 0;
         }
-        .container {
+        /*.container {
             display: flex;
             flex-direction: column;
             width: 80%;
@@ -49,7 +49,69 @@
             justify-content: center;
             align-items: center;
             font-size: 18px;
-            font-weight: bold;
+            font-weight: bold; 
+        } */
+        .container {
+            display: flex;
+            justify-content: space-between;
+            width: 90%;
+            margin-top: 20px;
+        }
+
+        .left-container, .right-container {
+            width: 48%;  /* Molemmat säilöt vievät lähes puolet tilasta */
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+
+        .search-box {
+            margin-bottom: 15px;
+        }
+
+        .input-field {
+            padding: 8px;
+            width: 100%;
+            margin-top: 5px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+
+        .student-list, .class-list {
+            max-height: 300px;
+            overflow-y: auto;
+            border: 1px solid #ccc;
+            margin-top: 10px;
+            padding: 10px;
+            border-radius: 5px;
+        }
+
+        .student-item {
+            padding: 10px;
+            margin: 5px;
+            background-color: #f4f4f4;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+
+        .student-item:hover {
+            background-color: #e0e0e0;
+        }
+
+        .add-button {
+            margin-top: 20px;
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .add-button:hover {
+            background-color: #45a049;
         }
     </style>
   </head>
@@ -79,11 +141,101 @@
       </div>
     </header>
     <!-- Uusi UI (toka osio sivulla)-->
-    <div class="container" style="flex-direction: row; height:75% ;">
-       
-        <div class="content-box" style="width: 70%;">
-            ryhmän luontin
-        </div>
-    </div>
+    <div class="container">
+      <!-- Vasemmalla oppilaiden hakeminen -->
+      <div class="left-container">
+          <h2>Hae Oppilaita</h2>
+          <div class="search-box">
+              <input class="input-field" type="text" id="studentSearch" placeholder="Etsi oppilasta nimellä...">
+          </div>
+
+          <div class="student-list" id="studentList">
+              {% for oppilas in oppilaat %}
+                  <div class="student-item" onclick="selectStudent('{{ oppilas.oppilasID }}', '{{ oppilas.etunimi }} {{ oppilas.sukunimi }}')">
+                      {{ oppilas.etunimi }} {{ oppilas.sukunimi }}
+                  </div>
+              {% endfor %}
+          </div>
+      </div>
+
+      <!-- Oikealla ryhmän luominen -->
+      <div class="right-container">
+          <h2>Ryhmän Hallinta</h2>
+          <div class="class-box">
+              <input class="input-field" type="text" id="className" placeholder="Anna ryhmän nimi (esim. 3a)">
+          </div>
+          <div id="selectedStudent">
+              <p><strong>Valittu Oppilas:</strong> Ei valittua oppilasta</p>
+          </div>
+          <button class="add-button" id="addButton" onclick="addStudentToClass()">Lisää Oppilas Ryhmään</button>
+      </div>
+  </div>
+  
+  <script>
+    var selectedStudentID = null;
+
+    // Funktio oppilaiden suodattamiseen hakukentän mukaan
+    function filterStudents() {
+        var searchQuery = document.getElementById("studentSearch").value.toLowerCase();  // Haetaan hakuteksti
+        var students = document.querySelectorAll(".student-item");  // Haetaan kaikki oppilaslistan elementit
+
+        students.forEach(function(student) {
+            var studentName = student.textContent.toLowerCase();  // Otetaan oppilaan nimi
+            if (studentName.includes(searchQuery)) {
+                student.style.display = "block";  // Näytetään, jos nimi vastaa hakua
+            } else {
+                student.style.display = "none";  // Piilotetaan, jos nimi ei vastaa hakua
+            }
+        });
+    }
+
+    // Lisää tämä funktio hakukenttään
+    document.getElementById("studentSearch").addEventListener("input", filterStudents);
+    
+    // Funktio oppilaan valitsemiseksi
+    function selectStudent(oppilasID, oppilasName) {
+        selectedStudentID = oppilasID;
+        document.getElementById("selectedStudent").innerHTML = `<p><strong>Valittu Oppilas:</strong> ${oppilasName}</p>`;
+    }
+
+    // Funktio oppilaan lisäämiseksi ryhmään
+    function addStudentToClass() {
+        var className = document.getElementById("className").value;
+
+        if (!selectedStudentID) {
+            alert("Valitse ensin oppilas!");
+            return;
+        }
+
+        if (!className) {
+            alert("Anna ryhmän nimi!");
+            return;
+        }
+
+        // Täällä voidaan lähettää tiedot takaisin palvelimelle, esim. Flaskin API-pyyntöön
+        fetch('/assign_class', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                oppilas_id: selectedStudentID,
+                luokka: className
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                alert("Oppilas lisätty ryhmään!");
+                // Voidaan lisätä myös päivitys listaan tai muuta logiikkaa
+            } else {
+                alert("Jotain meni pieleen.");
+            }
+          })
+          .catch(error => {
+            console.error("Virhe:", error);
+        });
+    }
+  </script>
   </body>
 </html>

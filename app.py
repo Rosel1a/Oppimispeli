@@ -4,6 +4,7 @@
 from flask import Flask, render_template, jsonify, request, redirect, url_for, flash, session
 import sys
 from database import get_random_question, register_user, get_game_instructions, check_user_credentials, save_player_answer, save_game_result, create_game_result
+from database import get_all_students, get_all_classes, update_student_class
 import logging
 logging.basicConfig(stream=sys.stdout, level=logging.DEBUG)
 sys.stderr = sys.stdout
@@ -41,9 +42,9 @@ def group_management():
     return render_template('groupManagement.html')
 
 #reitti ryhmienluontiin
-@app.route('/group_selection')
-def group_selection():
-    return render_template('groupSelection.html')
+#@app.route('/group_selection')
+#def group_selection():
+    #return render_template('groupSelection.html')
 
 #reitti oppilaisiin
 @app.route('/students_info')
@@ -269,6 +270,46 @@ def end_game():
     session.pop('correct_answers', None)
 
     return jsonify({'message': f'Peli päättyi, pisteet tallennettu! Oikein meni {correct_answers}/10', 'final_score': final_score})
+
+@app.route('/assign_class', methods=['POST'])
+def assign_class():
+    if 'userID' not in session or session.get('rooli') != 'opettaja':
+        flash("Kirjaudu sisään opettajana!", "danger")
+        return redirect(url_for('teacher_login'))
+    
+    data = request.get_json()  # Haetaan JSON-data
+
+    if not data:  # Tarkistetaan, että data on olemassa
+        return jsonify({'success': False, 'message': 'Ei tietoja vastaanotettu.'}), 400
+
+     # Debug: Tulostetaan vastaanotettu data
+    print(f"Received data: {data}")
+
+    oppilas_id = data.get('oppilas_id')  # Haetaan oppilas_id JSON-datasta
+    uusi_luokka = data.get('luokka', '').strip()  # Poistetaan turhat välilyönnit luokasta
+
+    # Debug: Tarkistetaan, onko kentät saatu oikein
+    print(f"oppilas_id: {oppilas_id}, uusi_luokka: {uusi_luokka}")
+
+    if not oppilas_id or not uusi_luokka:
+        return jsonify({'success': False, 'message': 'Oppilas ID tai luokan nimi puuttuu.'}), 400
+
+    try:
+        # Päivitetään oppilaan luokka
+        update_student_class(oppilas_id, uusi_luokka)
+        return jsonify({'success': True, 'message': 'Oppilas lisätty luokkaan onnistuneesti!'})
+    except Exception as e:
+        return jsonify({'success': False, 'message': f'Virhe: {str(e)}'}), 500
+    
+@app.route('/group_selection')
+def group_selection():
+    if 'userID' not in session or session.get('rooli') != 'opettaja':
+        flash("Kirjaudu sisään opettajana!", "danger")
+        return redirect(url_for('teacher_login'))
+
+    oppilaat = get_all_students()
+    luokat = get_all_classes()
+    return render_template('groupSelection.html', oppilaat=oppilaat, luokat=luokat)
 
 #  Virheiden käsittely
 if __name__ == '__main__':
