@@ -234,6 +234,49 @@ def save_game_result(pelitulos_id, pisteet, kysymys_maara, oikeat_vastaukset):
     connection.close()
     return True
 
+# Tarkistaa, onko opettajalla jo luokka
+def check_existing_group(teacher_id):
+    connection = get_db_connection()
+    cursor = connection.cursor()
+
+    cursor.execute("SELECT * FROM luokka WHERE Opettaja_opettajaID = %s", (teacher_id,))
+    existing_group = cursor.fetchone()
+
+    cursor.close()
+    connection.close()
+    
+    return existing_group
+
+# Hakee opettajan luomat ryhmät
+def get_teacher_class(teacher_id):
+    connection = get_db_connection()
+    cursor = connection.cursor(dictionary=True)
+
+    query = """
+        SELECT luokkaID, luokka_nimi FROM luokka WHERE Opettaja_opettajaID = %s
+    """
+    cursor.execute(query, (teacher_id,))
+    luokat = cursor.fetchall()
+
+    # Debug: Tulostetaan haetut luokat
+    print(f"Haetut luokat: {luokat}")
+
+    cursor.close()
+    connection.close()
+    return luokat
+
+# Luo uusi luokka tietokantaan
+def create_new_group(class_name, teacher_id):
+    connection = get_db_connection()
+    cursor = connection.cursor()
+
+    cursor.execute("INSERT INTO luokka (luokka_nimi, Opettaja_opettajaID) VALUES (%s, %s)", (class_name, teacher_id))
+    connection.commit()
+
+    cursor.close()
+    connection.close()
+
+
 #hakee kaikki oppilaat ja heidän luokat
 def get_all_students():
     connection = get_db_connection()
@@ -256,21 +299,35 @@ def get_all_classes():
     connection = get_db_connection()
     cursor = connection.cursor(dictionary=True)
 
-    query = "SELECT DISTINCT luokka FROM oppilas WHERE luokka IS NOT NULL"
+    query = "SELECT luokkaID, luokka_nimi FROM luokka"
     cursor.execute(query)
-    classes = [row['luokka'] for row in cursor.fetchall()]
+    classes = cursor.fetchall()
 
     cursor.close()
     connection.close()
     return classes
 
+# Funktio, joka hakee luokan ID:n luokan nimen perusteella
+def get_class_id_by_name(class_name):
+    connection = get_db_connection()
+    cursor = connection.cursor(dictionary=True)
+
+    query = "SELECT luokkaID FROM luokka WHERE luokka_nimi = %s"
+    cursor.execute(query, (class_name,))
+    result = cursor.fetchone()
+
+    cursor.close()
+    connection.close()
+
+    return result['luokkaID'] if result else None
+
 #päivittää oppilaan ryhmän/luokan
-def update_student_class(oppilas_id, uusi_luokka):
+def update_student_class(oppilas_id, luokka_id):
     connection = get_db_connection()
     cursor = connection.cursor()
 
-    query = "UPDATE oppilas SET luokka = %s WHERE oppilasID = %s"
-    cursor.execute(query, (uusi_luokka, oppilas_id))
+    query = "UPDATE oppilas SET luokkaID = %s WHERE oppilasID = %s"
+    cursor.execute(query, (luokka_id, oppilas_id))
 
     connection.commit()
     cursor.close()

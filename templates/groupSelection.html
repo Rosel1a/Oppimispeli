@@ -160,10 +160,22 @@
 
       <!-- Oikealla ryhmän luominen -->
       <div class="right-container">
+             <!-- Uuden ryhmän luominen -->
+            <h2>Luo uusi ryhmä</h2>
+                <div class="class-box">
+                    <input class="input-field" type="text" id="newClassName" placeholder="Anna ryhmän nimi (esim. 3A)">
+                </div>
+            <button class="add-button" id="createGroupButton" onclick="createGroup()">Luo Ryhmä</button>
           <h2>Ryhmän Hallinta</h2>
           <div class="class-box">
-              <input class="input-field" type="text" id="className" placeholder="Anna ryhmän nimi (esim. 3a)">
-          </div>
+            <select class="input-field" id="classSelect">
+                <option value="" disabled selected>Valitse luokka</option>
+                <!-- Täytetään valikko dynaamisesti Flaskista -->
+                {% for luokka in luokat %}
+                    <option value="{{ luokka['luokkaID'] }}">{{ luokka['luokka_nimi'] }}</option>
+                {% endfor %}
+            </select>
+        </div>
           <div id="selectedStudent">
               <p><strong>Valittu Oppilas:</strong> Ei valittua oppilasta</p>
           </div>
@@ -173,6 +185,36 @@
   
   <script>
     var selectedStudentID = null;
+
+    function createGroup() {
+        var className = document.getElementById('newClassName').value.trim();
+
+        if (className === "") {
+            alert("Ryhmän nimi ei voi olla tyhjä.");
+            return;
+        }
+
+        // Lähetetään POST-pyyntö luokan luomiseksi
+        fetch('/create_group', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ class_name: className }),
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                alert("Ryhmän luominen onnistui!");
+                location.reload();  // Uudelleenlataa sivu, jotta näkyvät uudet muutokset
+            } else {
+                alert("Ryhmän luominen epäonnistui: " + data.message);
+            }
+        })
+        .catch(error => {
+            alert("Virhe: " + error);
+        });
+    }
 
     // Funktio oppilaiden suodattamiseen hakukentän mukaan
     function filterStudents() {
@@ -200,42 +242,42 @@
 
     // Funktio oppilaan lisäämiseksi ryhmään
     function addStudentToClass() {
-        var className = document.getElementById("className").value;
+        var selectedClass = document.getElementById("classSelect").value;
 
-        if (!selectedStudentID) {
-            alert("Valitse ensin oppilas!");
+        if (!selectedClass) {
+            alert("Valitse luokka ennen kuin lisäät oppilaan.");
             return;
         }
 
-        if (!className) {
-            alert("Anna ryhmän nimi!");
+        // Suorita oppilaan lisääminen valittuun luokkaan
+        var studentId = selectedStudentID;  // Oppilaan ID tulee olla valittuna
+
+        if (!studentId) {
+            alert("Valitse oppilas ennen luokan lisäämistä.");
             return;
         }
 
-        // Täällä voidaan lähettää tiedot takaisin palvelimelle, esim. Flaskin API-pyyntöön
+        // Lähetetään pyyntö palvelimelle
         fetch('/assign_class', {
             method: 'POST',
             headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
             },
-            body: JSON.stringify({
-                oppilas_id: selectedStudentID,
-                luokka: className
-            })
+            body: JSON.stringify({ oppilas_id: studentId, luokka: selectedClass })
         })
         .then(response => response.json())
         .then(data => {
             if (data.success) {
-                alert("Oppilas lisätty ryhmään!");
-                // Voidaan lisätä myös päivitys listaan tai muuta logiikkaa
+                alert("Oppilas lisätty luokkaan!");
             } else {
-                alert("Jotain meni pieleen.");
+                alert("Virhe: " + data.message);
             }
-          })
-          .catch(error => {
-            console.error("Virhe:", error);
+        })
+        .catch(error => {
+            alert("Virhe: " + error);
         });
     }
+    
   </script>
   </body>
 </html>
