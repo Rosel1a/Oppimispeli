@@ -47,8 +47,9 @@
             padding: 40px;
             border-radius: 10px;
             display: flex;
-            justify-content: center;
-            align-items: center;
+            flex-direction: column;
+            justify-content: start;
+            align-items: left;
             font-size: 18px;
             font-weight: bold;
         }
@@ -67,6 +68,22 @@
 
         .student-item:hover {
           background-color: #f0f0f0; /* Vahvistaa, että elementti muuttuu hover-tilassa */
+        }
+
+        table {
+          width: 100%;
+          border-collapse: collapse;
+          margin-top: 20px;
+        }
+
+        th, td {
+          padding: 10px;
+          text-align: left;
+          border: 1px solid #ddd;
+        }
+
+        th {
+          background-color: #f2f2f2;
         }
     </style>
   </head>
@@ -111,10 +128,10 @@
           </select>
 
             <h2>Hae Oppilaita</h2>
-            <!-- Hakukenttä -->
+            <!-- Hakukenttä 
             <div class="search-box">
               <input class="input-field" type="text" id="studentSearch" placeholder="Etsi oppilasta nimellä...">
-            </div>
+            </div>-->
   
             <!-- Oppilaat-lista -->
             <div class="student-list" id="studentList">
@@ -134,20 +151,37 @@
         <!-- Oppilaan tiedot -->
         <div class="sidebar-incont" role="complementary" aria-label="Sidebar content">
           <h2 class="sidebar-title">Oppilas</h2>
-          <div id="etunimi">etunimi</div>
-          <div id="sukunimi">sukunimi</div>
-          <div id="syntymapaiva">syntymäpäivä</div>
-          <div id="luokka">luokka</div>
+          <div id="etunimi">Etunimi</div>
+          <div id="sukunimi">Sukunimi</div>
+          <div id="syntymapaiva">Syntymäpäivä</div>
+          <div id="luokka">Luokka</div>
         </div>
   
-        <!-- Pelitulokset -->
-        <div class="sidebar-incont" role="complementary" aria-label="Sidebar content">
-          <h2 class="sidebar-title">Pelitulokset</h2>
-          <div id="etunimi">etunimi</div>
-          <div id="sukunimi">sukunimi</div>
-          <div id="syntymapaiva">syntymäpäivä</div>
-          <div id="luokka">luokka</div>
-        </div>
+        <!-- Pelitulokset taulukko -->
+        <table id="pelitulokset-taulukko">
+          <thead>
+            <tr>
+                <th>Pelitulos ID</th>
+                <th>Peli ID</th>
+                <th>Pisteet</th>
+                <th>Kysymykset</th>
+                <th>Oikeat Vastaukset</th>
+                <th>Päivämäärä</th>
+            </tr>
+        </thead>
+        <tbody>
+          {% for result in results %}
+            <tr>
+              <td>{{ result[0] }}</td>
+              <td>{{ result[1] }}</td>
+              <td>{{ result[3] }}</td>
+              <td>{{ result[4] }}</td>
+              <td>{{ result[5] }}</td>
+              <td>{{ result[6] }}</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+        </table>
   
       </div>
   
