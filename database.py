@@ -247,6 +247,18 @@ def check_existing_group(teacher_id):
     
     return existing_group
 
+def get_opettaja_id_by_user_id(user_id):
+    connection = get_db_connection()
+    cursor = connection.cursor(dictionary=True)
+    print(f"Hakee opettajaID käyttäjäID:llä {user_id}")
+    
+    cursor.execute("SELECT opettajaID FROM opettaja WHERE User_userID = %s", (user_id,))
+    result = cursor.fetchone()
+    
+    cursor.close()
+    connection.close()
+    return result['opettajaID'] if result else None
+
 # Hakee opettajan luomat ryhmät
 def get_teacher_class(teacher_id):
     connection = get_db_connection()
@@ -269,12 +281,25 @@ def get_teacher_class(teacher_id):
 def create_new_group(class_name, teacher_id):
     connection = get_db_connection()
     cursor = connection.cursor()
+    print("opettajan ID on vieläkin: ", teacher_id)
 
-    cursor.execute("INSERT INTO luokka (luokka_nimi, Opettaja_opettajaID) VALUES (%s, %s)", (class_name, teacher_id))
-    connection.commit()
-
-    cursor.close()
-    connection.close()
+    try:
+        cursor.execute(
+            "INSERT INTO luokka (luokka_nimi, Opettaja_opettajaID) VALUES (%s, %s)", 
+            (class_name, teacher_id)
+        )
+        connection.commit()  # Varmistetaan, että muutos tallentuu
+    except mysql.connector.IntegrityError as e:
+        print(f"IntegrityError: {e}")  # Esim. UNIQUE rajoite
+        connection.rollback()  # Perutaan transaktio
+        raise e  # Lähetetään virhe takaisin Flask-reitille
+    except mysql.connector.Error as e:
+        print(f"DatabaseError: {e}")  # Muut tietokantavirheet, esim. lukitus
+        connection.rollback()
+        raise e
+    finally:
+        cursor.close()
+        connection.close()
 
 
 #hakee kaikki oppilaat ja heidän luokat

@@ -3,8 +3,10 @@
 
 from flask import Flask, render_template, jsonify, request, redirect, url_for, flash, session
 import sys
+import mysql.connector
+from mysql.connector import connection
 from database import get_random_question, register_user, get_game_instructions, check_user_credentials, save_player_answer, save_game_result, create_game_result
-from database import get_all_students, get_all_classes, update_student_class, check_existing_group, create_new_group, get_teacher_class, get_class_id_by_name
+from database import get_all_students, get_all_classes, update_student_class, check_existing_group, create_new_group, get_teacher_class, get_class_id_by_name, get_opettaja_id_by_user_id
 import logging
 logging.basicConfig(stream=sys.stdout, level=logging.DEBUG)
 sys.stderr = sys.stdout
@@ -48,18 +50,19 @@ def group_selection():
         flash("Kirjaudu sisään opettajana!", "danger")
         return redirect(url_for('teacher_login'))
 
-    teacher_id = session['userID']  # Opettajan ID otetaan sessionista
+    user_id = session['userID']
+    teacher_id = get_opettaja_id_by_user_id(user_id)
 
     oppilaat = get_all_students()
-    luokat = get_all_classes()
+    #luokat = get_all_classes()
     teacher_groups = get_teacher_class(teacher_id)
 
     # Debug: Tulostetaan haetut luokat
-    print(f"Opettajan {teacher_id} luokat: {luokat}")
+    print(f"Opettajan {teacher_id} luokat: {teacher_groups}")
 
     return render_template('groupSelection.html', 
                            oppilaat=oppilaat, 
-                           luokat=luokat, 
+                           luokat=teacher_groups, 
                            teacher_groups=teacher_groups)
 
 #reitti oppilaisiin
@@ -294,19 +297,19 @@ def create_group():
         flash("Kirjaudu sisään opettajana!", "danger")
         return redirect(url_for('teacher_login'))
     
-    teacher_id = session['userID']
-    
-    data = request.get_json()  # Haetaan JSON-data pyynnöstä
+    user_id = session['userID']
+    teacher_id = get_opettaja_id_by_user_id(user_id)  # Hae oikea opettajaID
+    print("opettajan_id: ", teacher_id)
 
+    data = request.get_json()  # Haetaan JSON-data pyynnöstä
     if not data or 'class_name' not in data:
         return jsonify({'success': False, 'message': 'Ryhmän nimi puuttuu.'}), 400
 
     class_name = data['class_name'].strip()
-
     if not class_name:
         return jsonify({'success': False, 'message': 'Ryhmän nimi ei voi olla tyhjä.'}), 400
     
-    class_name = data['class_name']
+    #class_name = data['class_name']
     # Tarkistetaan, onko opettajalla jo luokka
     existing_group = check_existing_group(teacher_id)
 
@@ -319,10 +322,15 @@ def create_group():
         flash('Luokan nimi ei voi olla tyhjä.', 'error')
         return redirect(url_for('group_selection'))
 
-    # Lisätään uusi luokka tietokantaan
-    create_new_group(class_name, teacher_id)
-
-    return jsonify({'success': True, 'message': 'Ryhmän luominen onnistui!'})
+    # Yritetään lisätä luokka ja hoitaa virheet oikein
+    try:
+        create_new_group(class_name, teacher_id)
+        return jsonify({'success': True, 'message': 'Ryhmän luominen onnistui!'})
+    except mysql.connector.IntegrityError:
+        return jsonify({'success': False, 'message': 'Sinulla on jo luokka, et voi luoda toista.'}), 400
+    except mysql.connector.Error as e:
+        #connection.rollback()
+        return jsonify({'success': False, 'message': f'Tietokantavirhe: {str(e)}'}), 500
 
 #funktio jolla lisätään oppilas luokkaan
 @app.route('/assign_class', methods=['POST'])
