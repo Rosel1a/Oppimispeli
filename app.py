@@ -7,6 +7,7 @@ import mysql.connector
 from mysql.connector import connection
 from database import get_random_question, register_user, get_game_instructions, check_user_credentials, save_player_answer, save_game_result, create_game_result
 from database import get_all_students, get_all_classes, update_student_class, check_existing_group, create_new_group, get_teacher_class, get_class_id_by_name, get_opettaja_id_by_user_id
+from database import get_student_by_id, get_student_by_class_id, get_class_name_by_id
 import logging
 logging.basicConfig(stream=sys.stdout, level=logging.DEBUG)
 sys.stderr = sys.stdout
@@ -57,6 +58,9 @@ def group_selection():
     #luokat = get_all_classes()
     teacher_groups = get_teacher_class(teacher_id)
 
+     # Jos oppilaat ei ole tyhjä, jatka
+    if not oppilaat:
+        flash("Ei oppilaita löytynyt.", "danger")
     # Debug: Tulostetaan haetut luokat
     print(f"Opettajan {teacher_id} luokat: {teacher_groups}")
 
@@ -68,7 +72,46 @@ def group_selection():
 #reitti oppilaisiin
 @app.route('/students_info')
 def students_info():
-    return render_template('students.html')
+    if 'userID' not in session or session.get('rooli') != 'opettaja':
+        flash("Kirjaudu sisään opettajana!", "danger")
+        return redirect(url_for('teacher_login'))
+
+    user_id = session['userID']
+    teacher_id = get_opettaja_id_by_user_id(user_id)
+
+    #oppilaat = get_student_by_class_id(2)
+    oppilaat = []
+    #luokat = get_all_classes()
+    teacher_groups = get_teacher_class(teacher_id)
+
+    return render_template('students.html', 
+                           oppilaat=oppilaat, 
+                           luokat=teacher_groups, 
+                           teacher_groups=teacher_groups)
+
+#reitti päivittyvälle oppilas listalle
+@app.route('/students_list')
+def students_list():
+    if 'userID' not in session or session.get('rooli') != 'opettaja':
+        flash("Kirjaudu sisään opettajana!", "danger")
+        return redirect(url_for('teacher_login'))
+
+    user_id = session['userID']
+    teacher_id = get_opettaja_id_by_user_id(user_id)
+
+    # Haetaan valitun luokan oppilaat
+    selected_class_id = request.args.get('luokkaID', default=None, type=int)
+    print(f"Valittu luokkaID: {selected_class_id}")  # Debugi tuloste
+
+    if selected_class_id:
+        oppilaat = get_student_by_class_id(selected_class_id)
+        print(f"Haetut oppilaat: {oppilaat}")  # Debugi tuloste
+    else:
+        oppilaat = []  # Jos luokkaa ei ole valittu, ei palauteta oppilaita
+
+    # Palautetaan pelkästään oppilaslista HTML-muodossa
+    return render_template('partials/student_list.html', oppilaat=oppilaat)
+    
 
 #reitti opettajiin
 @app.route('/teacher_menu')
@@ -369,6 +412,29 @@ def assign_class():
     except Exception as e:
         return jsonify({'success': False, 'message': f'Virhe: {str(e)}'}), 500
     
+
+    # Flask reitti oppilaan tietojen hakemiseksi
+@app.route('/get_student_info/<int:oppilas_id>', methods=['GET'])
+def get_student_info(oppilas_id):
+    if 'userID' not in session or session.get('rooli') != 'opettaja':
+        flash("Kirjaudu sisään opettajana!", "danger")
+        return redirect(url_for('teacher_login'))
+
+    # Hae oppilaan tiedot tietokannasta
+    oppilas = get_student_by_id(oppilas_id)  # Tämä on esimerkki, sinulla voi olla oma funktio
+
+    if not oppilas:
+        return jsonify({'success': False, 'message': 'Oppilasta ei löytynyt.'}), 404
+
+    luokka_nimi = get_class_name_by_id(oppilas['luokkaID'])
+
+    # Palautetaan oppilaan tiedot JSON-muodossa
+    return jsonify({
+        'etunimi': oppilas['etunimi'],
+        'sukunimi': oppilas['sukunimi'],
+        'syntymapaiva': oppilas['syntymapaiva'],
+        'luokka': luokka_nimi
+    })
 #  Virheiden käsittely
 if __name__ == '__main__':
     app.run(debug=True)

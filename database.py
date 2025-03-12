@@ -319,6 +319,76 @@ def get_all_students():
     connection.close()
     return students
 
+def get_student_by_id(oppilas_id):
+    connection = get_db_connection()
+    cursor = connection.cursor(dictionary=True)
+
+    try:
+        # SQL-kysely oppilaan tietojen hakemiseksi
+        #query = "SELECT etunimi, sukunimi, syntymapaiva, luokkaID FROM oppilas WHERE oppilasID = %s"
+        query = """
+            SELECT
+                u.etunimi,
+                u.sukunimi,
+                o.syntymapaiva,
+                o.luokkaID
+            FROM oppilas o
+            JOIN user u ON o.User_userID = u.userID
+            WHERE o.oppilasID = %s
+        """
+        cursor.execute(query, (oppilas_id,))
+        
+        # Haetaan tulokset
+        oppilas = cursor.fetchone()
+
+        if not oppilas:
+            # Jos oppilasta ei löydy
+            return None
+
+        return oppilas  # Palautetaan oppilaan tiedot sanakirjana
+
+    except mysql.connector.Error as err:
+        print(f"Virhe tietokannan kyselyssä: {err}")
+        return None
+
+    finally:
+        cursor.close()
+        connection.close()
+
+def get_student_by_class_id(luokkaID):
+    connection = get_db_connection()
+    cursor = connection.cursor(dictionary=True)
+
+    try:
+        # SQL-kysely oppilaiden hakemiseksi luokkaID:n perusteella
+        query = """
+            SELECT
+                o.oppilasID,
+                u.etunimi,
+                u.sukunimi,
+                o.syntymapaiva,
+                o.luokkaID
+            FROM oppilas o
+            JOIN user u ON o.User_userID = u.userID
+            WHERE o.luokkaID = %s
+        """
+        cursor.execute(query, (luokkaID,))  # Käytetään parametrisoitua kyselyä SQL-injektion estämiseksi
+    
+        students = cursor.fetchall()  # Haetaan kaikki tulokset
+        
+        # Debug: Tarkistetaan, että oppilaat saadaan oikein
+        print(f"Haetut oppilaat: {students}")
+
+        return students  # Palautetaan oppilaat listana
+
+    except mysql.connector.Error as err:
+        print(f"Virhe tietokannan kyselyssä: {err}")
+        return []  # Palautetaan tyhjä lista virheen sattuessa
+
+    finally:
+        cursor.close()
+        connection.close()
+        
 #hakee kaikki käytössä olevat luokat
 def get_all_classes():
     connection = get_db_connection()
@@ -345,6 +415,32 @@ def get_class_id_by_name(class_name):
     connection.close()
 
     return result['luokkaID'] if result else None
+
+def get_class_name_by_id(luokkaID):
+    connection = get_db_connection()
+    cursor = connection.cursor(dictionary=True)
+
+    try:
+        # SQL-kysely luokan nimen hakemiseksi luokkaID:n perusteella
+        query = "SELECT luokka_nimi FROM luokka WHERE luokkaID = %s"
+        cursor.execute(query, (luokkaID,))
+        
+        # Haetaan luokan nimi
+        luokka = cursor.fetchone()
+
+        if not luokka:
+            # Jos luokkaa ei löydy
+            return "Tuntematon luokka"
+        
+        return luokka['luokka_nimi']
+
+    except mysql.connector.Error as err:
+        print(f"Virhe tietokannan kyselyssä: {err}")
+        return "Virhe luokan haussa"
+
+    finally:
+        cursor.close()
+        connection.close()
 
 #päivittää oppilaan ryhmän/luokan
 def update_student_class(oppilas_id, luokka_id):

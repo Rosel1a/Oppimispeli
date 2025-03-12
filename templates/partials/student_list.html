@@ -1,0 +1,13 @@
+<!-- templates/partials/student_list.html -->
+
+<div class="student-list" id="studentList">
+  {% if oppilaat %}
+      {% for oppilas in oppilaat %}
+          <div class="student-item" onclick="selectStudent('{{ oppilas.oppilasID }}', '{{ oppilas.etunimi }} {{ oppilas.sukunimi }}')">
+              {{ oppilas.etunimi }} {{ oppilas.sukunimi }}
+          </div>
+      {% endfor %}
+  {% else %}
+      <p>Ei oppilaita tässä luokassa.</p>
+  {% endif %}
+</div>

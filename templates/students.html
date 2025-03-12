@@ -5,6 +5,7 @@
     <meta charset="UTF-8" />
     <!-- Viewportin avulla sivu skaalautuu laitteelle sopivaksi -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <title>Opikku</title>
     <!-- <link rel="stylesheet" href="styles.css" /> -->
     
@@ -56,6 +57,17 @@
             flex-direction: column;
             width: 50%;
         }
+
+        .student-item {
+          cursor: pointer; /* Varmistaa, että hiiren osoitin muuttuu kädeksi */
+          padding: 5px;
+          border: 1px solid #ccc;
+          margin-bottom: 5px;
+        }
+
+        .student-item:hover {
+          background-color: #f0f0f0; /* Vahvistaa, että elementti muuttuu hover-tilassa */
+        }
     </style>
   </head>
   <body>
@@ -84,35 +96,105 @@
       </div>
     </header>
     <!-- Uusi UI (toka osio sivulla)-->
-    <div class="container" style="flex-direction: row; height:75% ;">
-        <div class="sidebar" style="width: 30%;">
-          <div class="dropdown">
-            <button class="dropbtn" style="width: 100%;">Oppilaat</button>
-            <div class="dropdown-content" style="width: 100%;">
-              <a href="{{ url_for('math_menu', grade=3) }}">Miina Harja</a>
+    <div class="container" style="display: flex; flex-direction: row; height: 75%;">
+    
+      <!-- Sidebar - Vasemman puoleinen navigointi -->
+      <div class="sidebar" style="width: 30%; padding: 10px; box-sizing: border-box;">
+        <!--<div class="dropdown"> 
+          <button class="dropbtn" style="width: 100%;">Ryhmän valinta</button>
+          <div class="dropdown-content" style="width: 100%;"> -->
+            <select class="input-field" id="classSelect">
+              <option value="" disabled selected>Valitse ryhmä</option>
+              {% for luokka in luokat %}
+                  <option value="{{ luokka['luokkaID'] }}">{{ luokka['luokka_nimi'] }}</option>
+              {% endfor %}
+          </select>
+
+            <h2>Hae Oppilaita</h2>
+            <!-- Hakukenttä -->
+            <div class="search-box">
+              <input class="input-field" type="text" id="studentSearch" placeholder="Etsi oppilasta nimellä...">
+            </div>
+  
+            <!-- Oppilaat-lista -->
+            <div class="student-list" id="studentList">
+              {% for oppilas in oppilaat %}
+                <div class="student-item" onclick="selectStudent('{{ oppilas.oppilasID }}', '{{ oppilas.etunimi }} {{ oppilas.sukunimi }}')">
+                  {{ oppilas.etunimi }} {{ oppilas.sukunimi }}
+                </div>
+              {% else %}
+                <p>Ei oppilaita tässä luokassa.</p>
+              {% endfor %}
             </div>
           </div>
+        
+      <!-- Content-box - Oikean puoleinen sisältö -->
+      <div class="content-box" style="width: 70%; padding: 10px; box-sizing: border-box;">
+        
+        <!-- Oppilaan tiedot -->
+        <div class="sidebar-incont" role="complementary" aria-label="Sidebar content">
+          <h2 class="sidebar-title">Oppilas</h2>
+          <div id="etunimi">etunimi</div>
+          <div id="sukunimi">sukunimi</div>
+          <div id="syntymapaiva">syntymäpäivä</div>
+          <div id="luokka">luokka</div>
         </div>
-        <div class="content-box" style="width: 70%; ">
-          <div class="sidebar-incont" role="complementary" aria-label="Sidebar content">
-            <h2 class="sidebar-title">Oppilas</h2>
-           
-           <!-- Oppilaan tiedot -->
-            <div id="etunimi" class="hidden">etunimi</div> <!-- Oppilaan etunimi -->
-            <div id="sukunimi" class="">sukunimi</div> <!-- Oppilaan sukunimi -->
-            <div id="syntymapaiva" class="hidden">syntymäpäivä</div> <!-- Oppilaan syntymäpäivä -->
-            <div id="luokka" class="hidden">luokka</div> <!-- Oppilaan luokka -->
-        </div>
+  
+        <!-- Pelitulokset -->
         <div class="sidebar-incont" role="complementary" aria-label="Sidebar content">
           <h2 class="sidebar-title">Pelitulokset</h2>
-         
-         <!-- Oppilaan pelitulokset -->
-          <div id="etunimi" class="hidden">etunimi</div> <!-- Oppilaan etunimi -->
-          <div id="sukunimi" class="">sukunimi</div> <!-- Oppilaan sukunimi -->
-          <div id="syntymapaiva" class="hidden">syntymäpäivä</div> <!-- Oppilaan syntymäpäivä -->
-          <div id="luokka" class="hidden">luokka</div> <!-- Oppilaan luokka -->
-      </div>
+          <div id="etunimi">etunimi</div>
+          <div id="sukunimi">sukunimi</div>
+          <div id="syntymapaiva">syntymäpäivä</div>
+          <div id="luokka">luokka</div>
         </div>
+  
+      </div>
+  
     </div>
+    <script>
+      let selectedStudentID = null;
+      
+       // Funktio, joka lataa oppilaat valitun ryhmän mukaan
+       $('#classSelect').change(function() {
+        const classID = $(this).val();  // Haetaan valittu luokka
+        console.log('Valittu luokka:', classID);  // Tulostetaan valittu luokka
+        if (classID) {
+          // Lähetetään AJAX-pyyntö Flaskin reitille
+          $.get('/students_list', { luokkaID: classID }, function(data) {
+            // Päivitetään oppilaslistan sisältö
+            $('#studentList').html(data);
+          }).fail(function() {
+            alert("Oppilaita ei voitu ladata.");
+          });
+        } else {
+          // Jos ei ole valittua luokkaa, tyhjennetään lista
+          $('#studentList').html('<p>Valitse ryhmä.</p>');
+        }
+      });
+
+      // Funktio oppilaan valitsemiseksi
+      function selectStudent(oppilasID, oppilasName) {
+        // Tässä vaiheessa voit hakea oppilaan tiedot Flaskista (Ajax-kutsulla tai Flaskin renderöinnin kautta)
+        fetch(`/get_student_info/${oppilasID}`)
+          .then(response => response.json())
+          .then(data => {
+            if (data.success === false) {
+                alert(data.message);  // Virheilmoitus, jos oppilasta ei löydy
+            } else {
+            // Päivitetään tiedot käyttöliittymään
+              document.getElementById("etunimi").innerHTML = `Etunimi: ${data.etunimi}`;
+              document.getElementById("sukunimi").innerHTML = `Sukunimi: ${data.sukunimi}`;
+              document.getElementById("syntymapaiva").innerHTML = `Syntymäpäivä: ${data.syntymapaiva}`;
+              document.getElementById("luokka").innerHTML = `Luokka: ${data.luokka}`;
+              document.getElementById("pelitulokset").innerHTML = `Pelitulokset: ${data.pelitulokset}`;
+            }
+          })
+          .catch(error => {
+            console.error("Virhe oppilaan tietojen hakemisessa:", error);
+          });
+        
+      }
+    </script>
   </body>
 </html>
