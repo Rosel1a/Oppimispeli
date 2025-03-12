@@ -85,6 +85,34 @@
         th {
           background-color: #f2f2f2;
         }
+
+        #results-container {
+          max-height: 600px; /* Rajoita korkeus, esim. 400px */
+          overflow-y: auto; /* Lisää pystysuuntainen rulla */
+          border: 1px solid #ccc; /* Hento reunus */
+          padding: 5px;
+          padding-top: 0px;  /* Vähemmän tilaa ylhäällä */
+          margin-top: 10px;
+          background: white;
+          border-radius: 8px;
+        }
+
+        #pelitulokset-taulukko {
+          width: 100%;
+          border-collapse: collapse;
+        }
+
+        #pelitulokset-taulukko th, #pelitulokset-taulukko td {
+          border: 1px solid #ddd;
+          padding: 8px;
+          text-align: center;
+        }
+
+        #pelitulokset-taulukko th {
+          background-color: #f2f2f2;
+          top: 0; /* Pidä otsikot näkyvissä scrollatessa */
+          z-index: 1;
+        }
     </style>
   </head>
   <body>
@@ -158,34 +186,25 @@
         </div>
   
         <!-- Pelitulokset taulukko -->
-        <table id="pelitulokset-taulukko">
-          <thead>
-            <tr>
+        <div id="results-container" style="max-height: 400px; overflow-y: auto; border: 1px solid #ccc;">
+          <table id="pelitulokset-taulukko">
+            <thead>
+              <tr>
                 <th>Pelitulos ID</th>
                 <th>Peli ID</th>
                 <th>Pisteet</th>
                 <th>Kysymykset</th>
                 <th>Oikeat Vastaukset</th>
                 <th>Päivämäärä</th>
-            </tr>
-        </thead>
-        <tbody>
-          {% for result in results %}
-            <tr>
-              <td>{{ result[0] }}</td>
-              <td>{{ result[1] }}</td>
-              <td>{{ result[3] }}</td>
-              <td>{{ result[4] }}</td>
-              <td>{{ result[5] }}</td>
-              <td>{{ result[6] }}</td>
-            </tr>
-          {% endfor %}
-        </tbody>
-        </table>
-  
+              </tr>
+            </thead>
+            <tbody>
+            <tr><td colspan="6">Valitse oppilas nähdäksesi pelitulokset.</td></tr>
+            </tbody>
+          </table>
       </div>
-  
     </div>
+  </div>
     <script>
       let selectedStudentID = null;
       
@@ -209,7 +228,7 @@
 
       // Funktio oppilaan valitsemiseksi
       function selectStudent(oppilasID, oppilasName) {
-        // Tässä vaiheessa voit hakea oppilaan tiedot Flaskista (Ajax-kutsulla tai Flaskin renderöinnin kautta)
+        // haetaan oppilaan perustiedot
         fetch(`/get_student_info/${oppilasID}`)
           .then(response => response.json())
           .then(data => {
@@ -227,7 +246,37 @@
           .catch(error => {
             console.error("Virhe oppilaan tietojen hakemisessa:", error);
           });
-        
+
+        // Pelitulosten hakeminen
+
+        var tableBody = document.getElementById('pelitulokset-taulukko').getElementsByTagName('tbody')[0];
+        tableBody.innerHTML = '<tr><td colspan="6">Ladataan...</td></tr>';
+
+        $.get('/get_student_results', { oppilasID: oppilasID }, function(data) {
+          console.log("Haetut tulokset:", data);
+          tableBody.innerHTML = "";  // Tyhjennetään taulukko
+
+          if (data.length === 0) {
+            tableBody.innerHTML = '<tr><td colspan="6">Ei pelituloksia.</td></tr>';
+            return;
+          }
+
+          // Lisätään rivit
+          data.forEach(function(result) {
+            var row = tableBody.insertRow();
+            row.innerHTML = `
+                <td>${result.pelitulosID}</td>
+                <td>${result.Pelit_peliID}</td>
+                <td>${result.pisteet}</td>
+                <td>${result.kysymys_maara}</td>
+                <td>${result.oikeat_vastaukset}</td>
+                <td>${result.pvm}</td>
+            `;
+          });
+        }).fail(function() {
+          alert("Pelituloksia ei voitu hakea.");
+          tableBody.innerHTML = '<tr><td colspan="6">Virhe ladattaessa tuloksia.</td></tr>';
+        });    
       }
     </script>
   </body>

@@ -453,5 +453,24 @@ def update_student_class(oppilas_id, luokka_id):
     connection.commit()
     cursor.close()
     connection.close()
+
+
+def get_results_by_oppilas_id(oppilas_id):
+    connection = get_db_connection()
+    cursor = connection.cursor(dictionary=True)
+
+    query = '''
+        SELECT pelitulosID, Pelit_peliID, Oppilas_oppilasID, pisteet, kysymys_maara, oikeat_vastaukset, pvm
+        FROM pelitulos
+        WHERE Oppilas_oppilasID = %s
+        ORDER BY pvm DESC
+    '''
+    cursor.execute(query, (oppilas_id,))
+    results = cursor.fetchall()
     
+    cursor.close()
+    connection.close()
+
+    return results
+
 get_db_connection()

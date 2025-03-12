@@ -7,7 +7,7 @@ import mysql.connector
 from mysql.connector import connection
 from database import get_random_question, register_user, get_game_instructions, check_user_credentials, save_player_answer, save_game_result, create_game_result
 from database import get_all_students, get_all_classes, update_student_class, check_existing_group, create_new_group, get_teacher_class, get_class_id_by_name, get_opettaja_id_by_user_id
-from database import get_student_by_id, get_student_by_class_id, get_class_name_by_id
+from database import get_student_by_id, get_student_by_class_id, get_class_name_by_id, get_results_by_oppilas_id
 import logging
 logging.basicConfig(stream=sys.stdout, level=logging.DEBUG)
 sys.stderr = sys.stdout
@@ -413,7 +413,7 @@ def assign_class():
         return jsonify({'success': False, 'message': f'Virhe: {str(e)}'}), 500
     
 
-    # Flask reitti oppilaan tietojen hakemiseksi
+# Flask reitti oppilaan tietojen hakemiseksi
 @app.route('/get_student_info/<int:oppilas_id>', methods=['GET'])
 def get_student_info(oppilas_id):
     if 'userID' not in session or session.get('rooli') != 'opettaja':
@@ -435,6 +435,20 @@ def get_student_info(oppilas_id):
         'syntymapaiva': oppilas['syntymapaiva'],
         'luokka': luokka_nimi
     })
+
+@app.route('/get_student_results')
+def get_student_results():
+    if 'userID' not in session or session.get('rooli') != 'opettaja':
+        return jsonify({'error': 'Unauthorized access'}), 403
+
+    oppilas_id = request.args.get('oppilasID', default=None, type=int)
+    if oppilas_id is None:
+        return jsonify({'error': 'No student ID provided'}), 400
+
+    # Haetaan pelitulokset
+    results = get_results_by_oppilas_id(oppilas_id)
+    return jsonify(results)
+
 #  Virheiden käsittely
 if __name__ == '__main__':
     app.run(debug=True)
