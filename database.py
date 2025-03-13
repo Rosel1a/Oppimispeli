@@ -473,4 +473,33 @@ def get_results_by_oppilas_id(oppilas_id):
 
     return results
 
+def get_vastaukset_by_pelitulos_id(pelitulos_id):
+    connection = get_db_connection()
+    cursor = connection.cursor(dictionary=True)
+
+    query = """
+        SELECT 
+            v.vastausID,
+            v.Pelitulos_pelitulosID,
+            v.Tehtava_tehtavaID,
+            t.kysymys,
+            v.pelaajan_vastaus,
+            v.pelaajan_vastaus_JSON,
+            v.onko_oikein,
+            v.aikaleima
+        FROM 
+            pelaajan_vastaus v
+        JOIN 
+            tehtava t ON v.Tehtava_tehtavaID = t.tehtavaID
+        WHERE 
+            v.Pelitulos_pelitulosID = %s;
+    """
+    cursor.execute(query, (pelitulos_id,))
+    results = cursor.fetchall()
+    
+    cursor.close()
+    connection.close()
+
+    return results
+
 get_db_connection()

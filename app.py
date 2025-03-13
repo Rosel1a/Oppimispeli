@@ -7,7 +7,7 @@ import mysql.connector
 from mysql.connector import connection
 from database import get_random_question, register_user, get_game_instructions, check_user_credentials, save_player_answer, save_game_result, create_game_result
 from database import get_all_students, get_all_classes, update_student_class, check_existing_group, create_new_group, get_teacher_class, get_class_id_by_name, get_opettaja_id_by_user_id
-from database import get_student_by_id, get_student_by_class_id, get_class_name_by_id, get_results_by_oppilas_id
+from database import get_student_by_id, get_student_by_class_id, get_class_name_by_id, get_results_by_oppilas_id, get_vastaukset_by_pelitulos_id
 import logging
 logging.basicConfig(stream=sys.stdout, level=logging.DEBUG)
 sys.stderr = sys.stdout
@@ -69,7 +69,7 @@ def group_selection():
                            luokat=teacher_groups, 
                            teacher_groups=teacher_groups)
 
-#reitti oppilaisiin
+#reitti oppilasnäkymään
 @app.route('/students_info')
 def students_info():
     if 'userID' not in session or session.get('rooli') != 'opettaja':
@@ -89,7 +89,7 @@ def students_info():
                            luokat=teacher_groups, 
                            teacher_groups=teacher_groups)
 
-#reitti päivittyvälle oppilas listalle
+#reitti päivittyvälle oppilas listalle (oppilasnäkymässä)
 @app.route('/students_list')
 def students_list():
     if 'userID' not in session or session.get('rooli') != 'opettaja':
@@ -436,6 +436,7 @@ def get_student_info(oppilas_id):
         'luokka': luokka_nimi
     })
 
+#hakee valitun oppilaan pelitulokset 
 @app.route('/get_student_results')
 def get_student_results():
     if 'userID' not in session or session.get('rooli') != 'opettaja':
@@ -447,6 +448,20 @@ def get_student_results():
 
     # Haetaan pelitulokset
     results = get_results_by_oppilas_id(oppilas_id)
+    return jsonify(results)
+
+#hakee pelin yksittäiset vastaukset pelitulos_idn mukaan
+@app.route('/get_pelaajan_vastaukset')
+def get_pelaajan_vastaukset():
+    if 'userID' not in session or session.get('rooli') != 'opettaja':
+        return jsonify({'error': 'Unauthorized access'}), 403
+
+    pelitulos_id = request.args.get('pelitulosID', default=None, type=int)
+    if pelitulos_id is None:
+        return jsonify({'error': 'No pelitulos ID provided'}), 400
+
+    # Haetaan vastaukset
+    results = get_vastaukset_by_pelitulos_id(pelitulos_id)
     return jsonify(results)
 
 #  Virheiden käsittely

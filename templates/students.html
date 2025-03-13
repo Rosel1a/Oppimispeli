@@ -153,7 +153,7 @@
               {% for luokka in luokat %}
                   <option value="{{ luokka['luokkaID'] }}">{{ luokka['luokka_nimi'] }}</option>
               {% endfor %}
-          </select>
+            </select>
 
             <h2>Hae Oppilaita</h2>
             <!-- Hakukenttä 
@@ -171,7 +171,7 @@
                 <p>Ei oppilaita tässä luokassa.</p>
               {% endfor %}
             </div>
-          </div>
+      </div>
         
       <!-- Content-box - Oikean puoleinen sisältö -->
       <div class="content-box" style="width: 70%; padding: 10px; box-sizing: border-box;">
@@ -207,7 +207,8 @@
   </div>
     <script>
       let selectedStudentID = null;
-      
+      let latestOppilasID = null; // Tallennetaan valittu oppilas, jotta voidaan palata
+
        // Funktio, joka lataa oppilaat valitun ryhmän mukaan
        $('#classSelect').change(function() {
         const classID = $(this).val();  // Haetaan valittu luokka
@@ -228,6 +229,7 @@
 
       // Funktio oppilaan valitsemiseksi
       function selectStudent(oppilasID, oppilasName) {
+        latestOppilasID = oppilasID; // Päivitä globaali muuttuja, jotta tiedetään kenestä on kyse
         // haetaan oppilaan perustiedot
         fetch(`/get_student_info/${oppilasID}`)
           .then(response => response.json())
@@ -245,10 +247,12 @@
           })
           .catch(error => {
             console.error("Virhe oppilaan tietojen hakemisessa:", error);
-          });
+         });
+         fetchStudentResults(oppilasID);
+      }
 
         // Pelitulosten hakeminen
-
+      function fetchStudentResults(oppilasID) {
         var tableBody = document.getElementById('pelitulokset-taulukko').getElementsByTagName('tbody')[0];
         tableBody.innerHTML = '<tr><td colspan="6">Ladataan...</td></tr>';
 
@@ -265,7 +269,7 @@
           data.forEach(function(result) {
             var row = tableBody.insertRow();
             row.innerHTML = `
-                <td>${result.pelitulosID}</td>
+                <td><a href="#" class="pelitulos-link" data-id="${result.pelitulosID}">${result.pelitulosID}</a></td>
                 <td>${result.Pelit_peliID}</td>
                 <td>${result.pisteet}</td>
                 <td>${result.kysymys_maara}</td>
@@ -278,6 +282,86 @@
           tableBody.innerHTML = '<tr><td colspan="6">Virhe ladattaessa tuloksia.</td></tr>';
         });    
       }
+    
+
+      // Delegoidaan kuuntelija, koska linkit luodaan dynaamisesti
+    document.getElementById('results-container').addEventListener('click', function(event) {
+      if (event.target.classList.contains('pelitulos-link')) {
+        event.preventDefault(); // Estä normaalikäyttäytyminen (linkki)
+        const pelitulosID = event.target.dataset.id;
+        console.log("Valittu pelitulos ID:", pelitulosID);
+
+      // Haetaan pelaajan vastaukset
+      fetch(`/get_pelaajan_vastaukset?pelitulosID=${pelitulosID}`)
+        .then(response => response.json())
+        .then(data => {
+          console.log("Pelaajan vastaukset:", data);
+          showPelaajanVastaukset(data); // Näytetään taulukossa
+        })
+        .catch(error => console.error("Virhe haettaessa vastauksia:", error));
+      }
+    });
+
+    function showPelaajanVastaukset(vastaukset) {
+      const container = document.getElementById('results-container');
+
+      let html = `<button id="takaisin-btn">Takaisin pelituloksiin</button>`;
+      // Alustetaan uusi taulukko
+      html += `
+        <table id="pelaajan-vastaukset-taulukko">
+          <thead>
+            <tr>
+              <th>Tehtävä</th>
+              <th>Pelaajan vastaus</th>
+              <th>Oikein/Väärin</th>
+              <th>Aikaleima</th>
+            </tr>
+          </thead>
+        <tbody>
+      `;
+
+      if (vastaukset.length === 0) {
+        html += `<tr><td colspan="4">Ei vastauksia saatavilla.</td></tr>`;
+      } else {
+        vastaukset.forEach(function(vastaus) {
+          html += `
+            <tr>
+              <td>${vastaus.kysymys}</td>
+              <td>${vastaus.pelaajan_vastaus}</td>
+              <td>${vastaus.onko_oikein ? 'Oikein' : 'Väärin'}</td>
+              <td>${vastaus.aikaleima}</td>
+            </tr>
+          `;
+        });
+      }
+
+      html += `</tbody></table>`;
+      container.innerHTML = html; // Korvataan aiempi sisältö
+
+      // Takaisin-painikkeen toiminto
+      document.getElementById('takaisin-btn').addEventListener('click', function() {
+        // Palautetaan pelitulosten rakenne ennen tulosten hakemista
+        document.getElementById('results-container').innerHTML = `
+          <table id="pelitulokset-taulukko">
+            <thead>
+              <tr>
+                <th>Pelitulos ID</th>
+                <th>Peli ID</th>
+                <th>Pisteet</th>
+                <th>Kysymykset</th>
+                <th>Oikeat Vastaukset</th>
+                <th>Päivämäärä</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td colspan="6">Ladataan...</td></tr>
+            </tbody>
+          </table>
+        `;
+        // Lataa uudelleen pelitulokset (voit tallentaa viimeksi katsotun oppilasID:n globaalisti)
+        fetchStudentResults(latestOppilasID);
+      });
+    }
     </script>
   </body>
 </html>
