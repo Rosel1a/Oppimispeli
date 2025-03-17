@@ -12,9 +12,9 @@ from werkzeug.security import generate_password_hash, check_password_hash
 #    "password": "kissa",
 #   "database": "oppimispeli2"
 dbconfig = {    
-    "host": "localhost",      # Esim. "123.45.67.89" 
-    "user" : "root",    # MySQL-käyttäjänimi
-    "password": "Salasana1" ,   # MySQL-salasana
+    "host": "123.45.67.89",      # Esim. "123.45.67.89" 
+    "user" : "saaga",    # MySQL-käyttäjänimi
+    "password": "Salasana2" ,   # MySQL-salasana
     "database" : "oppimispeli"  # Tietokannan nimi
 }
 
