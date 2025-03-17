@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <title>Pelisivu</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='gameScreen1.css') }}"> 
+   <!--<link rel="stylesheet" href="{{ url_for('static', filename='gameScreen1.css') }}"> --> 
+   <link rel="stylesheet" href="gameScreen1.css">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
 <body>
@@ -38,7 +39,11 @@
                     <div id="game-over-overlay" class="overlay hidden">PELI OHI</div> <!-- Peli ohi -viesti -->
                 </div>
                 <!-- Sivupalkki, joka sisältää lisäsisältöä -->
-                <aside class="sidebar-column">
+                <aside class="sidebar-column" >
+                    <div id="feedbackImage"> <img loading="lazy" src="kuvat2/mattiNeutGame.png" style=" top: 0; right: 0; height: 80px; width: auto;  padding: 10px;" >
+                    </div>
+                       
+                   
                     <div class="sidebar-content">
                         <div class="sidebar-inner" role="complementary" aria-label="Sidebar content">
                             <h2 class="sidebar-title">Ohjeet</h2>
@@ -47,7 +52,9 @@
                             <div id="score" class="hidden">Pisteet: 0</div> <!-- Pistelaskuri -->
                             <div id="timer" class="hidden">Aika: 1:00</div> <!-- Ajastin -->
                         </div>
+                  
                     </div>
+                
                 </aside>
             </section>
         </main>
@@ -117,11 +124,14 @@
             });
 
             const data = await response.json();
+            const imageContainer = document.getElementById("feedbackImage"); // Etsi elementti kuvien näyttämistä varten
             if (userAnswer === correctAnswer) {
                 showMessage('Oikein!');
                 score += pointsPerCorrectAnswer; // Lisätään pisteitä valitun vaikeustason mukaan
+                imageContainer.innerHTML = '<img src="kuvat2/mattiFappyGame.png">';
             } else {
                 showMessage('Väärin, yritä uudelleen.');
+                imageContainer.innerHTML = '<img src="kuvat2/mattiSadGame.png">';
             }
             document.getElementById("score").innerText = `Pisteet: ${score}`; // Päivitetään pistelaskuri
             if (questionCount >= 10) {
