@@ -40,7 +40,13 @@
                 </div>
                 <!-- Sivupalkki, joka sisältää lisäsisältöä -->
                 <aside class="sidebar-column" >
-                    <div id="feedbackImage"> <img loading="lazy" src="kuvat2/mattiNeutGame.png" style=" top: 0; right: 0; height: 80px; width: auto;  padding: 10px;" >
+                    <div id="feedbackImage">
+                        <img id="mattiImage1" loading="lazy" src="" alt="matti neutraali">
+<img id="mattiImage2" loading="lazy" src="" alt="matti iloinen">
+<img id="mattiImage3" loading="lazy" src="" alt="matti surullinen">
+                         <!--<img loading="lazy" src="kuvat2/mattiNeutGame.png" style=" top: 0; right: 0; height: 80px; width: auto;  padding: 10px;" > -->
+                         <!--<img loading="lazy" src="{{ url_for('static', filename='Kuvat/mattiNeutGame.png') }}" alt="matti neutraali">-->
+                         <img id="mattiImage" loading="lazy" src="{{ url_for('static', filename='Kuvat/mattiNeutGame.png') }}">
                     </div>
                        
                    
@@ -124,14 +130,22 @@
             });
 
             const data = await response.json();
-            const imageContainer = document.getElementById("feedbackImage"); // Etsi elementti kuvien näyttämistä varten
+            const imageElement = document.getElementById("mattiImage"); // Etsi elementti kuvien näyttämistä varten
+            const imageContainer = document.getElementById("feedbackImage"); 
+            
+
+            imageElement.src = "{{ url_for('static', filename='Kuvat/mattiNeutGame.png') }}";
+            imageElement.alt = "matti neutraali";
             if (userAnswer === correctAnswer) {
                 showMessage('Oikein!');
                 score += pointsPerCorrectAnswer; // Lisätään pisteitä valitun vaikeustason mukaan
-                imageContainer.innerHTML = '<img src="kuvat2/mattiFappyGame.png">';
+                imageContainer.innerHTML = '<img src="{{ url_for('static', filename='kuvat/mattiFappyGame.png') }}">';
+
+                
             } else {
                 showMessage('Väärin, yritä uudelleen.');
-                imageContainer.innerHTML = '<img src="kuvat2/mattiSadGame.png">';
+                imageContainer.innerHTML = '<img src="{{ url_for('static', filename='kuvat/mattiSadGame.png') }}">';
+
             }
             document.getElementById("score").innerText = `Pisteet: ${score}`; // Päivitetään pistelaskuri
             if (questionCount >= 10) {
