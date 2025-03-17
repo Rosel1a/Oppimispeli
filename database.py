@@ -12,9 +12,9 @@ from werkzeug.security import generate_password_hash, check_password_hash
 #    "password": "kissa",
 #   "database": "oppimispeli2"
 dbconfig = {    
-    "host": "85.23.94.251",      # Esim. "123.45.67.89" 
-    "user" : "saaga",    # MySQL-käyttäjänimi
-    "password": "salasana2" ,   # MySQL-salasana
+    "host": "localhost",      # Esim. "123.45.67.89" 
+    "user" : "root",    # MySQL-käyttäjänimi
+    "password": "Salasana1" ,   # MySQL-salasana
     "database" : "oppimispeli"  # Tietokannan nimi
 }
 
@@ -300,6 +300,22 @@ def create_new_group(class_name, teacher_id):
     finally:
         cursor.close()
         connection.close()
+
+#opiskelijan poistamiseksi ryhmästä
+def remove_student_from_class(oppilas_id, luokka_id):
+    connection = get_db_connection()
+    cursor = connection.cursor()
+
+    # Esimerkki SQL:stä — muokkaa taulujen ja sarakkeiden nimet sopiviksi
+    sql = """
+        UPDATE oppilas
+        SET luokkaID = NULL
+        WHERE oppilasID = %s AND luokkaID = %s
+    """
+    cursor.execute(sql, (oppilas_id, luokka_id))
+    connection.commit()
+    cursor.close()
+    connection.close()
 
 
 #hakee kaikki oppilaat ja heidän luokat

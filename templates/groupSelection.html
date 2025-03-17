@@ -180,6 +180,7 @@
               <p><strong>Valittu Oppilas:</strong> Ei valittua oppilasta</p>
           </div>
           <button class="add-button" id="addButton" onclick="addStudentToClass()">Lisää Oppilas Ryhmään</button>
+          <button class="add-button" id="removeButton" onclick="removeStudentFromClass()">Poista Oppilas Ryhmästä</button>
       </div>
   </div>
   
@@ -277,6 +278,42 @@
             alert("Virhe: " + error);
         });
     }
+    
+    function removeStudentFromClass() {
+    var selectedClass = document.getElementById("classSelect").value;
+
+    if (!selectedClass) {
+        alert("Valitse luokka ennen kuin poistat oppilaan.");
+        return;
+    }
+
+    var studentId = selectedStudentID;
+
+    if (!studentId) {
+        alert("Valitse oppilas ennen poistamista.");
+        return;
+    }
+
+    // Lähetetään pyyntö palvelimelle
+    fetch('/remove_from_class', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ oppilas_id: studentId, luokka: selectedClass })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            alert("Oppilas poistettu luokasta onnistuneesti!");
+        } else {
+            alert("Virhe: " + data.message);
+        }
+    })
+    .catch(error => {
+        alert("Virhe: " + error);
+    });
+}
     
   </script>
   </body>

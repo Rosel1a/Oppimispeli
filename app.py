@@ -7,7 +7,7 @@ import mysql.connector
 from mysql.connector import connection
 from database import get_random_question, register_user, get_game_instructions, check_user_credentials, save_player_answer, save_game_result, create_game_result
 from database import get_all_students, get_all_classes, update_student_class, check_existing_group, create_new_group, get_teacher_class, get_class_id_by_name, get_opettaja_id_by_user_id
-from database import get_student_by_id, get_student_by_class_id, get_class_name_by_id, get_results_by_oppilas_id, get_vastaukset_by_pelitulos_id
+from database import get_student_by_id, get_student_by_class_id, get_class_name_by_id, get_results_by_oppilas_id, get_vastaukset_by_pelitulos_id, remove_student_from_class
 import logging
 logging.basicConfig(stream=sys.stdout, level=logging.DEBUG)
 sys.stderr = sys.stdout
@@ -409,6 +409,33 @@ def assign_class():
         update_student_class(oppilas_id, uusi_luokka)
 
         return jsonify({'success': True, 'message': 'Oppilas lisätty luokkaan onnistuneesti!'})
+    except Exception as e:
+        return jsonify({'success': False, 'message': f'Virhe: {str(e)}'}), 500
+
+#oppilaan poistamiseksi ryhmästä  
+@app.route('/remove_from_class', methods=['POST'])
+def remove_from_class():
+    if 'userID' not in session or session.get('rooli') != 'opettaja':
+        flash("Kirjaudu sisään opettajana!", "danger")
+        return redirect(url_for('teacher_login'))
+
+    data = request.get_json()
+
+    if not data:
+        return jsonify({'success': False, 'message': 'Ei tietoja vastaanotettu.'}), 400
+
+    oppilas_id = data.get('oppilas_id')
+    luokka_id = data.get('luokka')
+
+    print(f"Poistetaan oppilas {oppilas_id} luokasta {luokka_id}")
+
+    if not oppilas_id or not luokka_id:
+        return jsonify({'success': False, 'message': 'Oppilas ID tai luokan ID puuttuu.'}), 400
+
+    try:
+        # Funktio, joka poistaa oppilaan luokasta tietokannasta
+        remove_student_from_class(oppilas_id, luokka_id)
+        return jsonify({'success': True, 'message': 'Oppilas poistettu luokasta onnistuneesti!'})
     except Exception as e:
         return jsonify({'success': False, 'message': f'Virhe: {str(e)}'}), 500
     
