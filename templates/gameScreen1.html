@@ -3,8 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Pelisivu</title>
-   <!--<link rel="stylesheet" href="{{ url_for('static', filename='gameScreen1.css') }}"> --> 
-   <link rel="stylesheet" href="gameScreen1.css">
+   <link rel="stylesheet" href="{{ url_for('static', filename='gameScreen1.css') }}">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
 <body>
@@ -41,12 +40,7 @@
                 <!-- Sivupalkki, joka sisältää lisäsisältöä -->
                 <aside class="sidebar-column" >
                     <div id="feedbackImage">
-                        <img id="mattiImage1" loading="lazy" src="" alt="matti neutraali">
-<img id="mattiImage2" loading="lazy" src="" alt="matti iloinen">
-<img id="mattiImage3" loading="lazy" src="" alt="matti surullinen">
-                         <!--<img loading="lazy" src="kuvat2/mattiNeutGame.png" style=" top: 0; right: 0; height: 80px; width: auto;  padding: 10px;" > -->
-                         <!--<img loading="lazy" src="{{ url_for('static', filename='Kuvat/mattiNeutGame.png') }}" alt="matti neutraali">-->
-                         <img id="mattiImage" loading="lazy" src="{{ url_for('static', filename='Kuvat/mattiNeutGame.png') }}">
+                        <img id="mattiImage" loading="lazy" src="{{ url_for('static', filename='Kuvat/mattiNeutGame.png') }}">
                     </div>
                        
                    
@@ -139,12 +133,12 @@
             if (userAnswer === correctAnswer) {
                 showMessage('Oikein!');
                 score += pointsPerCorrectAnswer; // Lisätään pisteitä valitun vaikeustason mukaan
-                imageContainer.innerHTML = '<img src="{{ url_for('static', filename='kuvat/mattiFappyGame.png') }}">';
+                imageContainer.innerHTML = "<img src='{{ url_for('static', filename='kuvat/mattiFappyGame.png') }}'>";
 
                 
             } else {
                 showMessage('Väärin, yritä uudelleen.');
-                imageContainer.innerHTML = '<img src="{{ url_for('static', filename='kuvat/mattiSadGame.png') }}">';
+                imageContainer.innerHTML = "<img src='{{ url_for('static', filename='kuvat/mattiSadGame.png') }}''>";
 
             }
             document.getElementById("score").innerText = `Pisteet: ${score}`; // Päivitetään pistelaskuri

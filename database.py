@@ -1,4 +1,4 @@
-#SQL-tietokantayhteys
+# SQL-tietokantayhteys
 # Tämä tiedosto sisältää funktiot, jotka liittyvät tietokantaan ja sen käsittelyyn.
 import mysql.connector
 from mysql.connector import pooling
@@ -6,12 +6,8 @@ import sys
 from flask import session
 from werkzeug.security import generate_password_hash, check_password_hash
 
-# Määritellään yhteyspooli 
-#"host": "localhost",
-#    "user": "root",
-#    "password": "kissa",
-#   "database": "oppimispeli2"
-dbconfig = {    
+# Määritellään yhteyspooli
+dbconfig = {
     "host": "123.45.67.89",      # Esim. "123.45.67.89" 
     "user" : "saaga",    # MySQL-käyttäjänimi
     "password": "Salasana2" ,   # MySQL-salasana
@@ -73,7 +69,7 @@ def get_random_question(pelin_id, asked_question_ids):
     finally:
         cursor.close()
         connection.close()
-    
+
 # Funktio pelin ohjeiden hakemiseen
 def get_game_instructions(peli_id):
     connection = get_db_connection()
@@ -92,14 +88,14 @@ def get_game_instructions(peli_id):
     finally:
         cursor.close()
         connection.close()
-    
+
 # Funktio käyttäjän rekisteröitymiselle
 def register_user(etunimi, sukunimi, kirjautumistunnus, salasana, rooli, syntymapaiva=None, luokka=None):
     connection = get_db_connection()
     cursor = connection.cursor()
 
     try:
-        #luodaan salattu salasana
+        # luodaan salattu salasana
         hashed_salasana = generate_password_hash(salasana)
         # 🔹 1. Lisää käyttäjä user-tauluun
         sql = "INSERT INTO user (etunimi, sukunimi, kirjautumistunnus, salasana, rooli, created_at) VALUES (%s, %s, %s, %s, %s, NOW())"
@@ -145,8 +141,6 @@ def check_user_credentials(kirjautumistunnus, salasana, rooli):
         cursor.execute(sql, (kirjautumistunnus, rooli))
         login_user = cursor.fetchone()
 
-        
-        #if login_user and login_user["salasana"] == salasana:
         if login_user and check_password_hash(login_user["salasana"], salasana):
             # Jos käyttäjä on oppilas, haetaan myös oppilasID
             if rooli == "oppilas":
@@ -168,8 +162,8 @@ def check_user_credentials(kirjautumistunnus, salasana, rooli):
         return None
     finally:
         cursor.close()
-        connection.close()   
-        
+        connection.close()
+
 # Tallennetaan pelaajan vastaus tietokantaan
 def save_player_answer(pelitulos_id, tehtava_id, pelaajan_vastaus, oikein):
     """ Tallentaa pelaajan vastauksen tietokantaan. """
@@ -301,7 +295,7 @@ def create_new_group(class_name, teacher_id):
         cursor.close()
         connection.close()
 
-#opiskelijan poistamiseksi ryhmästä
+# opiskelijan poistamiseksi ryhmästä
 def remove_student_from_class(oppilas_id, luokka_id):
     connection = get_db_connection()
     cursor = connection.cursor()
@@ -317,8 +311,7 @@ def remove_student_from_class(oppilas_id, luokka_id):
     cursor.close()
     connection.close()
 
-
-#hakee kaikki oppilaat ja heidän luokat
+# hakee kaikki oppilaat ja heidän luokat
 def get_all_students():
     connection = get_db_connection()
     cursor = connection.cursor(dictionary=True)
@@ -341,7 +334,6 @@ def get_student_by_id(oppilas_id):
 
     try:
         # SQL-kysely oppilaan tietojen hakemiseksi
-        #query = "SELECT etunimi, sukunimi, syntymapaiva, luokkaID FROM oppilas WHERE oppilasID = %s"
         query = """
             SELECT
                 u.etunimi,
@@ -404,8 +396,8 @@ def get_student_by_class_id(luokkaID):
     finally:
         cursor.close()
         connection.close()
-        
-#hakee kaikki käytössä olevat luokat
+
+# hakee kaikki käytössä olevat luokat
 def get_all_classes():
     connection = get_db_connection()
     cursor = connection.cursor(dictionary=True)
@@ -458,7 +450,7 @@ def get_class_name_by_id(luokkaID):
         cursor.close()
         connection.close()
 
-#päivittää oppilaan ryhmän/luokan
+# päivittää oppilaan ryhmän/luokan
 def update_student_class(oppilas_id, luokka_id):
     connection = get_db_connection()
     cursor = connection.cursor()
@@ -469,7 +461,6 @@ def update_student_class(oppilas_id, luokka_id):
     connection.commit()
     cursor.close()
     connection.close()
-
 
 def get_results_by_oppilas_id(oppilas_id):
     connection = get_db_connection()

@@ -81,12 +81,12 @@ html, body {
 
 /* Kysymysalue */
 .main-display {
-  border-radius: 28px;
+  border-radius: 28px; /* Pyöristetään kulmat */
   background-color: rgba(239, 125, 125, 1);
-  width: 800px;
-  max-width: 65vw;
-  height: 600px;
-  min-height: 300px;
+  width: 800px; /* Sama leveys kuin sivupalkki */
+  max-width: 65vw; /* Sama leveys kuin sivupalkki */
+  height: 600px; /* Sama korkeus kuin sivupalkki */
+  min-height: 300px; /* Sama minimi korkeus kuin sivupalkki */
   display: flex;
   align-items: center;
   justify-content: center;
@@ -134,11 +134,28 @@ button:hover {
 .sidebar-column {
   display: flex;
   flex-direction: column;
-  width: 300px;
-  max-width: 30vw;
-  min-height: 600px;
+  width: 800px; /* Sama leveys kuin pelialusta */
+  max-width: 65vw; /* Sama leveys kuin pelialusta */
+  height: 600px; /* Sama korkeus kuin pelialusta */
+  min-height: 300px; /* Sama minimi korkeus kuin pelialusta */
+  position: relative; /* Tarvitaan kuvan sijoittamiseen */
 }
 
+/* Pienennetään kuvaa ja sijoitetaan se sivupalkin oikeaan yläkulmaan */
+#feedbackImage {
+  position: absolute;
+  top: 25px; /* Laske kuvaa vielä alaspäin */
+  right: 0;
+  width: 100%;
+  display: flex;
+  justify-content: flex-end;
+}
+
+#feedbackImage img {
+  width: 20%; /* Pienennetään kuvaa 80% */
+}
+
+/* Sivupalkin sisältö */
 .sidebar-content {
   border-radius: 28px;
   background-color: rgba(239, 125, 125, 1);
@@ -146,6 +163,7 @@ button:hover {
   width: 100%;
   text-align: center;
   flex-grow: 1;
+  margin-top: 80px; /* Lisätään tilaa kuvan alle */
 }
 
 /* Viestit */
