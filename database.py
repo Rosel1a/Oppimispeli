@@ -8,9 +8,9 @@ from werkzeug.security import generate_password_hash, check_password_hash
 
 # Määritellään yhteyspooli
 dbconfig = {
-    "host": "123.45.67.89",      # Esim. "123.45.67.89" 
-    "user" : "saaga",    # MySQL-käyttäjänimi
-    "password": "Salasana2" ,   # MySQL-salasana
+    "host": "localhost",      # Esim. "123.45.67.89" 
+    "user" : "root",    # MySQL-käyttäjänimi
+    "password": "Salasana1" ,   # MySQL-salasana
     "database" : "oppimispeli"  # Tietokannan nimi
 }
 

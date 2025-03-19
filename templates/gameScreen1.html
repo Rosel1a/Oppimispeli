@@ -133,12 +133,12 @@
             if (userAnswer === correctAnswer) {
                 showMessage('Oikein!');
                 score += pointsPerCorrectAnswer; // Lisätään pisteitä valitun vaikeustason mukaan
-                imageContainer.innerHTML = "<img src='{{ url_for('static', filename='kuvat/mattiFappyGame.png') }}'>";
+                imageElement.src = "{{ url_for('static', filename='kuvat/mattiFappyGame.png') }}";
 
                 
             } else {
                 showMessage('Väärin, yritä uudelleen.');
-                imageContainer.innerHTML = "<img src='{{ url_for('static', filename='kuvat/mattiSadGame.png') }}''>";
+                imageElement.src = "{{ url_for('static', filename='kuvat/mattiSadGame.png') }}";
 
             }
             document.getElementById("score").innerText = `Pisteet: ${score}`; // Päivitetään pistelaskuri
