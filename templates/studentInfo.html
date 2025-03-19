@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="fi">
+<head>
+  <meta charset="UTF-8">
+  <title>Oppilas tiedot</title>
+  <style>
+    html, body {
+      margin: 0; /* Poistaa oletusmarginaalit */
+      padding: 0; /* Poistaa oletustäytteet */
+      height: 100%; /* Asettaa korkeuden 100%:iin */
+      width: 100%; /* Asettaa leveyden 100%:iin */
+      background-color: #a0dff5; /* Asettaa vaaleansinisen taustavärin */
+      font-family: Arial, sans-serif; /* Asettaa fontiksi Arial tai sans-serif */
+    }
+
+    .header {
+      background-color: #3e8ca7; /* Asettaa tummansinisen taustavärin yläpalkille */
+      height: 10%; /* Asettaa korkeuden 10%:iin */
+      width: 100%; /* Asettaa leveyden 100%:iin */
+    }
+
+    .container {
+      height: 90%; /* Asettaa korkeuden 90%:iin */
+      width: 100%; /* Asettaa leveyden 100%:iin */
+      display: flex; /* Käyttää flexbox-asettelua */
+      justify-content: center; /* Keskittää sisällön vaakasuunnassa */
+      align-items: center; /* Keskittää sisällön pystysuunnassa */
+    }
+
+    .content {
+      background-color: #3e8ca7; /* Asettaa tummansinisen taustavärin sisältöalueelle */
+      padding: 20px; /* Asettaa 20px täytteen */
+      border-radius: 10px; /* Pyöristää reunat 10px */
+      display: flex; /* Käyttää flexbox-asettelua */
+      gap: 20px; /* Asettaa 20px välin flex-elementtien väliin */
+      height: 80%; /* Asettaa korkeuden 80%:iin */
+      width: 80%; /* Asettaa leveyden 80%:iin */
+      box-sizing: border-box; /* Sisällyttää täytteen ja reunuksen elementin kokonaismittoihin */
+    }
+
+    .left-column {
+      display: flex; /* Käyttää flexbox-asettelua */
+      flex-direction: column; /* Asettaa flex-elementit pystysuoraan */
+      gap: 20px; /* Asettaa 20px välin flex-elementtien väliin */
+      flex: 1; /* Asettaa elementin kasvamaan jäljellä olevan tilan mukaan */
+      justify-content: center; /* Keskittää sisällön pystysuunnassa */
+      align-items: center; /* Keskittää sisällön vaakasuunnassa */
+    }
+
+    .circle {
+      width: 30%; /* Asettaa leveyden 30%:iin */
+      aspect-ratio: 1 / 1; /* Pitää ympyrän pyöreänä */
+      background-color: #8bd2f5; /* Asettaa vaaleansinisen taustavärin */
+      border-radius: 50%; /* Pyöristää reunat 50%:iin, jolloin muodostuu ympyrä */
+    }
+
+    .rectangle {
+      width: 80%; /* Asettaa leveyden 80%:iin */
+      height: 30%; /* Asettaa korkeuden 30%:iin */
+      background-color: white; /* Asettaa vaaleansinisen taustavärin */
+      border-radius: 10px; /* Pyöristää reunat 10px */
+    }
+
+    .right-rectangle {
+      flex: 1; /* Asettaa elementin kasvamaan jäljellä olevan tilan mukaan */
+      background-color: white; /* Asettaa vaaleansinisen taustavärin */
+      border-radius: 10px; /* Pyöristää reunat 10px */
+      height: 70%; /* Asettaa korkeuden 70%:iin */
+      margin: auto; /* Keskittää elementin */
+    }
+
+    @media (max-width: 768px) {
+      .content {
+        flex-direction: column; /* Asettaa flex-elementit pystysuoraan pienillä näytöillä */
+        height: auto; /* Asettaa korkeuden automaattiseksi */
+        width: 90%; /* Asettaa leveyden 90%:iin */
+      }
+
+      .right-rectangle {
+        height: 200px; /* Asettaa korkeuden 200px pienillä näytöillä */
+        width: 100%; /* Asettaa leveyden 100%:iin pienillä näytöillä */
+      }
+
+      .rectangle {
+        width: 100%; /* Asettaa leveyden 100%:iin pienillä näytöillä */
+        height: 100px; /* Asettaa korkeuden 100px pienillä näytöillä */
+      }
+
+      .circle {
+        width: 100px; /* Asettaa leveyden 100px pienillä näytöillä */
+        height: 100px; /* Asettaa korkeuden 100px pienillä näytöillä */
+      }
+    }
+  </style>
+</head>
+<body>
+    <header class="header"></header>
+    <main class="container">
+        <section class="content">
+            <div class="left-column">
+                <div class="circle"></div>
+                <div class="rectangle"></div>
+            </div>
+            <div class="right-rectangle"></div>
+        </section>
+    </main>
+</body>
+</html>
