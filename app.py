@@ -44,6 +44,16 @@ def student_login():
 def group_management():
     return render_template('groupManagement.html')
 
+    #reitti oppilaan omiin tietoihin
+@app.route('/students_info')
+def students_info():
+    return render_template('studentInfo.html')
+    
+#reitti avatarin valintaan
+@app.route('/profile_pic')
+def profile_pic():
+     return render_template('profilePictureSelection.html')
+
 #reitti ryhmienluontiin
 @app.route('/group_selection')
 def group_selection():

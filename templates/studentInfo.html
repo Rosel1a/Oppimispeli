@@ -3,6 +3,11 @@
 <head>
   <meta charset="UTF-8">
   <title>Oppilas tiedot</title>
+  
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<!-- <link rel="stylesheet" href="styles.css" /> -->
+<link rel="stylesheet" href="{{ url_for('static', filename='menu.css') }}">
   <style>
     html, body {
       margin: 0; /* Poistaa oletusmarginaalit */
@@ -13,11 +18,11 @@
       font-family: Arial, sans-serif; /* Asettaa fontiksi Arial tai sans-serif */
     }
 
-    .header {
-      background-color: #3e8ca7; /* Asettaa tummansinisen taustavärin yläpalkille */
-      height: 10%; /* Asettaa korkeuden 10%:iin */
-      width: 100%; /* Asettaa leveyden 100%:iin */
-    }
+    
+      /*.header { background-color: #3e8ca7;  Asettaa tummansinisen taustavärin yläpalkille */
+      /*  height: 10%;Asettaa korkeuden 10%:iin */
+       /*width: 100%; Asettaa leveyden 100%:iin */
+    
 
     .container {
       height: 90%; /* Asettaa korkeuden 90%:iin */
@@ -94,7 +99,21 @@
   </style>
 </head>
 <body>
-    <header class="header"></header>
+  <header class="header-section">
+    <div class="header-top">
+      <img class="site-title" src="{{ url_for('static', filename='Kuvat/logoWhite.png') }}" alt="Logo valkoinen">
+  
+    </div>
+    <div class="header-bottom">
+      <div class="nav-buttons">
+        <!-- takaisin nappi -->
+        <button class="coming-soon-btn" onclick=window.location.href="{{ url_for('frontPage') }}">Takaisin</button>
+        <button class="coming-soon-btn" onclick=window.location.href="{{ url_for('profile_pic') }}">Muokkaa avataria</button>
+        
+        
+      </div>
+    </div>
+  </header>
     <main class="container">
         <section class="content">
             <div class="left-column">
