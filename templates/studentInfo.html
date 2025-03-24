@@ -3,219 +3,121 @@
 <head>
   <meta charset="UTF-8">
   <title>Oppilas tiedot</title>
-  
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<!-- <link rel="stylesheet" href="styles.css" /> -->
-<link rel="stylesheet" href="{{ url_for('static', filename='menu.css') }}">
-  <style>
-    html, body {
-      margin: 0; /* Poistaa oletusmarginaalit */
-      padding: 0; /* Poistaa oletustäytteet */
-      height: 100%; /* Asettaa korkeuden 100%:iin */
-      width: 100%; /* Asettaa leveyden 100%:iin */
-      background-color: #a0dff5; /* Asettaa vaaleansinisen taustavärin */
-      font-family: Arial, sans-serif; /* Asettaa fontiksi Arial tai sans-serif */
-    }
-
-    
-      /*.header { background-color: #3e8ca7;  Asettaa tummansinisen taustavärin yläpalkille */
-      /*  height: 10%;Asettaa korkeuden 10%:iin */
-       /*width: 100%; Asettaa leveyden 100%:iin */
-    
-
-    .container {
-      height: 90%; /* Asettaa korkeuden 90%:iin */
-      width: 100%; /* Asettaa leveyden 100%:iin */
-      display: flex; /* Käyttää flexbox-asettelua */
-      justify-content: center; /* Keskittää sisällön vaakasuunnassa */
-      align-items: center; /* Keskittää sisällön pystysuunnassa */
-    }
-    .infoTxt {
-        font-weight: bold;
-       padding-right: 20%;
-      }
-
-    .content {
-      background-color: #3e8ca7; /* Asettaa tummansinisen taustavärin sisältöalueelle */
-      padding: 20px; /* Asettaa 20px täytteen */
-      border-radius: 10px; /* Pyöristää reunat 10px */
-      display: flex; /* Käyttää flexbox-asettelua */
-      gap: 20px; /* Asettaa 20px välin flex-elementtien väliin */
-      height: 80%; /* Asettaa korkeuden 80%:iin */
-      width: 80%; /* Asettaa leveyden 80%:iin */
-      box-sizing: border-box; /* Sisällyttää täytteen ja reunuksen elementin kokonaismittoihin */
-    }
-
-    .left-column {
-      display: flex; /* Käyttää flexbox-asettelua */
-      flex-direction: column; /* Asettaa flex-elementit pystysuoraan */
-      gap: 20px; /* Asettaa 20px välin flex-elementtien väliin */
-      flex: 1; /* Asettaa elementin kasvamaan jäljellä olevan tilan mukaan */
-      justify-content: center; /* Keskittää sisällön pystysuunnassa */
-      align-items: center; /* Keskittää sisällön vaakasuunnassa */
-    }
-
-    .circle {
-      width: 30%; /* Asettaa leveyden 30%:iin */
-      aspect-ratio: 1 / 1; /* Pitää ympyrän pyöreänä */
-      background-color: #8bd2f5; /* Asettaa vaaleansinisen taustavärin */
-      border-radius: 50%; /* Pyöristää reunat 50%:iin, jolloin muodostuu ympyrä */
-    }
-
-    .rectangle {
-      width: 80%; /* Asettaa leveyden 80%:iin */
-      height: 30%; /* Asettaa korkeuden 30%:iin */
-      background-color: white; /* Asettaa vaaleansinisen taustavärin */
-      border-radius: 10px; /* Pyöristää reunat 10px */
-    }
-
-    .right-rectangle {
-      flex: 1; /* Asettaa elementin kasvamaan jäljellä olevan tilan mukaan */
-      background-color: white; /* Asettaa vaaleansinisen taustavärin */
-      border-radius: 10px; /* Pyöristää reunat 10px */
-      height: 70%; /* Asettaa korkeuden 70%:iin */
-      margin: auto; /* Keskittää elementin */
-    }
-
-    @media (max-width: 768px) {
-      .content {
-        flex-direction: column; /* Asettaa flex-elementit pystysuoraan pienillä näytöillä */
-        height: auto; /* Asettaa korkeuden automaattiseksi */
-        width: 90%; /* Asettaa leveyden 90%:iin */
-      }
-
-      .right-rectangle {
-        height: 200px; /* Asettaa korkeuden 200px pienillä näytöillä */
-        width: 100%; /* Asettaa leveyden 100%:iin pienillä näytöillä */
-      }
-
-      .rectangle {
-        width: 100%; /* Asettaa leveyden 100%:iin pienillä näytöillä */
-        height: 100px; /* Asettaa korkeuden 100px pienillä näytöillä */
-      }
-
-      .circle {
-        width: 100px; /* Asettaa leveyden 100px pienillä näytöillä */
-        height: 100px; /* Asettaa korkeuden 100px pienillä näytöillä */
-      }
-      
-    }
-  </style>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="{{ url_for('static', filename='info.css') }}">
 </head>
 <body>
+  <!-- Headerin sisältö (eka osio sivusta) -->
   <header class="header-section">
     <div class="header-top">
       <img class="site-title" src="{{ url_for('static', filename='Kuvat/logoWhite.png') }}" alt="Logo valkoinen">
-  
+      <div class="avatar-dropdown">
+        <button class="icon-button" aria-label="Menu">
+          <img loading="lazy" src="{{ user_avatar_url }}" class="icon-image" alt="Avatar" />
+        </button>
+        <div class="dropdown-content">
+          <a href="{{ url_for('student_info') }}">Profiili</a>
+          <a href="#">Pelitulokset</a>
+          <a href="{{ url_for('logout') }}">Kirjaudu ulos</a>
+        </div>
+      </div>
     </div>
     <div class="header-bottom">
       <div class="nav-buttons">
-        <!-- takaisin nappi -->
-        <button class="coming-soon-btn" onclick=window.location.href="{{ url_for('frontPage') }}">Takaisin</button>
-        <button class="coming-soon-btn" onclick=window.location.href="{{ url_for('profile_pic') }}">Muokkaa avataria</button>
-        
-        
+        <a href="{{ url_for('frontPage') }}">
+          <button class="coming-soon-btn">Etusivu</button>
+        </a>
       </div>
     </div>
   </header>
-    <main class="container">
-        <section class="content">
-            <div class="left-column">
-                <div class="circle">
-                  <img src="{{ user_avatar_url }}" alt="User Avatar" style="width: 100%; height: 100%; border-radius: 50%;" />
-                </div>
-                <div class="rectangle" >
-                  <div class="container-row" style="padding-left: 5%;">
-                    <table style="width:100%">
-                      <tr>
-                        <td class="infoTxt">Etunimi:</td>
-                        <td> <div id="etunimi"> {{ oppilas.etunimi }}</div></td>
-                       
-                      </tr>
-                      <tr>
-                        <td class="infoTxt">Sukunimi:</td>
-                        <td> <div id="sukunimi"> {{ oppilas.sukunimi }}</div></td>
-                        
-                      </tr>
-                      <tr>
-                        <td class="infoTxt">Syntymäpäivä: </td>
-                        <td><div id="syntymapaiva">{{ oppilas.syntymapaiva }}</div></td>
-                        
-                      </tr>
-                      <tr>
-                        <td class="infoTxt" >Luokka: </td>
-                        <td><div id="luokka">{{ oppilas.luokkaID }}</div></td>
-                        
-                      </tr>
-                    </table> 
-                   
-                 
-                  
-                  
-                  </div>
-                  
-                </div>
-            </div>
-            <div class="right-rectangle" style="max-height: 400px; overflow-y: auto; border: 1px solid #ccc;">
-              <table id="pelitulokset-taulukko">
-                <thead>
-                  <tr>
-                    <th>Pelitulos ID</th>
-                    <th>Peli ID</th>
-                    <th>Pisteet</th>
-                    <th>Kysymykset</th>
-                    <th>Oikeat Vastaukset</th>
-                    <th>Päivämäärä</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr><td colspan="6">Ladataan pelituloksia...</td></tr>
-                </tbody>
-              </table>
-            </div>
-        </section>
-    </main>
-    <script>
-      // Funktio pelitulosten hakemiseksi
-      function fetchStudentResults(oppilasID) {
-        var tableBody = document.getElementById('pelitulokset-taulukko').getElementsByTagName('tbody')[0];
-        tableBody.innerHTML = '<tr><td colspan="6">Ladataan pelituloksia...</td></tr>';
-    
-        // Oletetaan, että pelitulokset haetaan reitistä '/get_student_results'
-        fetch(`/get_student_gameresult?oppilasID=${oppilasID}`)
-          .then(response => response.json())
-          .then(data => {
-            tableBody.innerHTML = '';  // Tyhjennetään aiempi sisältö
-    
-            if (data.length === 0) {
-              tableBody.innerHTML = '<tr><td colspan="6">Ei pelituloksia.</td></tr>';
-              return;
-            }
-    
-            // Lisätään rivit pelituloksille
-            data.forEach(function(result) {
-              var row = tableBody.insertRow();
-              row.innerHTML = `
-                <td>${result.pelitulosID}</td>
-                <td>${result.Pelit_peliID}</td>
-                <td>${result.pisteet}</td>
-                <td>${result.kysymys_maara}</td>
-                <td>${result.oikeat_vastaukset}</td>
-                <td>${result.pvm}</td>
-              `;
-            });
-          })
-          .catch(error => {
-            console.error("Virhe pelitulosten lataamisessa:", error);
-            tableBody.innerHTML = '<tr><td colspan="6">Virhe ladattaessa pelituloksia.</td></tr>';
+  <main class="container">
+    <section class="content">
+      <div class="left-column">
+        <div class="circle">
+          <img src="{{ user_avatar_url }}" alt="User Avatar" style="width: 100%; height: 100%; border-radius: 50%;" />
+        </div>
+        <div class="rectangle">
+          <div class="container-row" style="padding-left: 5%;">
+            <table style="width:100%">
+              <tr>
+                <td class="infoTxt">Etunimi:</td>
+                <td><div id="etunimi">{{ oppilas.etunimi }}</div></td>
+              </tr>
+              <tr>
+                <td class="infoTxt">Sukunimi:</td>
+                <td><div id="sukunimi">{{ oppilas.sukunimi }}</div></td>
+              </tr>
+              <tr>
+                <td class="infoTxt">Syntymäpäivä:</td>
+                <td><div id="syntymapaiva">{{ oppilas.syntymapaiva }}</div></td>
+              </tr>
+              <tr>
+                <td class="infoTxt">Luokka:</td>
+                <td><div id="luokka">{{ oppilas.luokkaID }}</div></td>
+              </tr>
+            </table>
+          </div>
+        </div>
+      </div>
+      <div class="right-rectangle" style="max-height: 400px; overflow-y: auto; border: 1px solid #ccc;">
+        <table id="pelitulokset-taulukko">
+          <thead>
+            <tr>
+              <th>Pelitulos ID</th>
+              <th>Peli ID</th>
+              <th>Pisteet</th>
+              <th>Kysymykset</th>
+              <th>Oikeat Vastaukset</th>
+              <th>Päivämäärä</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td colspan="6">Ladataan pelituloksia...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+  <script>
+    // Funktio pelitulosten hakemiseksi
+    function fetchStudentResults(oppilasID) {
+      var tableBody = document.getElementById('pelitulokset-taulukko').getElementsByTagName('tbody')[0];
+      tableBody.innerHTML = '<tr><td colspan="6">Ladataan pelituloksia...</td></tr>';
+
+      // Oletetaan, että pelitulokset haetaan reitistä '/get_student_results'
+      fetch(`/get_student_gameresult?oppilasID=${oppilasID}`)
+        .then(response => response.json())
+        .then(data => {
+          tableBody.innerHTML = '';  // Tyhjennetään aiempi sisältö
+
+          if (data.length === 0) {
+            tableBody.innerHTML = '<tr><td colspan="6">Ei pelituloksia.</td></tr>';
+            return;
+          }
+
+          // Lisätään rivit pelituloksille
+          data.forEach(function(result) {
+            var row = tableBody.insertRow();
+            row.innerHTML = `
+              <td>${result.pelitulosID}</td>
+              <td>${result.Pelit_peliID}</td>
+              <td>${result.pisteet}</td>
+              <td>${result.kysymys_maara}</td>
+              <td>${result.oikeat_vastaukset}</td>
+              <td>${result.pvm}</td>
+            `;
           });
-      }
-    
-      // Oletetaan, että oppilasID on saatavilla jollain tavalla (esim. Flaskin kontekstissa)
-      // Jos oppilasID on tallennettu sessioon tai sitä voidaan käyttää dynaamisesti, niin käytä sitä täällä.
-      const oppilasID = "{{ oppilas.id }}";  // Tämä muuttuja tulee Flaskista HTML:ään
-      fetchStudentResults(oppilasID);  // Kutsu pelitulosten latausta
-    </script>
+        })
+        .catch(error => {
+          console.error("Virhe pelitulosten lataamisessa:", error);
+          tableBody.innerHTML = '<tr><td colspan="6">Virhe ladattaessa pelituloksia.</td></tr>';
+        });
+    }
+
+    // Oletetaan, että oppilasID on saatavilla jollain tavalla (esim. Flaskin kontekstissa)
+    // Jos oppilasID on tallennettu sessioon tai sitä voidaan käyttää dynaamisesti, niin käytä sitä täällä.
+    const oppilasID = "{{ oppilas.id }}";  // Tämä muuttuja tulee Flaskista HTML:ään
+    fetchStudentResults(oppilasID);  // Kutsu pelitulosten latausta
+  </script>
 </body>
 </html>

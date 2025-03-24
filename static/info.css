@@ -1,16 +1,11 @@
 /* Yleiset asetukset */
 html, body {
   margin: 0; /* Poistaa oletusmarginaalit */
-  padding: 0; /* Poistaa oletuspaddingin */
-  overflow-x: hidden; /* Estää sivun leviämisen sivusuunnassa */
-  min-height: 100vh; /* Asettaa sivun korkeudeksi vähintään 100% näytön korkeudesta */
-  background-color: rgba(65, 152, 196, 1); /* Asettaa taustavärin */
-  display: flex; /* Mahdollistaa flexboxin käytön */
-  flex-direction: column; /* Asettaa sisällön pystysuunnassa */
-  box-sizing: border-box; /* Sisältää paddingin elementin kokonaiskokoon */
-  font-family: 'Arial', sans-serif; /* Asettaa oletusfontin */
-  font-size: 16px; /* Asettaa oletusfonttikoon */
-  color: #333; /* Asettaa oletustekstin värin */
+  padding: 0; /* Poistaa oletustäytteet */
+  height: 100%; /* Asettaa korkeuden 100%:iin */
+  width: 100%; /* Asettaa leveyden 100%:iin */
+  background-color: #a0dff5; /* Asettaa vaaleansinisen taustavärin */
+  font-family: Arial, sans-serif; /* Asettaa fontiksi Arial tai sans-serif */
 }
 
 /* Header (yläosa) */
@@ -22,6 +17,11 @@ html, body {
   justify-content: space-between; /* Jakaa ylä- ja alaosan tasaisesti */
   padding: 0 20px; /* Lisätään välistys vasemmalle ja oikealle */
   box-sizing: border-box; /* Sisältää paddingin elementin kokonaiskokoon */
+  margin-bottom: 10px; /* Pienennetään välistystä headerin ja muun sisällön välillä */
+}
+
+.header-section + .container {
+  margin-top: 20px; /* Lisää välistystä headerin ja containerin väliin */
 }
 
 /* Headerin yläosa (avatar ja otsikko) */
@@ -51,6 +51,7 @@ html, body {
   margin-top: 10px; /* Lisää tilaa yläpuolelle */
 }
 
+/* Avatar-kuva */
 .icon-image {
   width: 100%; /* Asetetaan kuvan leveys täyttämään painike */
   height: 100%; /* Asetetaan kuvan korkeus täyttämään painike */
@@ -76,6 +77,7 @@ html, body {
   align-items: center;
 }
 
+/* Alavetovalikon linkit */
 .avatar-dropdown .dropdown-content a {
   color: white;
   padding: 10px;
@@ -84,12 +86,14 @@ html, body {
   border-radius: 8px;
   font-family: 'Arial', sans-serif; /* Asetetaan sama fontti kuin muussa tekstissä */
   font-size: 16px; /* Asetetaan sama fonttikoko kuin muussa tekstissä */
-  }
+}
 
+/* Alavetovalikon linkkien hover-tila */
 .avatar-dropdown .dropdown-content a:hover {
   background-color: rgba(239, 125, 125, 1);
 }
 
+/* Alavetovalikon hover-tila */
 .avatar-dropdown:hover .dropdown-content {
   display: block;
 }
@@ -103,6 +107,7 @@ html, body {
   margin-top: auto; /* Työntää napit alareunaan */
 }
 
+/* Navigointipainikkeet */
 .nav-buttons {
   display: flex;
   gap: 2px; /* Lisää tilaa painikkeiden väliin */
@@ -113,6 +118,7 @@ html, body {
   position: relative; /* Tämä mahdollistaa alasvetovalikon asemoinnin */
 }
 
+/* Alavetovalikon painike */
 .dropbtn {
   background-color: rgba(239, 125, 125, 1);
   color: white;
@@ -123,6 +129,7 @@ html, body {
   border-radius: 8px;
 }
 
+/* Alavetovalikon sisältö */
 .dropdown-content {
   display: none; /* Piilotetaan oletuksena */
   position: absolute; /* Asettaa valikon kellumaan muiden elementtien päällä */
@@ -136,6 +143,7 @@ html, body {
   align-items: center;
 }
 
+/* Alavetovalikon linkit */
 .dropdown-content a {
   color: white;
   padding: 10px;
@@ -144,10 +152,12 @@ html, body {
   border-radius: 8px;
 }
 
+/* Alavetovalikon linkkien hover-tila */
 .dropdown-content a:hover {
   background-color: rgba(239, 125, 125, 1);
 }
 
+/* Alavetovalikon hover-tila */
 .dropdown:hover .dropdown-content {
   display: block;
 }
@@ -175,6 +185,7 @@ html, body {
   box-sizing: border-box; /* Varmistetaan, että padding ei vaikuta kokoon */
 }
 
+/* Pelivalikon säilö */
 .games-container {
   display: grid;
   grid-template-columns: repeat(3, 1fr); /* 3 saraketta */
@@ -198,6 +209,7 @@ html, body {
   width: 100%;
 }
 
+/* Pelinappien hover-tila */
 .game-button:hover {
   background-color: rgba(239, 125, 125, 1);
 }
@@ -212,17 +224,96 @@ html, body {
   cursor: none; /* Piilottaa kursorin kuvan ympäriltä */
 }
 
+/* Student Info Content */
+.container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+  height: calc(100vh - 60px); /* Varmistaa, että container täyttää koko näkyvän korkeuden, vähennettynä headerin korkeudella */
+}
+
+/* Sisältö */
+.content {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  align-items: center; /* Keskittää laatikot pystysuunnassa */
+  max-width: 1200px;
+  background-color: rgba(65, 152, 196, 1); /* Sama taustaväri kuin headerissa */
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2); /* Lisää varjo laatikon ympärille */
+}
+
+/* Vasemmanpuoleinen sarake */
+.left-column {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 40%;
+}
+
+/* Ympyrä */
+.circle {
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  overflow: hidden;
+  margin-bottom: 20px;
+}
+
+/* Suorakulmio */
+.rectangle {
+  width: 100%;
+  background-color: white;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1); /* Lisää varjo laatikon ympärille */
+}
+
+/* Oikeanpuoleinen suorakulmio */
+.right-rectangle {
+  width: 55%;
+  background-color: white;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1); /* Lisää varjo laatikon ympärille */
+  max-height: 400px;
+  overflow-y: auto;
+  border: 1px solid #ccc;
+}
+
+/* Info-teksti */
+.infoTxt {
+  font-weight: bold;
+  padding-right: 10px;
+}
+
+/* Säilö-rivi */
+.container-row {
+  padding-left: 5%;
+}
+
+.rectangle, .right-rectangle {
+  margin: 10px; /* Lisää välistystä laatikoiden ympärille */
+  padding: 10px; /* Lisää sisäistä välistystä */
+  box-sizing: border-box; /* Sisällytä padding ja border elementin kokonaisleveyteen ja -korkeuteen */
+}
+
+.left-column .rectangle {
+  width: calc(100% - 20px); /* Pienennä laatikon leveyttä */
+}
+
+.right-rectangle {
+  width: calc(100% - 20px); /* Pienennä laatikon leveyttä */
+}
+
 /* Responsiivisuus (pienille näytöille) */
 @media (max-width: 768px) {
   .header-top {
     flex-direction: row-reverse; /* Asettaa logon oikealle ja avatarin vasemmalle */
     justify-content: space-between; /* Jakaa tilan tasaisesti */
-  }
-  .header-top .site-title {
-    order: 2; /* Asettaa logon oikealle */
-  }
-  .header-top .avatar-dropdown {
-    order: 1; /* Asettaa avatarin vasemmalle */
   }
   .games-container {
     grid-template-columns: repeat(2, 1fr); /* Muutetaan kahteen sarakkeeseen */
@@ -244,8 +335,39 @@ html, body {
     height: 70%;
     max-width: 70%;
   }
+  .content {
+    flex-direction: column; /* Asettaa flex-elementit pystysuoraan pienillä näytöillä */
+    height: auto; /* Asettaa korkeuden automaattiseksi */
+    width: 90%; /* Asettaa leveyden 90%:iin */
+  }
+
+  .left-column {
+    width: 100%; /* Asettaa leveyden 100%:iin pienillä näytöillä */
+    display: flex;
+    flex-direction: row; /* Asettaa avatarin ja henkilötiedot vierekkäin */
+    align-items: center; /* Keskittää avatarin ja henkilötiedot pystysuunnassa */
+  }
+
+  .circle {
+    width: 100px; /* Asettaa leveyden 100px pienillä näytöillä */
+    height: 100px; /* Asettaa korkeuden 100px pienillä näytöillä */
+    margin-right: 10px; /* Lisää tilaa avatarin ja henkilötietojen väliin */
+  }
+
+  .rectangle {
+    width: calc(100% - 110px); /* Asettaa leveyden jäljellä olevaan tilaan */
+    height: auto; /* Asettaa korkeuden automaattiseksi */
+    overflow: hidden; /* Estää sisällön karkaamisen ulkopuolelle */
+    word-wrap: break-word; /* Katkaisee pitkät sanat */
+  }
+
+  .right-rectangle {
+    height: 200px; /* Asettaa korkeuden 200px pienillä näytöillä */
+    width: 100%; /* Asettaa leveyden 100%:iin pienillä näytöillä */
+  }
 }
 
+/* Responsiivisuus (erittäin pienille näytöille) */
 @media (max-width: 480px) {
   .games-container {
     grid-template-columns: repeat(1, 1fr); /* Yksi sarake */
