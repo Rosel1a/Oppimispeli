@@ -73,9 +73,9 @@
   }
 
   .big-circle {
-    width: 80%;
+    width: 70%;
     aspect-ratio: 1 / 1;
-    background-color: #8bd2f5;
+    background-color: #3e8ca7;
     border-radius: 50%;
   }
 
@@ -90,9 +90,9 @@
   }
 
   .small-circle {
-    width: 80%;
+    width: 60%;
     aspect-ratio: 1 / 1;
-    background-color: #8bd2f5;
+    background-color: #3e8ca7;
     border-radius: 50%;
   }
 
@@ -144,21 +144,22 @@
         <div class="content">
             <div class="main-area">
                 <div class="left-circle">
-                    <div class="big-circle"></div>
-                </div>
+                    <div class="big-circle"> <div class="circle">
+                      <img src="{{ url_for('static', filename='Kuvat/mattiAvatar.png') }}" alt="User Avatar" style="width: 100%; height: 100%; border-radius: 50%;" /></div>
+                    </div></div>
                 <div class="right-circles">
                     <div class="small-circle">
-                      <img class="site-title" src="{{ url_for('static', filename='Kuvat/mattiAvatar.png') }}" alt="Logo valkoinen">
+                      <img class="site-title" src="{{ url_for('static', filename='Kuvat/mattiAvatar.png') }}" alt="User Avatar" style="width: 100%; height: 100%; border-radius: 50%;" >
                     </div>
                     <div class="small-circle">
-                      <img class="site-title" src="{{ url_for('static', filename='Kuvat/bunnyAvatar.png') }}" alt="Logo valkoinen">
+                      <img class="site-title" src="{{ url_for('static', filename='Kuvat/bunnyAvatar.png') }}"alt="User Avatar" style="width: 100%; height: 100%; border-radius: 50%;" >
                     </div>
                     
                     <div class="small-circle">
-                      <img class="site-title" src="{{ url_for('static', filename='Kuvat/doggyAvatar.png') }}" alt="Logo valkoinen">
+                      <img class="site-title" src="{{ url_for('static', filename='Kuvat/doggyAvatar.png') }}" alt="User Avatar" style="width: 100%; height: 100%; border-radius: 50%;" >
                     </div>
                     <div class="small-circle">
-                      <img class="site-title" src="{{ url_for('static', filename='Kuvat/doggyAvatar.png') }}" alt="Logo valkoinen">
+                      <img class="site-title" src="{{ url_for('static', filename='Kuvat/doggyAvatar.png') }}" alt="User Avatar" style="width: 100%; height: 100%; border-radius: 50%;" >
                     </div>
                 </div>
                 <div class="buttons">
