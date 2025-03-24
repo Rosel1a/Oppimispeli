@@ -1,18 +1,30 @@
 # Kuvaus: Tämä tiedosto sisältää pelisovelluksen pääsovelluslogiikan. 
 # Sovellus on toteutettu Flask-kehyspohjaisena web-sovelluksena, joka käyttää tietokantaa kysymysten ja vastausten tallentamiseen. 
 
-from flask import Flask, render_template, jsonify, request, redirect, url_for, flash, session
+from flask import Flask, render_template, jsonify, request, redirect, url_for, flash, session, g
 import sys
 import mysql.connector
 from mysql.connector import connection
 from database import get_random_question, register_user, get_game_instructions, check_user_credentials, save_player_answer, save_game_result, create_game_result
 from database import get_all_students, get_all_classes, update_student_class, check_existing_group, create_new_group, get_teacher_class, get_class_id_by_name, get_opettaja_id_by_user_id
-from database import get_student_by_id, get_student_by_class_id, get_class_name_by_id, get_results_by_oppilas_id, get_vastaukset_by_pelitulos_id, remove_student_from_class
+from database import get_student_by_id, get_student_by_class_id, get_class_name_by_id, get_results_by_oppilas_id, get_vastaukset_by_pelitulos_id, remove_student_from_class, get_user_avatar
 import logging
 logging.basicConfig(stream=sys.stdout, level=logging.DEBUG)
 sys.stderr = sys.stdout
-app = Flask(__name__)
+app = Flask(__name__, static_folder='static')
 app.secret_key = "supersecretkey"
+
+@app.before_request
+def before_request():
+    """Tämä funktio ajetaan ennen jokaista requestia."""
+    if 'userID' in session:
+        # Hae käyttäjän avatar URL ja tallenna se templateen
+        user_id = session['userID']
+        user_avatar_url = get_user_avatar(user_id)
+        if not user_avatar_url:
+            user_avatar_url = 'static/images/default_avatar.png'
+        # Liitetään user_avatar_url globaaliksi muuttujaksi, joka on saatavilla kaikilla sivuilla
+        g.user_avatar_url = user_avatar_url
 
 # Pääsivun reitti
 @app.route('/')
@@ -27,7 +39,7 @@ def firstscreen():
 # Reitti etusivulle
 @app.route('/frontPage')
 def frontPage():
-    return render_template('frontPage.html')
+    return render_template('frontPage.html', user_avatar_url=g.user_avatar_url)
 
 # Opettajan kirjautuminen
 @app.route('/teacher_login')
@@ -54,13 +66,19 @@ def student_info():
         return redirect(url_for("student_login"))  # Ohjaa kirjautumissivulle, jos ei ole kirjautunut
 
     oppilas = get_student_by_id(session["oppilasID"])  # Haetaan käyttäjän tiedot
+    user_id = session['userID']
 
+    print(f"Haetaan avataria käyttäjälle {user_id}")  # Debugging
+    user_avatar_url = get_user_avatar(user_id)
+
+    if not user_avatar_url:
+        user_avatar_url = 'static/images/default_avatar.png'  # Oletuskuva, jos ei löydy avataria
     if not oppilas:
         return "Oppilaan tietoja ei löytynyt.", 404
     
     #pelitulokset = get_results_by_oppilas_id(session["oppilasID"])
 
-    return render_template('studentInfo.html', oppilas=oppilas)
+    return render_template('studentInfo.html', oppilas=oppilas, user_avatar_url=user_avatar_url)
 
 @app.route('/get_student_gameresult')
 def get_student_gameresult():
@@ -78,6 +96,23 @@ def get_student_gameresult():
 @app.route('/profile_pic')
 def profile_pic():
      return render_template('profilePictureSelection.html')
+
+@app.route('/profile')
+def profile():
+    if 'userID' not in session:
+        return redirect(url_for('student_login'))
+
+    # Haetaan käyttäjän avatar URL tietokannasta
+    user_id = session['userID']
+    print(f"Haetaan avataria käyttäjälle {user_id}")  # Debugging
+    user_avatar_url = get_user_avatar(user_id)
+
+    if not user_avatar_url:
+        user_avatar_url = 'static/images/default_avatar.png'  # Oletuskuva, jos ei löydy avataria
+        
+
+    return render_template('profile.html', user_avatar_url=user_avatar_url)
+
 
 #reitti ryhmienluontiin
 @app.route('/group_selection')

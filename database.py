@@ -509,4 +509,29 @@ def get_vastaukset_by_pelitulos_id(pelitulos_id):
 
     return results
 
+def get_user_avatar(user_id):
+    """Hakee käyttäjän avatarin URL:n tietokannasta"""
+    connection = get_db_connection()
+    if connection:
+        cursor = connection.cursor(dictionary=True)
+        # Hae oppilas taulusta avatarID, ja hae sen jälkeen avatar taulusta kuva_url
+        query = """
+            SELECT a.kuva_url
+            FROM oppilas o
+            JOIN avatar a ON o.Avatar_avatarID = a.avatarID
+            WHERE o.User_userID = %s
+        """
+        cursor.execute(query, (user_id,))
+        avatar = cursor.fetchone()
+        cursor.close()
+        connection.close()
+
+        if avatar:
+            print(f"Avatar URL löytyi: {avatar['kuva_url']}")  # Debugging
+            return avatar['kuva_url']
+        else:
+            print("Ei löytynyt avataria.")  # Debugging
+            return None
+    return None   
+
 get_db_connection()

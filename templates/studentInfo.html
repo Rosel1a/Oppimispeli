@@ -117,7 +117,9 @@
     <main class="container">
         <section class="content">
             <div class="left-column">
-                <div class="circle"></div>
+                <div class="circle">
+                  <img src="{{ user_avatar_url }}" alt="User Avatar" style="width: 100%; height: 100%; border-radius: 50%;" />
+                </div>
                 <div class="rectangle">
                   <div id="etunimi">Etunimi: {{ oppilas.etunimi }}</div>
                   <div id="sukunimi">Sukunimi: {{ oppilas.sukunimi }}</div>
