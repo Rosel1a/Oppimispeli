@@ -1,3 +1,0 @@
-#Luokka avatarille
-
-#class Avatar():

@@ -80,6 +80,11 @@ def student_info():
 
     return render_template('studentInfo.html', oppilas=oppilas, user_avatar_url=user_avatar_url)
 
+
+@app.route('/avatar')
+def avatar():
+    return render_template('profilePictureSelection.html')
+
 @app.route('/get_student_gameresult')
 def get_student_gameresult():
     oppilas_id = session.get('oppilasID')
