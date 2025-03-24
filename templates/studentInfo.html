@@ -31,6 +31,10 @@
       justify-content: center; /* Keskittää sisällön vaakasuunnassa */
       align-items: center; /* Keskittää sisällön pystysuunnassa */
     }
+    .infoTxt {
+        font-weight: bold;
+       padding-right: 20%;
+      }
 
     .content {
       background-color: #3e8ca7; /* Asettaa tummansinisen taustavärin sisältöalueelle */
@@ -95,6 +99,7 @@
         width: 100px; /* Asettaa leveyden 100px pienillä näytöillä */
         height: 100px; /* Asettaa korkeuden 100px pienillä näytöillä */
       }
+      
     }
   </style>
 </head>
@@ -120,11 +125,36 @@
                 <div class="circle">
                   <img src="{{ user_avatar_url }}" alt="User Avatar" style="width: 100%; height: 100%; border-radius: 50%;" />
                 </div>
-                <div class="rectangle">
-                  <div id="etunimi">Etunimi: {{ oppilas.etunimi }}</div>
-                  <div id="sukunimi">Sukunimi: {{ oppilas.sukunimi }}</div>
-                  <div id="syntymapaiva">Syntymäpäivä: {{ oppilas.syntymapaiva }}</div>
-                  <div id="luokka">Luokka: {{ oppilas.luokkaID }}</div>
+                <div class="rectangle" >
+                  <div class="container-row" style="padding-left: 5%;">
+                    <table style="width:100%">
+                      <tr>
+                        <td class="infoTxt">Etunimi:</td>
+                        <td> <div id="etunimi"> {{ oppilas.etunimi }}</div></td>
+                       
+                      </tr>
+                      <tr>
+                        <td class="infoTxt">Sukunimi:</td>
+                        <td> <div id="sukunimi"> {{ oppilas.sukunimi }}</div></td>
+                        
+                      </tr>
+                      <tr>
+                        <td class="infoTxt">Syntymäpäivä: </td>
+                        <td><div id="syntymapaiva">{{ oppilas.syntymapaiva }}</div></td>
+                        
+                      </tr>
+                      <tr>
+                        <td class="infoTxt" >Luokka: </td>
+                        <td><div id="luokka">{{ oppilas.luokkaID }}</div></td>
+                        
+                      </tr>
+                    </table> 
+                   
+                 
+                  
+                  
+                  </div>
+                  
                 </div>
             </div>
             <div class="right-rectangle" style="max-height: 400px; overflow-y: auto; border: 1px solid #ccc;">

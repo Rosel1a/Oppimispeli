@@ -8,11 +8,13 @@ from werkzeug.security import generate_password_hash, check_password_hash
 
 # Määritellään yhteyspooli
 dbconfig = {
-    "host": "localhost",      # Esim. "123.45.67.89" 
-    "user" : "root",    # MySQL-käyttäjänimi
-    "password": "Salasana1" ,   # MySQL-salasana
+    "host": "85.23.94.251",      # Esim. "123.45.67.89" 
+    "user" : "saaga",    # MySQL-käyttäjänimi
+    "password": "salasana2" ,   # MySQL-salasana
     "database" : "oppimispeli"  # Tietokannan nimi
+    
 }
+
 
 connection_pool = mysql.connector.pooling.MySQLConnectionPool(
     pool_name="mypool",
