@@ -118,10 +118,72 @@
         <section class="content">
             <div class="left-column">
                 <div class="circle"></div>
-                <div class="rectangle"></div>
+                <div class="rectangle">
+                  <div id="etunimi">Etunimi: {{ oppilas.etunimi }}</div>
+                  <div id="sukunimi">Sukunimi: {{ oppilas.sukunimi }}</div>
+                  <div id="syntymapaiva">Syntymäpäivä: {{ oppilas.syntymapaiva }}</div>
+                  <div id="luokka">Luokka: {{ oppilas.luokkaID }}</div>
+                </div>
             </div>
-            <div class="right-rectangle"></div>
+            <div class="right-rectangle" style="max-height: 400px; overflow-y: auto; border: 1px solid #ccc;">
+              <table id="pelitulokset-taulukko">
+                <thead>
+                  <tr>
+                    <th>Pelitulos ID</th>
+                    <th>Peli ID</th>
+                    <th>Pisteet</th>
+                    <th>Kysymykset</th>
+                    <th>Oikeat Vastaukset</th>
+                    <th>Päivämäärä</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr><td colspan="6">Ladataan pelituloksia...</td></tr>
+                </tbody>
+              </table>
+            </div>
         </section>
     </main>
+    <script>
+      // Funktio pelitulosten hakemiseksi
+      function fetchStudentResults(oppilasID) {
+        var tableBody = document.getElementById('pelitulokset-taulukko').getElementsByTagName('tbody')[0];
+        tableBody.innerHTML = '<tr><td colspan="6">Ladataan pelituloksia...</td></tr>';
+    
+        // Oletetaan, että pelitulokset haetaan reitistä '/get_student_results'
+        fetch(`/get_student_gameresult?oppilasID=${oppilasID}`)
+          .then(response => response.json())
+          .then(data => {
+            tableBody.innerHTML = '';  // Tyhjennetään aiempi sisältö
+    
+            if (data.length === 0) {
+              tableBody.innerHTML = '<tr><td colspan="6">Ei pelituloksia.</td></tr>';
+              return;
+            }
+    
+            // Lisätään rivit pelituloksille
+            data.forEach(function(result) {
+              var row = tableBody.insertRow();
+              row.innerHTML = `
+                <td>${result.pelitulosID}</td>
+                <td>${result.Pelit_peliID}</td>
+                <td>${result.pisteet}</td>
+                <td>${result.kysymys_maara}</td>
+                <td>${result.oikeat_vastaukset}</td>
+                <td>${result.pvm}</td>
+              `;
+            });
+          })
+          .catch(error => {
+            console.error("Virhe pelitulosten lataamisessa:", error);
+            tableBody.innerHTML = '<tr><td colspan="6">Virhe ladattaessa pelituloksia.</td></tr>';
+          });
+      }
+    
+      // Oletetaan, että oppilasID on saatavilla jollain tavalla (esim. Flaskin kontekstissa)
+      // Jos oppilasID on tallennettu sessioon tai sitä voidaan käyttää dynaamisesti, niin käytä sitä täällä.
+      const oppilasID = "{{ oppilas.id }}";  // Tämä muuttuja tulee Flaskista HTML:ään
+      fetchStudentResults(oppilasID);  // Kutsu pelitulosten latausta
+    </script>
 </body>
 </html>

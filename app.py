@@ -45,9 +45,34 @@ def group_management():
     return render_template('groupManagement.html')
 
     #reitti oppilaan omiin tietoihin
-#@app.route('/students_info')
-#def students_info():
-    #return render_template('studentInfo.html')
+@app.route('/student_info')
+def student_info():
+    if "oppilasID" not in session:  
+        print("🔴 Ei kirjautunutta käyttäjää!")     
+        print(f"🟢 Käyttäjä {session['userID']} on kirjautunut!")  
+        print(f"🟢 oppilas {session['oppilasID']} on kirjautunut!")  
+        return redirect(url_for("student_login"))  # Ohjaa kirjautumissivulle, jos ei ole kirjautunut
+
+    oppilas = get_student_by_id(session["oppilasID"])  # Haetaan käyttäjän tiedot
+
+    if not oppilas:
+        return "Oppilaan tietoja ei löytynyt.", 404
+    
+    #pelitulokset = get_results_by_oppilas_id(session["oppilasID"])
+
+    return render_template('studentInfo.html', oppilas=oppilas)
+
+@app.route('/get_student_gameresult')
+def get_student_gameresult():
+    oppilas_id = session.get('oppilasID')
+    if not oppilas_id:
+        return jsonify({'error': 'Oppilas ID puuttuu'}), 400
+    
+    # Oletetaan, että olet määritellyt get_results_by_oppilas_id-funktion
+    results = get_results_by_oppilas_id(oppilas_id)
+    
+    # Palautetaan pelitulokset JSON-muodossa
+    return jsonify(results)
     
 #reitti avatarin valintaan
 @app.route('/profile_pic')
