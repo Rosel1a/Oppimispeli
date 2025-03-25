@@ -18,13 +18,17 @@ app.secret_key = "supersecretkey"
 def before_request():
     """Tämä funktio ajetaan ennen jokaista requestia."""
     if 'userID' in session:
-        # Hae käyttäjän avatar URL ja tallenna se templateen
         user_id = session['userID']
         user_avatar_url = get_user_avatar(user_id)
+
         if not user_avatar_url:
-            user_avatar_url = 'static/images/default_avatar.png'
-        # Liitetään user_avatar_url globaaliksi muuttujaksi, joka on saatavilla kaikilla sivuilla
+            user_avatar_url = url_for('static', filename='images/default_avatar.png')  # Flaskin tapa määrittää polku
+
         g.user_avatar_url = user_avatar_url
+        print(f"🔹 Päivitetty avatar URL: {g.user_avatar_url}")  # Debug-tulostus terminaaliin
+    else:
+        g.user_avatar_url = url_for('static', filename='images/default_avatar.png')
+        print("🔸 Käyttäjä ei ole kirjautunut, käytetään oletusavatar.")
 
 # Pääsivun reitti
 @app.route('/')
@@ -39,7 +43,7 @@ def firstscreen():
 # Reitti etusivulle
 @app.route('/frontPage')
 def frontPage():
-    return render_template('frontPage.html', user_avatar_url=g.user_avatar_url)
+    return render_template('frontPage.html', user_avatar_url=getattr(g, 'user_avatar_url', None))
 
 # Opettajan kirjautuminen
 @app.route('/teacher_login')
@@ -289,16 +293,16 @@ def serve_images(filename):
 # Matematiikan valikko
 @app.route('/math_menu/<int:grade>')
 def math_menu(grade):
-    if grade == 3:
-        return render_template('mathMenu3rdGrade.html')
-    elif grade == 4:
-        return render_template('mathMenu4rdGrade.html')
-    elif grade == 5:
-        return render_template('mathMenu5rdGrade.html')
-    elif grade == 6:
-        return render_template('mathMenu6rdGrade.html')
-    else:
-        return redirect(url_for('index'))  # Ohjataan pääsivulle
+    grade_templates = {
+        3: 'mathMenu3rdGrade.html',
+        4: 'mathMenu4rdGrade.html',
+        5: 'mathMenu5rdGrade.html',
+        6: 'mathMenu6rdGrade.html'
+    }
+
+    if grade in grade_templates:
+        return render_template(grade_templates[grade])  # Ei tarvitse erikseen user_avatar_url
+    return redirect(url_for('index'))
 
 # Pelinäkymän reitti
 @app.route('/gameScreen1/<int:game_id>')
@@ -317,7 +321,7 @@ def peli(pelin_id):
     pelitulos_id = create_game_result(session.get('oppilasID'), pelin_id)
     session['pelitulos_id'] = pelitulos_id
 
-    return render_template('gameScreen1.html', pelin_id=pelin_id)
+    return render_template('gameScreen1.html', pelin_id=pelin_id, user_avatar_url=getattr(g, 'user_avatar_url', None))
 
 # Ohjeiden hakufunktio peleille
 @app.route('/get_instructions/<int:peli_id>')

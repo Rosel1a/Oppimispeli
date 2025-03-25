@@ -3,7 +3,7 @@
 import mysql.connector
 from mysql.connector import pooling
 import sys
-from flask import session
+from flask import session, url_for
 from werkzeug.security import generate_password_hash, check_password_hash
 
 # Määritellään yhteyspooli
@@ -528,9 +528,11 @@ def get_user_avatar(user_id):
         cursor.close()
         connection.close()
 
-        if avatar:
-            print(f"Avatar URL löytyi: {avatar['kuva_url']}")  # Debugging
-            return avatar['kuva_url']
+        if avatar and avatar['kuva_url']:
+            avatar_url = url_for('static', filename=avatar['kuva_url'].lstrip('static/'))
+            print(f"✅ Oikea avatar URL: {avatar_url}")  # Debugging
+            return avatar_url
+
         else:
             print("Ei löytynyt avataria.")  # Debugging
             return None
