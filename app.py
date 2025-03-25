@@ -222,9 +222,9 @@ def register():
 
     #oppilaille myös:
     syntymapaiva = request.form.get('syntymapaiva')
-    luokka = request.form.get('luokka')
+    #luokka = request.form.get('luokka')
 
-    if register_user(etunimi, sukunimi, kirjautumistunnus, salasana, rooli, syntymapaiva, luokka):
+    if register_user(etunimi, sukunimi, kirjautumistunnus, salasana, rooli, syntymapaiva):
         flash("Rekisteröinti onnistui!", "success")
         session['rooli'] = rooli
         if rooli == 'opettaja': 

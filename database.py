@@ -113,11 +113,11 @@ def register_user(etunimi, sukunimi, kirjautumistunnus, salasana, rooli, syntyma
             sql_opettaja = "INSERT INTO opettaja (User_userID) VALUES (%s)"
             cursor.execute(sql_opettaja, (user_id,))
         elif rooli == "oppilas":
-            if syntymapaiva is None or luokka is None:
-                raise ValueError("Syntymäpäivä ja luokka ovat pakollisia oppilaille!")
+            if syntymapaiva is None:
+                raise ValueError("Syntymäpäivä on pakollinen!")
 
-            sql_oppilas = "INSERT INTO oppilas (User_userID, syntymapaiva, luokka) VALUES (%s, %s, %s)"
-            cursor.execute(sql_oppilas, (user_id, syntymapaiva, luokka))
+            sql_oppilas = "INSERT INTO oppilas (User_userID, syntymapaiva) VALUES (%s, %s)"
+            cursor.execute(sql_oppilas, (user_id, syntymapaiva))
 
         connection.commit()
         return True  # Onnistui
