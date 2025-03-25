@@ -13,17 +13,14 @@
     <!-- Headerin sisältö (eka osio sivusta) -->
     <header class="header-section" >
       <div class="header-top">
-        
         <img class="site-title" src="{{ url_for('static', filename='kuvat/logoWhite.png') }}" alt="Logo valkoinen">
         <div class="avatar-dropdown">
           <button class="icon-button" aria-label="Menu">
-            <!--<img loading="lazy" src="https://cdn.builder.io/api/v1/image/assets/TEMP/4fe30ddc3b898acf88f46ad779a7295745ba4d35ef0a4a6ccabf35735c61a035?placeholderIfAbsent=true&apiKey=d4a6829ab0a243af995c418502f3ed93" 
-                class="icon-image" alt="Avatar" />-->
                 <img loading="lazy" src="{{ g.user_avatar_url }}" class="icon-image" alt="Avatar" style="width: 100%; height: 100%; border-radius: 50%;" />
           </button>
           <div class="dropdown-content">
-            <a href="#">Profiili</a>
-            <a href="#">Pelitulokset</a>
+            <a href="{{ url_for('student_info') }}">Profiili</a>
+            <a href="{{ url_for('avatar') }}">Avatar</a>
             <a href="{{ url_for('logout') }}">Kirjaudu ulos</a>
           </div>
         </div>
@@ -51,14 +48,27 @@
     <!-- Pelivalikko (toka osio sivulla)-->
     <section class="games-section">
       <div class="games-container">
-        <!-- button
-          class="game-button"
-          tabindex="0"
-          onclick="window.location.href='peli1.html';"
-        >Peli 1</button> -->
-        <div class="dropdown">
-          <button class="game-button">5 luokka peli 1</button>
-        </div>
+        <a href="{{ url_for('peli', pelin_id=24) }}">
+          <button class="game-button">Laskujärjestys</button>
+        </a>
+        <a href="{{ url_for('peli', pelin_id=25) }}">
+          <button class="game-button">Jakolaskut desimaaliluvuilla</button>
+        </a>
+        <a href="{{ url_for('peli', pelin_id=26) }}">
+          <button class="game-button">Kertolaskut isoilla luvuilla</button>
+        </a>
+        <a href="{{ url_for('peli', pelin_id=27) }}">
+          <button class="game-button">Jakolaskut isoilla luvuilla</button>
+        </a>
+        <a href="{{ url_for('peli', pelin_id=28) }}">
+          <button class="game-button">Murtolukujen yhteen- ja vähennyslaskuja</button>
+        </a>
+        <a href="{{ url_for('peli', pelin_id=29) }}">
+          <button class="game-button">Prosenttilaskuja</button>
+        </a>
+        <a href="{{ url_for('peli', pelin_id=30) }}">
+          <button class="game-button">Rahat ja hinnat</button>
+        </a>
       </div>
     </section>
   </body>

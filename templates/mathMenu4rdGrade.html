@@ -6,7 +6,6 @@
     <!-- Viewportin avulla sivu skaalautuu laitteelle sopivaksi -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Opikku</title>
-    <!-- <link rel="stylesheet" href="styles.css" /> -->
     <link rel="stylesheet" href="{{ url_for('static', filename='menu.css') }}">
   </head>
   <body>
@@ -16,13 +15,11 @@
         <img class="site-title" src="{{ url_for('static', filename='kuvat/logoWhite.png') }}" alt="Logo valkoinen">
         <div class="avatar-dropdown">
           <button class="icon-button" aria-label="Menu">
-            <!--<img loading="lazy" src="https://cdn.builder.io/api/v1/image/assets/TEMP/4fe30ddc3b898acf88f46ad779a7295745ba4d35ef0a4a6ccabf35735c61a035?placeholderIfAbsent=true&apiKey=d4a6829ab0a243af995c418502f3ed93" 
-                class="icon-image" alt="Avatar" />-->
                 <img loading="lazy" src="{{ g.user_avatar_url }}" class="icon-image" alt="Avatar" style="width: 100%; height: 100%; border-radius: 50%;" />
           </button>
           <div class="dropdown-content">
-            <a href="#">Profiili</a>
-            <a href="#">Pelitulokset</a>
+            <a href="{{ url_for('student_info') }}">Profiili</a>
+            <a href="{{ url_for('avatar') }}">Avatar</a>
             <a href="{{ url_for('logout') }}">Kirjaudu ulos</a>
           </div>
         </div>
@@ -50,11 +47,20 @@
     <!-- Pelivalikko (toka osio sivulla)-->
     <section class="games-section">
       <div class="games-container">
-        <div class="dropdown">
-          <button class="game-button">4 luokka peli 1</button>
-        </div>
         <a href="{{ url_for('peli', pelin_id=19) }}">
-          <button class="game-button">Testi</button>
+          <button class="game-button">Laskujärjestys</button>
+        </a>
+        <a href="{{ url_for('peli', pelin_id=20) }}">
+          <button class="game-button">Jakolaskut</button>
+        </a>
+        <a href="{{ url_for('peli', pelin_id=21) }}">
+          <button class="game-button">Pluslaskut isoilla luvuilla</button>
+        </a>
+        <a href="{{ url_for('peli', pelin_id=22) }}">
+          <button class="game-button">Miinuslaskut isoilla luvuilla</button>
+        </a>
+        <a href="{{ url_for('peli', pelin_id=23) }}">
+          <button class="game-button">Paljonko maksaa</button>
         </a>
       </div>
     </section>
