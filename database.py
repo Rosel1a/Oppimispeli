@@ -538,4 +538,37 @@ def get_user_avatar(user_id):
             return None
     return None   
 
+def update_user_avatar(user_id, new_avatar_id):
+    try:
+        """Päivittää käyttäjän avatarin tietokantaan."""
+        conn = get_db_connection()
+        cursor = conn.cursor()
+
+        # Haetaan käyttäjän avatarID oppilas-taulusta
+        cursor.execute("SELECT Avatar_avatarID FROM oppilas WHERE User_userID = %s", (user_id,))
+        result = cursor.fetchone()
+
+        if result:
+            # Päivitetään oppilaan Avatar_avatarID kenttä valitun avatarin ID:llä
+            cursor.execute(
+                "UPDATE oppilas SET Avatar_avatarID = %s WHERE User_userID = %s",
+                (new_avatar_id, user_id)
+            )
+            conn.commit()  # Varmistetaan muutokset tietokantaan
+
+            print(f"Avatar päivitetty käyttäjälle {user_id}. Uusi avatar ID: {new_avatar_id}")
+            return {"success": True}
+
+        else:
+            print("Käyttäjän avatarID ei löytynyt.")
+            return {"error": "User not found"}
+
+    except mysql.connector.Error as err:
+        print(f"Virhe tietokannassa: {err}")
+        return {"error": "Database error"}
+
+    finally:
+        cursor.close()
+        conn.close()
+
 get_db_connection()

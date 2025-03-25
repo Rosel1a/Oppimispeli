@@ -7,7 +7,7 @@ import mysql.connector
 from mysql.connector import connection
 from database import get_random_question, register_user, get_game_instructions, check_user_credentials, save_player_answer, save_game_result, create_game_result
 from database import get_all_students, get_all_classes, update_student_class, check_existing_group, create_new_group, get_teacher_class, get_class_id_by_name, get_opettaja_id_by_user_id
-from database import get_student_by_id, get_student_by_class_id, get_class_name_by_id, get_results_by_oppilas_id, get_vastaukset_by_pelitulos_id, remove_student_from_class, get_user_avatar
+from database import get_student_by_id, get_student_by_class_id, get_class_name_by_id, get_results_by_oppilas_id, get_vastaukset_by_pelitulos_id, remove_student_from_class, get_user_avatar, update_user_avatar
 import logging
 logging.basicConfig(stream=sys.stdout, level=logging.DEBUG)
 sys.stderr = sys.stdout
@@ -88,6 +88,20 @@ def student_info():
 @app.route('/avatar')
 def avatar():
     return render_template('profilePictureSelection.html')
+
+@app.route('/update_avatar', methods=['POST'])
+def update_avatar():
+    data = request.get_json()  # Haetaan JSON-data
+    avatar_id = data.get('avatar_id')  # Haetaan valittu avatar_id
+    user_id = session.get('userID')  # Oletetaan, että käyttäjän ID on sessionissa
+
+    if avatar_id and user_id:
+        try:
+            update_user_avatar(user_id, avatar_id)  # Päivitetään oppilaan avatarID
+            return jsonify({'success': True})
+        except Exception as e:
+            return jsonify({'success': False, 'error': str(e)}), 500
+    return jsonify({'success': False, 'error': 'Puuttuva avatar_id tai user_id'}), 400
 
 @app.route('/get_student_gameresult')
 def get_student_gameresult():

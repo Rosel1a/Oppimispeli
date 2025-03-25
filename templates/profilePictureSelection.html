@@ -30,28 +30,55 @@
       </div>
       <div class="right-circles">
         <div class="small-circle">
-          <img class="avatar-img" src="{{ url_for('static', filename='Kuvat/mattiAvatar.png') }}" alt="User Avatar" onclick="changeAvatar(this)">
+          <img class="avatar-img" src="{{ url_for('static', filename='Kuvat/mattiAvatar.png') }}" alt="User Avatar" onclick="changeAvatar(this)" data-avatar-id="1">
         </div>
         <div class="small-circle">
-          <img class="avatar-img" src="{{ url_for('static', filename='Kuvat/bunnyAvatar.png') }}" alt="User Avatar" onclick="changeAvatar(this)">
+          <img class="avatar-img" src="{{ url_for('static', filename='Kuvat/bunnyAvatar.png') }}" alt="User Avatar" onclick="changeAvatar(this)" data-avatar-id="2">
         </div>
         <div class="small-circle">
-          <img class="avatar-img" src="{{ url_for('static', filename='Kuvat/doggyAvatar.png') }}" alt="User Avatar" onclick="changeAvatar(this)">
+          <img class="avatar-img" src="{{ url_for('static', filename='Kuvat/doggyAvatar.png') }}" alt="User Avatar" onclick="changeAvatar(this)" data-avatar-id="3">
         </div>
         <div class="small-circle">
-          <img class="avatar-img" src="{{ url_for('static', filename='Kuvat/doggyAvatar.png') }}" alt="User Avatar" onclick="changeAvatar(this)">
+          <img class="avatar-img" src="{{ url_for('static', filename='Kuvat/doggyAvatar.png') }}" alt="User Avatar" onclick="changeAvatar(this)" data-avatar-id="3">
         </div>
       </div>
     </div>
     <div class="buttons">
-      <button class="coming-soon-btn">Tallenna</button>
+      <button class="coming-soon-btn" onclick="saveAvatar()">Tallenna</button>
     </div>
   </div>
 </div>
 <script>
+  let selectedAvatar = ""; // Muuttuja avataren valintaan
+
   function changeAvatar(element) {
     document.getElementById('big-avatar').src = element.src;
+    selectedAvatar = element.getAttribute("data-avatar-id"); // Tallennetaan avataren nimi
+    console.log("Valittu avatar ID:", selectedAvatar); // Debug-tulostus
   }
+  
+  function saveAvatar() {
+    if (!selectedAvatar) {
+      alert("Valitse avatar ennen tallennusta!");
+      return;
+    }
+
+    fetch("/update_avatar", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ avatar_id: selectedAvatar }) // Lähetetään avatarin ID
+    })
+    .then(response => response.json())
+    .then(data => {
+      if (data.success) {
+        alert("Avatar päivitetty!");
+        window.location.reload(); // Päivitetään sivu
+      } else {
+        alert("Virhe avataren päivityksessä!");
+      }
+    });
+  }
+</script>
 </script>
 </body>
 </html>
