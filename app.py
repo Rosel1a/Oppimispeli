@@ -65,8 +65,6 @@ def group_management():
 def student_info():
     if "oppilasID" not in session:  
         print("🔴 Ei kirjautunutta käyttäjää!")     
-        print(f"🟢 Käyttäjä {session['userID']} on kirjautunut!")  
-        print(f"🟢 oppilas {session['oppilasID']} on kirjautunut!")  
         return redirect(url_for("student_login"))  # Ohjaa kirjautumissivulle, jos ei ole kirjautunut
 
     oppilas = get_student_by_id(session["oppilasID"])  # Haetaan käyttäjän tiedot
@@ -80,9 +78,11 @@ def student_info():
     if not oppilas:
         return "Oppilaan tietoja ei löytynyt.", 404
     
+    luokka_nimi = get_class_name_by_id(oppilas['luokkaID'])
+
     #pelitulokset = get_results_by_oppilas_id(session["oppilasID"])
 
-    return render_template('studentInfo.html', oppilas=oppilas, user_avatar_url=user_avatar_url)
+    return render_template('studentInfo.html', oppilas=oppilas, user_avatar_url=user_avatar_url, luokka_nimi = luokka_nimi)
 
 
 @app.route('/avatar')
