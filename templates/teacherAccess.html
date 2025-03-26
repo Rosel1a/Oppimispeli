@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="fi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Opettajan pääsy</title>
+</head>
+<body>
+    <h2>Syötä opettajan salasana</h2>
+    {% if virhe %}
+        <p style="color: red;">{{ virhe }}</p>
+    {% endif %}
+    <form method="POST">
+        <input type="password" name="global_password" placeholder="Opettajan salasana" required>
+        <button type="submit">Jatka</button>
+    </form>
+</body>
+</html>

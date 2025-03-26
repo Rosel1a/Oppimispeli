@@ -91,6 +91,25 @@ def get_game_instructions(peli_id):
         cursor.close()
         connection.close()
 
+def get_global_teacher_password():
+    """Hakee globaalin opettajasalasanan tietokannasta."""
+    connection = get_db_connection()
+    cursor = connection.cursor(dictionary=True)
+
+    try:
+        query = "SELECT opettaja_salasana FROM asetukset LIMIT 1"
+        cursor.execute(query)
+        result = cursor.fetchone()
+
+        if result:
+            return result["opettaja_salasana"]
+        return None
+
+    finally:
+        cursor.close()
+        connection.close()
+
+
 # Funktio käyttäjän rekisteröitymiselle
 def register_user(etunimi, sukunimi, kirjautumistunnus, salasana, rooli, syntymapaiva=None, luokka=None):
     connection = get_db_connection()

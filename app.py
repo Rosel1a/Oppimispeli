@@ -1,18 +1,21 @@
 # Kuvaus: Tämä tiedosto sisältää pelisovelluksen pääsovelluslogiikan. 
 # Sovellus on toteutettu Flask-kehyspohjaisena web-sovelluksena, joka käyttää tietokantaa kysymysten ja vastausten tallentamiseen. 
 
-from flask import Flask, render_template, jsonify, request, redirect, url_for, flash, session, g
+from flask import Flask, render_template, jsonify, request, redirect, url_for, flash, session, g, flash
 import sys
 import mysql.connector
 from mysql.connector import connection
-from database import get_random_question, register_user, get_game_instructions, check_user_credentials, save_player_answer, save_game_result, create_game_result
+from database import get_random_question, register_user, get_game_instructions, check_user_credentials, save_player_answer, save_game_result, create_game_result, get_global_teacher_password
 from database import get_all_students, get_all_classes, update_student_class, check_existing_group, create_new_group, get_teacher_class, get_class_id_by_name, get_opettaja_id_by_user_id
 from database import get_student_by_id, get_student_by_class_id, get_class_name_by_id, get_results_by_oppilas_id, get_vastaukset_by_pelitulos_id, remove_student_from_class, get_user_avatar, update_user_avatar
 import logging
+import os
 logging.basicConfig(stream=sys.stdout, level=logging.DEBUG)
 sys.stderr = sys.stdout
+
 app = Flask(__name__, static_folder='static')
 app.secret_key = "supersecretkey"
+
 
 @app.before_request
 def before_request():
@@ -44,6 +47,20 @@ def firstscreen():
 @app.route('/frontPage')
 def frontPage():
     return render_template('frontPage.html', user_avatar_url=getattr(g, 'user_avatar_url', None))
+
+@app.route('/teacher_access', methods=['GET', 'POST'])
+def teacher_access():
+    if request.method == 'POST':
+        given_password = request.form.get('global_password')
+        correct_password = get_global_teacher_password()
+
+        if given_password == correct_password:
+            session['teacher_access'] = True  # Tallenna sessioon, että salasana hyväksyttiin
+            return redirect(url_for('teacher_login'))
+        else:
+            return render_template('teacherAccess.html', virhe="Väärä salasana!")
+
+    return render_template('teacherAccess.html')
 
 # Opettajan kirjautuminen
 @app.route('/teacher_login')
@@ -269,6 +286,10 @@ def student_login_view():
 # Opettajan kirjautumisfunktio
 @app.route('/teacher_login', methods=['GET', 'POST'])
 def teacher_login_view():
+    # Tarkista, onko opettaja jo saanut pääsyn globaalilla salasanalla
+    if not session.get('teacher_access'):  # Ei pääsyä, ohjataan ensin salasanan syöttöön
+        return redirect(url_for('teacher_access'))
+    
     logged_in_user = None
 
     if request.method == 'POST':
