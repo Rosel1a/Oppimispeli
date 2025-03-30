@@ -135,7 +135,7 @@
                 score += pointsPerCorrectAnswer; // Lisätään pisteitä valitun vaikeustason mukaan
                 imageElement.src = "{{ url_for('static', filename='kuvat/mattiFappyGame.png') }}";
             } else {
-                showMessage('Väärin, yritä uudelleen.');
+                showMessage('Väärin meni.');
                 imageElement.src = "{{ url_for('static', filename='kuvat/mattiSadGame.png') }}";
             }
             document.getElementById("score").innerText = `Pisteet: ${score}`; // Päivitetään pistelaskuri
