@@ -17,7 +17,7 @@
         </button>
         <div class="dropdown-content">
           <a href="{{ url_for('student_info') }}">Profiili</a>
-          <a href="#">Pelitulokset</a>
+          <a href="{{ url_for('avatar') }}">Avatar</a>
           <a href="{{ url_for('logout') }}">Kirjaudu ulos</a>
         </div>
       </div>
@@ -26,9 +26,6 @@
       <div class="nav-buttons">
         <a href="{{ url_for('frontPage') }}">
           <button class="coming-soon-btn">Etusivu</button>
-        </a>
-        <a href="{{ url_for('avatar') }}">
-          <button class="coming-soon-btn">Avatarin vaihto</button>
         </a>
       </div>
     </div>

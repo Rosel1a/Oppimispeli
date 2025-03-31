@@ -8,15 +8,26 @@
 </head>
 <body>
 <!-- Headerin sisältö (eka osio sivusta) -->
+<!-- Headerin sisältö (eka osio sivusta) -->
 <header class="header-section">
   <div class="header-top">
     <img class="site-title" src="{{ url_for('static', filename='Kuvat/logoWhite.png') }}" alt="Logo valkoinen">
+    <div class="avatar-dropdown">
+      <button class="icon-button" aria-label="Menu">
+        <img loading="lazy" src="{{ user_avatar_url }}" class="icon-image" alt="Avatar" />
+      </button>
+      <div class="dropdown-content">
+        <a href="{{ url_for('student_info') }}">Profiili</a>
+        <a href="{{ url_for('avatar') }}">Avatar</a>
+        <a href="{{ url_for('logout') }}">Kirjaudu ulos</a>
+      </div>
+    </div>
   </div>
   <div class="header-bottom">
     <div class="nav-buttons">
-      <!-- takaisin nappi -->
-      <button class="coming-soon-btn" onclick=window.location.href="{{ url_for('student_info') }}">Takaisin</button>
-      <!-- Tulossa-nappi -->
+      <a href="{{ url_for('frontPage') }}">
+        <button class="coming-soon-btn">Etusivu</button>
+      </a>
     </div>
   </div>
 </header>
