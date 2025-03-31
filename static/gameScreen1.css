@@ -52,9 +52,31 @@ html, body {
   margin-right: 100px; /* Lisää tilaa oikealle avatarin ympärille */
 }
 
+/* Avatar-painike (info.css-tyylit) */
+.icon-button.info-style {
+  border-radius: 50%;
+  background-color: transparent; /* Poistetaan musta ympyrä */
+  width: 80px; /* Asetetaan avatarin leveys */
+  height: 80px; /* Asetetaan avatarin korkeus */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  margin-right: 80px; /* Lisää tilaa oikealle avatarin ympärille */
+  margin-top: 10px; /* Lisää tilaa yläpuolelle */
+}
+
 .icon-image {
   width: 40px;
   height: 40px;
+}
+
+/* Avatar-kuva (info.css-tyylit) */
+.icon-image.info-style-image {
+  width: 100%; /* Asetetaan kuvan leveys täyttämään painike */
+  height: 100%; /* Asetetaan kuvan korkeus täyttämään painike */
+  border-radius: 50%; /* Pyöristetään kuvan reunat */
+  object-fit: cover; /* Varmistetaan, että kuva täyttää painikkeen ilman vääristymistä */
 }
 
 /* Pääalue */
@@ -290,4 +312,44 @@ button:hover {
     max-width: 100%;
     min-height: auto;
   }
+}
+
+/* Modal */
+.modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.modal-content {
+    background-color: white;
+    padding: 20px;
+    border-radius: 8px;
+    text-align: center;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.modal-button {
+    margin: 10px;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+#confirm-exit {
+    background-color: #d9534f;
+    color: white;
+}
+
+#cancel-exit {
+    background-color: #5bc0de;
+    color: white;
 }

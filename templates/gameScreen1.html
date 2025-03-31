@@ -10,8 +10,8 @@
     <div class="mathematics-section">
         <header class="header">
             <h1 class="subject-title">Matematiikka</h1>
-            <button class="icon-button" aria-label="Menu">
-                <img loading="lazy" src="{{ g.user_avatar_url }}" class="icon-image" alt="Avatar" style="width: 100%; height: 100%; border-radius: 50%;" />
+            <button class="icon-button info-style" aria-label="Menu" disabled>
+                <img loading="lazy" src="{{ g.user_avatar_url }}" class="icon-image info-style-image" alt="Avatar" />
             </button>
         </header>
         <main class="content-area">
@@ -55,22 +55,43 @@
             </section>
         </main>
     </div> 
+    <div id="exit-modal" class="modal hidden">
+        <div class="modal-content">
+            <p>Haluatko varmasti lopettaa pelin?</p>
+            <button id="confirm-exit" class="modal-button">Kyllä</button>
+            <button id="cancel-exit" class="modal-button">Ei</button>
+        </div>
+    </div>
     <script>
         // Funktio, joka ohjaa käyttäjän takaisin oikealle sivulle
         function goBack() {
-            const pelinId = parseInt("{{ pelin_id }}");  // Haetaan pelin_id Jinjalla Flaskista
-            let backUrl = "{{ url_for('index') }}";  // Oletuksena takaisin etusivulle
+            // Näytetään modaalinäkymä
+            const modal = document.getElementById("exit-modal");
+            modal.classList.remove("hidden");
+            modal.style.display = "flex";
 
-            if (pelinId >= 1 && pelinId <= 18) {
-                backUrl = "{{ url_for('math_menu', grade=3) }}";
-            } else if (pelinId >= 19 && pelinId <= 23) {
-                backUrl = "{{ url_for('math_menu', grade=4) }}";
-            } else if (pelinId >= 24 && pelinId <= 30) {
-                backUrl = "{{ url_for('math_menu', grade=5) }}";
-            } else if (pelinId >= 31 && pelinId <= 36) {
-                backUrl = "{{ url_for('math_menu', grade=6) }}";
-            }
-            window.location.href = backUrl;
+            // Käsitellään "Kyllä" ja "Ei" -painikkeet
+            document.getElementById("confirm-exit").onclick = function () {
+                // Käytetään nykyistä poistumispolkua
+                const pelinId = parseInt("{{ pelin_id }}");
+                let backUrl = "{{ url_for('index') }}";
+
+                if (pelinId >= 1 && pelinId <= 18) {
+                    backUrl = "{{ url_for('math_menu', grade=3) }}";
+                } else if (pelinId >= 19 && pelinId <= 23) {
+                    backUrl = "{{ url_for('math_menu', grade=4) }}";
+                } else if (pelinId >= 24 && pelinId <= 30) {
+                    backUrl = "{{ url_for('math_menu', grade=5) }}";
+                } else if (pelinId >= 31 && pelinId <= 36) {
+                    backUrl = "{{ url_for('math_menu', grade=6) }}";
+                }
+                window.location.href = backUrl;
+            };
+
+            document.getElementById("cancel-exit").onclick = function () {
+                // Piilotetaan modaalinäkymä
+                modal.style.display = "none";
+            };
         }
 
         // Haetaan pelin ID URL:stä
@@ -125,20 +146,36 @@
 
             const data = await response.json();
             const imageElement = document.getElementById("mattiImage"); // Etsi elementti kuvien näyttämistä varten
-            const imageContainer = document.getElementById("feedbackImage"); 
             
+            // Satunnaiset viestit oikeille ja väärille vastauksille
+            const correctMessages = [
+                "Mahtavaa, oikein meni!",
+                "Olet huippu!",
+                "Loistavaa työtä!",
+                "Hyvin tehty, jatka samaan malliin!"
+            ];
+            const incorrectMessages = [
+                "Höh! Ensi kerralla paremmin.",
+                "Hieno yritys, ensi kerralla onnistut.",
+                "Ei haittaa, harjoittelua lisää!",
+                "Harjoitus tekee mestarin!"
+            ];
 
-            imageElement.src = "{{ url_for('static', filename='Kuvat/mattiNeutGame.png') }}";
-            imageElement.alt = "matti neutraali";
             if (userAnswer === correctAnswer) {
-                showMessage('Oikein!');
+                const randomCorrectMessage = correctMessages[Math.floor(Math.random() * correctMessages.length)];
+                showMessage(randomCorrectMessage);
                 score += pointsPerCorrectAnswer; // Lisätään pisteitä valitun vaikeustason mukaan
                 imageElement.src = "{{ url_for('static', filename='kuvat/mattiFappyGame.png') }}";
             } else {
-                showMessage('Väärin meni.');
+                const randomIncorrectMessage = incorrectMessages[Math.floor(Math.random() * incorrectMessages.length)];
+                showMessage(randomIncorrectMessage);
                 imageElement.src = "{{ url_for('static', filename='kuvat/mattiSadGame.png') }}";
             }
             document.getElementById("score").innerText = `Pisteet: ${score}`; // Päivitetään pistelaskuri
+
+            // Tyhjennetään vastauskenttä
+            document.getElementById("answer-box").value = "";
+
             if (questionCount >= 10) {
                 endGame(); // Jos 10 kysymystä on vastattu, lopetetaan peli
             } else {
