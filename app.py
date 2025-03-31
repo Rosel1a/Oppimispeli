@@ -104,7 +104,7 @@ def student_info():
 
 @app.route('/avatar')
 def avatar():
-    return render_template('profilePictureSelection.html')
+    return render_template('profilePictureSelection.html', user_avatar_url=getattr(g, 'user_avatar_url', None))
 
 @app.route('/update_avatar', methods=['POST'])
 def update_avatar():
